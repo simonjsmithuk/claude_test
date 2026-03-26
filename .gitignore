@@ -1,0 +1,29 @@
+# Environment
+.env
+.env.local
+
+# SDLC run artifacts
+.sdlc_runs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo

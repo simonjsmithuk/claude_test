@@ -1,0 +1,100 @@
+name: AI-SDLC Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "Feature request or project description"
+        required: true
+        type: string
+      stages:
+        description: "Comma-separated stages to run (default: all)"
+        required: false
+        default: "spec,design,code,tests,review,devops,release"
+      model:
+        description: "Claude model to use"
+        required: false
+        default: "claude-sonnet-4-6"
+
+  issues:
+    types: [labeled]
+
+jobs:
+  run-pipeline:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' && github.event.label.name == 'sdlc-run')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Determine request and run ID
+        id: request
+        run: |
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            echo "request=${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
+            echo "run_id=issue-${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          else
+            echo "request=${{ inputs.request }}" >> $GITHUB_OUTPUT
+            echo "run_id=dispatch-${{ github.run_number }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run SDLC pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python main.py \
+            --stages "${{ inputs.stages || 'spec,design,code,tests,review,devops,release' }}" \
+            --model "${{ inputs.model || 'claude-sonnet-4-6' }}" \
+            --run-id "${{ steps.request.outputs.run_id }}" \
+            --output results.json \
+            "${{ steps.request.outputs.request }}"
+
+      - name: Upload run artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sdlc-run-${{ steps.request.outputs.run_id }}
+          path: |
+            results.json
+            .sdlc_runs/
+
+      - name: Comment results on issue
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('results.json', 'utf8'));
+            const body = [
+              `## AI-SDLC Pipeline Results`,
+              `**Run ID:** \`${results.run_id}\``,
+              '',
+              '### Spec',
+              results.spec,
+              '',
+              '### Design',
+              results.design,
+            ].join('\n').slice(0, 65000);
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });

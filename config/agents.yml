@@ -1,0 +1,49 @@
+# AI-SDLC Agent Configuration
+# Adjust model, token budgets, and enabled stages per environment.
+
+default_model: claude-sonnet-4-6
+max_tokens: 8096
+max_tool_iterations: 10
+
+stages:
+  spec:
+    enabled: true
+    agent: PMAgent
+    description: "Convert raw request to structured Product Specification Document"
+  design:
+    enabled: true
+    agent: ArchitectAgent
+    description: "Produce System Design Document and ADRs"
+  code:
+    enabled: true
+    agent: CoderAgent
+    description: "Implement features from spec and design"
+  tests:
+    enabled: true
+    agent: TestWriterAgent
+    description: "Generate comprehensive test suite"
+  review:
+    enabled: true
+    agent: CodeReviewerAgent
+    description: "Review implementation and tests, produce report"
+  devops:
+    enabled: true
+    agent: DevOpsAgent
+    description: "Produce CI/CD pipelines, Dockerfile, and IaC"
+  release:
+    enabled: true
+    agent: ReleaseAgent
+    description: "Draft changelog, release notes, and version bump"
+
+# Model overrides per agent (optional — falls back to default_model)
+agent_models: {}
+  # pm_agent: claude-opus-4-6          # Use Opus for complex requirements
+  # architect_agent: claude-opus-4-6
+  # coder_agent: claude-sonnet-4-6
+  # test_writer_agent: claude-haiku-4-5-20251001   # Use Haiku for fast/cheap test gen
+  # code_reviewer_agent: claude-opus-4-6
+  # devops_agent: claude-sonnet-4-6
+  # release_agent: claude-haiku-4-5-20251001
+
+context_store:
+  base_dir: .sdlc_runs
