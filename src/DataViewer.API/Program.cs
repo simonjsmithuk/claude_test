@@ -53,14 +53,15 @@ try
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
 
-    // Infrastructure services (encryption, repositories, external clients, etc.).
+    // Infrastructure services (encryption, repositories, EF Core, external clients, etc.).
     // AesEncryptionService is registered here as Singleton; it validates the
     // DATAVIEWER_ENCRYPTION_KEY environment variable at construction time, causing
     // a fast startup failure with a clear error if the key is missing or invalid.
-    builder.Services.AddInfrastructure();
+    // ASSUMPTION: builder.Configuration is passed to give InfrastructureServiceExtensions
+    // access to connection strings, database provider, and parser/extractor strategies.
+    builder.Services.AddInfrastructure(builder.Configuration);
 
-    // TODO TASK-025: Register repositories, use cases, auth, EF Core, CORS,
-    //               health checks, rate limiting, Swagger.
+    // TODO TASK-025: Register use cases, auth, CORS, health checks, rate limiting, Swagger.
 
     var app = builder.Build();
 

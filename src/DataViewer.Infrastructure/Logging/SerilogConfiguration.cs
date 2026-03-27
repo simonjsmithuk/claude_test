@@ -1,3 +1,17 @@
+// =============================================================================
+// SerilogConfiguration — DataViewer.Infrastructure
+// =============================================================================
+// License notes:
+//   Serilog                      Apache 2.0  https://github.com/serilog/serilog
+//   Serilog.AspNetCore           Apache 2.0  https://github.com/serilog/serilog-aspnetcore
+//   Serilog.Sinks.Console        Apache 2.0  https://github.com/serilog/serilog-sinks-console
+//   Serilog.Sinks.File           Apache 2.0  https://github.com/serilog/serilog-sinks-file
+//   Serilog.Formatting.Compact   Apache 2.0  https://github.com/serilog/serilog-formatting-compact
+//   Serilog.Enrichers.Environment Apache 2.0 https://github.com/serilog/serilog-enrichers-environment
+//   Serilog.Enrichers.Thread     Apache 2.0  https://github.com/serilog/serilog-enrichers-thread
+//   Serilog.Enrichers.Process    Apache 2.0  https://github.com/serilog/serilog-enrichers-process
+// =============================================================================
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -11,86 +25,160 @@ namespace DataViewer.Infrastructure.Logging;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Call <see cref="Configure"/> as the <em>very first</em> statement in <c>Program.cs</c>,
-/// before <c>WebApplication.CreateBuilder()</c>, so that startup errors (configuration
-/// loading failures, DI registration problems) are captured in the structured log.
+/// Call <see cref="Configure"/> as the <em>very first</em> statement in
+/// <c>Program.cs</c>, before <c>WebApplication.CreateBuilder()</c>, so that
+/// startup errors (configuration loading failures, DI registration problems) are
+/// captured in the structured log:
+/// <code>
+/// SerilogConfiguration.Configure(bootstrapConfig, bootstrapEnvironment);
+/// try
+/// {
+///     var builder = WebApplication.CreateBuilder(args);
+///     builder.Host.UseSerilog();
+///     …
+///     app.UseSerilogRequestLogging(SerilogConfiguration.ConfigureRequestLogging);
+///     await app.RunAsync();
+/// }
+/// finally { await Log.CloseAndFlushAsync(); }
+/// </code>
 /// </para>
+///
 /// <para>
-/// Sink strategy (section 7.6 of the System Design Document):
+/// <strong>Sink strategy (SDD § 7.6):</strong>
 /// <list type="bullet">
 ///   <item>
 ///     <description>
-///       <strong>Console sink</strong> — JSON (CompactJsonFormatter) in Production;
-///       human-readable coloured output in Development/Staging.
+///       <b>Console sink</b> — <see cref="CompactJsonFormatter"/> (machine-parseable)
+///       in Production; human-readable coloured output via
+///       <see cref="Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code"/>
+///       in Development/Staging.  Both variants are wrapped by
+///       <see cref="SensitivePropertyRedactionSink"/> before any bytes are written.
 ///     </description>
 ///   </item>
 ///   <item>
 ///     <description>
-///       <strong>File sink</strong> — daily rolling file under <c>logs/dataviewer-.log</c>
-///       with 7-day retention and a 50 MB per-file size cap. Always uses compact JSON so
-///       that log-shipping agents (Filebeat, Fluentd) can parse every environment's output.
+///       <b>File sink</b> — daily rolling file under <c>logs/dataviewer-.log</c>
+///       with 7-day retention and a 50 MB per-file size cap.  Always uses
+///       <see cref="CompactJsonFormatter"/> so that log-shipping agents (Filebeat,
+///       Fluentd) can parse output from every environment consistently.
+///       Also wrapped by <see cref="SensitivePropertyRedactionSink"/>.
 ///     </description>
 ///   </item>
 /// </list>
 /// </para>
+///
 /// <para>
-/// Every log event is enriched with <c>RequestId</c>, <c>UserId</c>, <c>Method</c>,
-/// <c>Path</c>, <c>StatusCode</c>, <c>ElapsedMs</c>, and <c>IpAddress</c> when those
-/// values are available in the current HTTP context.  The enrichment is performed by
-/// ASP.NET Core's <c>UseSerilogRequestLogging()</c> middleware (configured in
-/// <c>Program.cs</c>) and by the application's own <c>HttpContextEnricher</c>.
+/// <strong>Sensitive-field protection (TASK-020 Acceptance Criteria):</strong>
+/// Two complementary mechanisms guarantee that the five protected fields
+/// (<c>SecretAccessKey</c>, <c>PasswordHash</c>, <c>TokenHash</c>,
+/// <c>Authorization</c>, <c>DATAVIEWER_ENCRYPTION_KEY</c>) never appear in any
+/// log output at any level:
+/// <list type="number">
+///   <item>
+///     <description>
+///       <see cref="SensitiveFieldDestructuringPolicy"/> — intercepts structured
+///       objects destructured with <c>@</c> or <c>destructureObjects: true</c>
+///       and replaces matching property values during the destructuring phase.
+///     </description>
+///   </item>
+///   <item>
+///     <description>
+///       <see cref="SensitivePropertyRedactionSink"/> — wraps every write sink and
+///       performs a final pass over each completed <see cref="LogEvent"/>'s property
+///       dictionary, replacing any top-level property whose name is in the sensitive
+///       set with <c>***REDACTED***</c>.  This catches scalar properties logged
+///       directly (e.g. <c>Log.Information("{Authorization}", …)</c> or via
+///       <c>LogContext.PushProperty</c>).
+///     </description>
+///   </item>
+/// </list>
 /// </para>
+///
 /// <para>
-/// <see cref="SensitiveFieldDestructuringPolicy"/> is registered globally to guarantee
-/// that <c>SecretAccessKey</c>, <c>PasswordHash</c>, <c>TokenHash</c>, <c>Authorization</c>,
-/// and <c>DATAVIEWER_ENCRYPTION_KEY</c> are never written to any sink at any level.
+/// <strong>Required enriched fields per request (SDD § 7.6):</strong>
+/// <c>RequestId</c>, <c>UserId</c> (when available), <c>Method</c>, <c>Path</c>,
+/// <c>StatusCode</c>, <c>ElapsedMs</c>, and <c>IpAddress</c>.  These are populated
+/// by <see cref="ConfigureRequestLogging"/> and the ASP.NET Core Serilog middleware.
 /// </para>
 /// </remarks>
 public static class SerilogConfiguration
 {
+    // ── File sink constants ───────────────────────────────────────────────────
+
     /// <summary>
-    /// Rolling-file path pattern. The <c>{Date}</c> token is replaced daily by Serilog.Sinks.File.
+    /// Rolling-file path pattern. Serilog appends the date before the extension
+    /// (e.g. <c>logs/dataviewer-20250710.log</c>) when <c>rollingInterval</c>
+    /// is set to <see cref="RollingInterval.Day"/>.
     /// </summary>
     private const string LogFilePath = "logs/dataviewer-.log";
 
     /// <summary>Maximum size of a single log file before Serilog rolls to a new file.</summary>
     private const long MaxLogFileSizeBytes = 50L * 1024 * 1024; // 50 MB
 
-    /// <summary>Number of daily log files retained on disk before the oldest is deleted.</summary>
+    /// <summary>
+    /// Number of daily log files retained on disk before the oldest is deleted.
+    /// Acceptance criteria: 7-day retention.
+    /// </summary>
     private const int RetainedFileCount = 7;
 
+    // ── Console sink output template ──────────────────────────────────────────
+
     /// <summary>
-    /// Output template used for the human-readable console sink in non-Production environments.
-    /// Contains all mandatory fields from section 7.6 that are available at the point the
-    /// request-logging middleware emits each event.
+    /// Output template for the human-readable console sink used in non-Production
+    /// environments.  Includes all mandatory SDD § 7.6 fields that are available
+    /// at the point the request-logging middleware emits each event.
     /// </summary>
-    private const string HumanReadableTemplate =
+    /// <remarks>
+    /// The <c>{Properties:j}</c> token serialises the entire enriched property bag
+    /// as JSON on a second line, ensuring that <c>RequestId</c>, <c>UserId</c>,
+    /// <c>Method</c>, <c>Path</c>, <c>StatusCode</c>, <c>ElapsedMs</c>,
+    /// <c>IpAddress</c>, <c>MachineName</c>, <c>EnvironmentName</c>, and any other
+    /// enriched values are always visible in development output.
+    /// </remarks>
+    private const string HumanReadableOutputTemplate =
         "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}" +
         "{NewLine}{Properties:j}" +
         "{NewLine}{Exception}";
 
+    // ── Framework namespaces to suppress ─────────────────────────────────────
+
     /// <summary>
-    /// Configures and assigns the Serilog global <see cref="Log.Logger"/> from the supplied
-    /// <paramref name="configuration"/> and <paramref name="environment"/>.
+    /// Minimum level override applied to the noisy <c>Microsoft.*</c> namespace
+    /// tree so that framework-internal log entries below Warning are suppressed
+    /// unless the operator has set <c>Logging:MinimumLevel</c> to Debug or Verbose.
+    /// </summary>
+    private const LogEventLevel FrameworkMinimumLevel = LogEventLevel.Warning;
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Public API
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Configures and assigns the Serilog global <see cref="Log.Logger"/> from the
+    /// supplied <paramref name="configuration"/> and <paramref name="environment"/>.
     /// </summary>
     /// <param name="configuration">
-    /// The application's <see cref="IConfiguration"/> instance (already loaded from
-    /// <c>appsettings.json</c> and environment-specific overrides).
-    /// The key <c>Logging:MinimumLevel</c> controls the floor level (defaults to
-    /// <c>Information</c> when absent or unrecognised).
+    /// The application's <see cref="IConfiguration"/> instance, already loaded from
+    /// <c>appsettings.json</c> and environment-specific overrides.  The key
+    /// <c>Logging:MinimumLevel</c> controls the floor level; it defaults to
+    /// <see cref="LogEventLevel.Information"/> when absent or unrecognised.
     /// </param>
     /// <param name="environment">
     /// The hosting environment used to select the console output format:
-    /// JSON in Production, human-readable elsewhere.
+    /// compact JSON in Production, human-readable coloured output elsewhere.
     /// </param>
     /// <remarks>
-    /// This method must be called <em>before</em> <c>WebApplication.CreateBuilder()</c>
-    /// so that host-build failures are captured.  After calling this method, wire Serilog
-    /// into the ASP.NET Core host with:
+    /// <para>
+    /// This method MUST be called <em>before</em> <c>WebApplication.CreateBuilder()</c>
+    /// so that host-build failures are captured by the configured sinks.
+    /// </para>
+    /// <para>
+    /// After calling this method, wire Serilog into the ASP.NET Core host:
     /// <code>
     /// builder.Host.UseSerilog();
-    /// app.UseSerilogRequestLogging(opts => SerilogConfiguration.ConfigureRequestLogging(opts));
+    /// app.UseSerilogRequestLogging(SerilogConfiguration.ConfigureRequestLogging);
     /// </code>
+    /// </para>
     /// </remarks>
     public static void Configure(IConfiguration configuration, IHostEnvironment environment)
     {
@@ -98,63 +186,56 @@ public static class SerilogConfiguration
         var isProduction = environment.IsProduction();
 
         var loggerConfig = new LoggerConfiguration()
-            // ── Minimum level ──────────────────────────────────────────────────────
+
+            // ── Minimum level ─────────────────────────────────────────────────
             .MinimumLevel.Is(minimumLevel)
             // Suppress noisy Microsoft/ASP.NET Core framework logs below Warning
-            // unless the operator has explicitly set Debug or Verbose.
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            // unless the operator explicitly sets Debug or Verbose.
+            .MinimumLevel.Override("Microsoft", FrameworkMinimumLevel)
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-            .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.EntityFrameworkCore", FrameworkMinimumLevel)
+            .MinimumLevel.Override("System.Net.Http.HttpClient", FrameworkMinimumLevel)
 
-            // ── Enrichers ─────────────────────────────────────────────────────────
-            .Enrich.FromLogContext()          // captures LogContext.PushProperty() values
-            .Enrich.WithMachineName()         // containerised deployment correlation
-            .Enrich.WithEnvironmentName()     // Production / Development / Staging
-            .Enrich.WithProcessId()           // useful when multiple workers run
-            .Enrich.WithThreadId()            // async debugging
+            // ── Enrichers ─────────────────────────────────────────────────────
+            // FromLogContext captures any properties pushed via LogContext.PushProperty
+            // (e.g. scoped RequestId, UserId injected by middleware).
+            .Enrich.FromLogContext()
+            // MachineName and EnvironmentName correlate events in multi-host deployments.
+            .Enrich.WithMachineName()
+            .Enrich.WithEnvironmentName()
+            // ProcessId is useful when multiple workers share a log aggregator.
+            .Enrich.WithProcessId()
+            // ThreadId aids debugging of async operations in structured log queries.
+            .Enrich.WithThreadId()
+            // Static application-name tag for log aggregators (e.g. Kibana filter).
             .Enrich.WithProperty("Application", "DataViewer")
 
-            // ── Sensitive-field protection (security requirement) ─────────────────
-            // Registered before any sink so the policy applies to ALL destinations.
+            // ── Sensitive-field protection: destructuring phase ───────────────
+            // Registered before sinks so the policy applies to ALL structured objects
+            // destructured anywhere in the pipeline. Handles POCO / record types that
+            // are logged with the @ operator or destructureObjects: true.
             .Destructure.With<SensitiveFieldDestructuringPolicy>()
 
-            // ── Console sink ──────────────────────────────────────────────────────
-            .WriteTo.Conditional(
-                _ => isProduction,
-                // Production: machine-parseable compact JSON for log shippers.
-                sink => sink.Console(new CompactJsonFormatter()))
-            .WriteTo.Conditional(
-                _ => !isProduction,
-                // Development / Staging: coloured, human-readable output.
-                sink => sink.Console(
-                    outputTemplate: HumanReadableTemplate,
-                    theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code))
-
-            // ── Rolling file sink ─────────────────────────────────────────────────
-            // Always writes compact JSON so that log-shipping agents can parse files
-            // from any environment consistently (Production AND Development).
-            .WriteTo.File(
-                formatter: new CompactJsonFormatter(),
-                path: LogFilePath,
-                rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: RetainedFileCount,
-                fileSizeLimitBytes: MaxLogFileSizeBytes,
-                rollOnFileSizeLimit: true,
-                shared: false,          // single-process; shared=false avoids locking overhead
-                flushToDiskInterval: TimeSpan.FromSeconds(2));
+            // ── Write sinks (each wrapped by SensitivePropertyRedactionSink) ──
+            // The redaction sink wraps every downstream write sink and performs a
+            // final pass over each completed LogEvent's top-level properties,
+            // catching scalar-valued sensitive properties that bypass destructuring
+            // (e.g. Log.Information("{Authorization}", value) or PushProperty(...)).
+            .WriteTo.Sink(BuildConsoleSink(isProduction))
+            .WriteTo.Sink(BuildFileSink());
 
         Log.Logger = loggerConfig.CreateLogger();
     }
 
     /// <summary>
     /// Configures the options for <c>UseSerilogRequestLogging()</c> middleware so that
-    /// every HTTP request log event includes the mandatory fields from section 7.6:
+    /// every HTTP request log event includes the mandatory fields from SDD § 7.6:
     /// <c>RequestId</c>, <c>UserId</c>, <c>Method</c>, <c>Path</c>, <c>StatusCode</c>,
     /// <c>ElapsedMs</c>, and <c>IpAddress</c>.
     /// </summary>
     /// <param name="options">
-    /// The <see cref="Serilog.AspNetCore.RequestLoggingOptions"/> instance provided by the
-    /// middleware registration call in <c>Program.cs</c>.
+    /// The <see cref="Serilog.AspNetCore.RequestLoggingOptions"/> instance provided by
+    /// the middleware registration call in <c>Program.cs</c>.
     /// </param>
     /// <remarks>
     /// Usage in <c>Program.cs</c>:
@@ -164,7 +245,8 @@ public static class SerilogConfiguration
     /// </remarks>
     public static void ConfigureRequestLogging(Serilog.AspNetCore.RequestLoggingOptions options)
     {
-        // Emit one summary log entry per request at the Information level.
+        // Emit one summary log entry per request.  Level is promoted to Error for
+        // 5xx responses and unhandled exceptions, Warning for 4xx, Information otherwise.
         options.GetLevel = static (httpContext, elapsed, ex) =>
             ex is not null
                 ? LogEventLevel.Error
@@ -174,17 +256,19 @@ public static class SerilogConfiguration
                         ? LogEventLevel.Warning
                         : LogEventLevel.Information;
 
-        // Enrich each request completion event with the structured fields mandated
-        // by section 7.6 of the System Design Document.
-        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+        // Enrich each request completion event with the structured properties
+        // mandated by SDD § 7.6.
+        options.EnrichDiagnosticContext = static (diagnosticContext, httpContext) =>
         {
-            // RequestId: ASP.NET Core's built-in trace identifier (correlates all log
-            // entries for a single HTTP request).
+            // ── RequestId ──────────────────────────────────────────────────────
+            // ASP.NET Core's built-in trace identifier; correlates every log entry
+            // emitted during the lifetime of a single HTTP request.
             diagnosticContext.Set("RequestId", httpContext.TraceIdentifier);
 
-            // UserId: extracted from the authenticated user's claims when present.
-            // Left absent (not set) for anonymous / unauthenticated requests so that
-            // log consumers can distinguish authenticated from anonymous traffic.
+            // ── UserId ─────────────────────────────────────────────────────────
+            // Extracted from the authenticated user's claims. Left absent for
+            // anonymous requests so log consumers can distinguish authenticated
+            // from anonymous traffic without a null/empty noise value.
             var userId = httpContext.User?.FindFirst(
                 System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
                 ?? httpContext.User?.FindFirst("sub")?.Value;
@@ -192,35 +276,117 @@ public static class SerilogConfiguration
             if (!string.IsNullOrEmpty(userId))
                 diagnosticContext.Set("UserId", userId);
 
-            // Method and Path are already included in Serilog's default request
-            // logging template but are re-emitted as top-level structured properties
-            // for consistent querying in log-aggregation tools.
+            // ── Method & Path ──────────────────────────────────────────────────
+            // Serilog's default request-logging template includes {RequestMethod}
+            // and {RequestPath}, but explicit structured properties are set here
+            // for consistent field names in log-aggregation queries (SDD § 7.6).
             diagnosticContext.Set("Method", httpContext.Request.Method);
             diagnosticContext.Set("Path", httpContext.Request.Path.Value);
 
-            // StatusCode is set by Serilog automatically when response completes.
-            // ElapsedMs is computed internally by UseSerilogRequestLogging.
+            // ── StatusCode — emitted automatically by Serilog middleware ───────
+            // ── ElapsedMs  — computed internally by UseSerilogRequestLogging ───
+            // Both are already present in every request-log event as {StatusCode}
+            // and {Elapsed} respectively; no explicit set is required here.
 
-            // IpAddress: prefer the leftmost entry of X-Forwarded-For (nginx proxy),
-            // fall back to the direct connection remote address.
+            // ── IpAddress ──────────────────────────────────────────────────────
+            // Prefer the leftmost entry of X-Forwarded-For (the nginx reverse-proxy
+            // path per ADR-006). Fall back to the direct connection remote address.
             var ipAddress = GetClientIpAddress(httpContext);
             diagnosticContext.Set("IpAddress", ipAddress);
 
-            // Sanitise the Authorization header — log only the scheme, never the token.
-            // ASSUMPTION: The Authorization header value is intentionally not logged even
-            // partially (e.g. scheme-only) because the Bearer prefix combined with the
-            // jti claim could expose session metadata. The header presence is logged only.
+            // ── Authorization header ───────────────────────────────────────────
+            // Log only the presence/absence of the header, never its value.
+            // The bearer token is protected by SensitivePropertyRedactionSink
+            // (which would redact it if logged as {Authorization}), but belt-and-
+            // suspenders: we deliberately choose NOT to set the "Authorization"
+            // property at all here and instead emit only a boolean.
+            // ASSUMPTION: Logging scheme-only (e.g. "Bearer") is considered
+            // unnecessary metadata overhead; a boolean "Authenticated" flag is
+            // sufficient for audit/diagnostic purposes.
             var hasAuth = httpContext.Request.Headers.ContainsKey("Authorization");
             diagnosticContext.Set("Authenticated", hasAuth);
         };
     }
 
-    // ── Private helpers ──────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // Private helpers — sink construction
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Builds the console sink, wrapping it with
+    /// <see cref="SensitivePropertyRedactionSink"/> for final-pass redaction.
+    /// </summary>
+    /// <param name="isProduction">
+    /// <see langword="true"/> → <see cref="CompactJsonFormatter"/> (machine-parseable);
+    /// <see langword="false"/> → themed human-readable output for Development/Staging.
+    /// </param>
+    private static SensitivePropertyRedactionSink BuildConsoleSink(bool isProduction)
+    {
+        // Use a sub-logger confined to the console sink so that we can wrap it
+        // with the redaction decorator without affecting the file sink.
+        var consoleSinkConfig = new LoggerConfiguration()
+            .MinimumLevel.Verbose() // floor set by parent; sub-logger passes everything
+            .WriteTo.Conditional(
+                _ => isProduction,
+                // Production: machine-parseable compact JSON for log-shipping agents.
+                sink => sink.Console(new CompactJsonFormatter()))
+            .WriteTo.Conditional(
+                _ => !isProduction,
+                // Development/Staging: coloured, human-readable output.
+                sink => sink.Console(
+                    outputTemplate: HumanReadableOutputTemplate,
+                    theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code))
+            .CreateLogger();
+
+        // Wrap the console sub-logger sink in the redaction decorator.
+        // LoggerSinkConfiguration.Logger() returns an ILogEventSink backed by
+        // the sub-logger; we compose it with SensitivePropertyRedactionSink.
+        return new SensitivePropertyRedactionSink(consoleSinkConfig);
+    }
+
+    /// <summary>
+    /// Builds the rolling-file sink, wrapping it with
+    /// <see cref="SensitivePropertyRedactionSink"/> for final-pass redaction.
+    /// </summary>
+    /// <remarks>
+    /// Always uses <see cref="CompactJsonFormatter"/> regardless of environment so
+    /// that log-shipping agents (Filebeat, Fluentd) can parse files from every
+    /// environment consistently.
+    /// </remarks>
+    private static SensitivePropertyRedactionSink BuildFileSink()
+    {
+        var fileSinkConfig = new LoggerConfiguration()
+            .MinimumLevel.Verbose() // floor set by parent; sub-logger passes everything
+            .WriteTo.File(
+                formatter: new CompactJsonFormatter(),
+                path: LogFilePath,
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: RetainedFileCount,
+                fileSizeLimitBytes: MaxLogFileSizeBytes,
+                // Roll to a new file when the size limit is reached mid-day so that
+                // log files never grow unboundedly if log volume spikes unexpectedly.
+                rollOnFileSizeLimit: true,
+                // Single-process; shared: false avoids file-locking overhead.
+                // ASSUMPTION: Horizontal scaling (multiple processes per host) is not
+                // anticipated in the initial Ubuntu deployment; adjust to shared: true
+                // or switch to a network sink if multi-process writes are required.
+                shared: false,
+                // Flush to disk every 2 seconds to balance write latency against
+                // the risk of losing the last few events on abnormal process exit.
+                flushToDiskInterval: TimeSpan.FromSeconds(2))
+            .CreateLogger();
+
+        return new SensitivePropertyRedactionSink(fileSinkConfig);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Private helpers — configuration reading
+    // ─────────────────────────────────────────────────────────────────────────
 
     /// <summary>
     /// Reads the <c>Logging:MinimumLevel</c> value from <paramref name="configuration"/>.
-    /// Returns <see cref="LogEventLevel.Information"/> when the key is absent or the value
-    /// cannot be parsed as a valid <see cref="LogEventLevel"/>.
+    /// Returns <see cref="LogEventLevel.Information"/> when the key is absent or the
+    /// value cannot be parsed as a valid <see cref="LogEventLevel"/>.
     /// </summary>
     private static LogEventLevel ReadMinimumLevel(IConfiguration configuration)
     {
@@ -234,18 +400,31 @@ public static class SerilogConfiguration
             : LogEventLevel.Information;
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Private helpers — HTTP context
+    // ─────────────────────────────────────────────────────────────────────────
+
     /// <summary>
     /// Extracts the originating client IP address from the HTTP context.
-    /// Checks <c>X-Forwarded-For</c> first (nginx reverse-proxy scenario per ADR-006)
-    /// and falls back to <c>RemoteIpAddress</c> for direct connections.
+    /// Checks the <c>X-Forwarded-For</c> header first (nginx reverse-proxy scenario
+    /// per ADR-006) and falls back to <see cref="Microsoft.AspNetCore.Http.ConnectionInfo.RemoteIpAddress"/>
+    /// for direct connections.
     /// </summary>
+    /// <param name="httpContext">The current HTTP context.</param>
+    /// <returns>
+    /// The client IP address string, or <c>"unknown"</c> when neither source is available.
+    /// </returns>
     private static string GetClientIpAddress(Microsoft.AspNetCore.Http.HttpContext httpContext)
     {
-        // X-Forwarded-For may contain a comma-separated list; the leftmost value is the
-        // original client IP. nginx is configured to always set this header.
-        if (httpContext.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
+        // X-Forwarded-For may contain a comma-separated list; the leftmost value is
+        // the original client IP.  nginx is configured (ADR-006) to always set this header
+        // before forwarding to Kestrel.
+        if (httpContext.Request.Headers.TryGetValue(
+                "X-Forwarded-For", out var forwardedFor))
         {
-            var firstIp = forwardedFor.ToString().Split(',', StringSplitOptions.TrimEntries)[0];
+            var firstIp = forwardedFor.ToString()
+                .Split(',', StringSplitOptions.TrimEntries)[0];
+
             if (!string.IsNullOrEmpty(firstIp))
                 return firstIp;
         }
