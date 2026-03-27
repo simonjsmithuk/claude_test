@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <RootNamespace>DataViewer.API</RootNamespace>
+    <AssemblyName>DataViewer.API</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Clean Architecture dependency rules:
+        API → Application (use cases, interfaces, DTOs)
+        API → Infrastructure (DI registrations only; concrete types NOT referenced directly)
+    -->
+    <ProjectReference Include="..\DataViewer.Domain\DataViewer.Domain.csproj" />
+    <ProjectReference Include="..\DataViewer.Infrastructure\DataViewer.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      Serilog.AspNetCore — Apache 2.0 license
+      Needed in the API project to call builder.Host.UseSerilog() and
+      app.UseSerilogRequestLogging().
+    -->
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+  </ItemGroup>
+
+</Project>
