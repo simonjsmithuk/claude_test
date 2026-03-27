@@ -18,5 +18,11 @@ public enum BodyContentType
     Xml = 1,
 
     /// <summary>Body content is plain text or an unrecognised format.</summary>
-    Text = 2
+    Text = 2,
+
+    /// <summary>
+    /// Content type could not be determined, or no body was present.
+    /// Used as a safe default when detection fails or is not attempted.
+    /// </summary>
+    Unknown = 3
 }
