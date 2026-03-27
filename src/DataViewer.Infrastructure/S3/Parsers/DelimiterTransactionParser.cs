@@ -214,11 +214,9 @@ internal sealed class DelimiterTransactionParser : ITransactionParser
                 decompressed.Slice(responseSectionStart);
 
             // ── Step 4: Parse each section ────────────────────────────────────
-            // ParseSection returns a ReadOnlySpan<byte> for the body, which is still
-            // backed by the pool buffer — must be consumed (decoded to string) before
-            // the finally block returns the buffer to the pool.
-            var (requestLine, requestHeaders, requestBodySpan)   = ParseSection(requestSection.Span);
-            var (responseLine, responseHeaders, responseBodySpan) = ParseSection(responseSection.Span);
+            // ParseSection returns offsets and lengths instead of spans
+            var (requestLine, requestHeaders, reqBodyOffset, reqBodyLen)   = ParseSection(requestSection.Span);
+            var (responseLine, responseHeaders, resBodyOffset, resBodyLen) = ParseSection(responseSection.Span);
 
             // ── Step 5: Decode start lines ────────────────────────────────────
             var (method, requestPath, _) = ParseRequestLine(requestLine);
@@ -231,6 +229,15 @@ internal sealed class DelimiterTransactionParser : ITransactionParser
                 statusCode);
 
             // ── Step 6: Decode bodies to strings BEFORE returning the pool buffer
+            // Extract the body spans from the section using the offsets and lengths
+            var requestBodySpan = reqBodyLen > 0
+                ? TrimTrailingNewlines(requestSection.Span.Slice(reqBodyOffset, reqBodyLen))
+                : ReadOnlySpan<byte>.Empty;
+
+            var responseBodySpan = resBodyLen > 0
+                ? TrimTrailingNewlines(responseSection.Span.Slice(resBodyOffset, resBodyLen))
+                : ReadOnlySpan<byte>.Empty;
+
             string? requestBody = requestBodySpan.IsEmpty
                 ? null
                 : Utf8.GetString(requestBodySpan);
@@ -409,25 +416,29 @@ internal sealed class DelimiterTransactionParser : ITransactionParser
     /// <summary>
     /// Parses a single HTTP section (request or response) from a
     /// <see cref="ReadOnlySpan{T}"/> of decompressed bytes, extracting the start
-    /// line, headers dictionary, and raw body bytes.
+    /// line, headers dictionary, and raw body bytes as a sliced ReadOnlyMemory.
     /// </summary>
     /// <param name="section">
     /// Bytes of the section, starting immediately after the delimiter marker's
     /// line ending and ending at the next marker's start (or EOF).
     /// </param>
     /// <returns>
+    /// A tuple containing:
     /// <list type="bullet">
     ///   <item><description><c>StartLine</c> — the decoded request or status line.</description></item>
     ///   <item><description><c>Headers</c> — mutable, lowercase-keyed header dictionary (wrap with <c>.AsReadOnly()</c> before publishing).</description></item>
-    ///   <item><description><c>BodyBytes</c> — raw body bytes (empty span when no body).</description></item>
+    ///   <item><description><c>BodyStartOffset</c> — offset in section where body begins.</description></item>
+    ///   <item><description><c>BodyLength</c> — length of body in bytes.</description></item>
     /// </list>
     /// </returns>
     private static (string StartLine,
                     Dictionary<string, string> Headers,
-                    ReadOnlySpan<byte> BodyBytes)
+                    int BodyStartOffset,
+                    int BodyLength)
         ParseSection(ReadOnlySpan<byte> section)
     {
         var remaining = section;
+        int bodyStartOffset = 0;
 
         // ── Start line ────────────────────────────────────────────────────────
         var startLineBytes = ConsumeLine(ref remaining);
@@ -468,11 +479,13 @@ internal sealed class DelimiterTransactionParser : ITransactionParser
         }
 
         // ── Body ──────────────────────────────────────────────────────────────
-        // Everything remaining after the blank header separator is the raw body.
+        // Calculate the offset where the body starts in the original section
+        bodyStartOffset = section.Length - remaining.Length;
+
         // Trim trailing newlines that the capture agent may append after the body.
         var bodyBytes = TrimTrailingNewlines(remaining);
 
-        return (startLine, headers, bodyBytes);
+        return (startLine, headers, bodyStartOffset, bodyBytes.Length);
     }
 
     /// <summary>

@@ -265,6 +265,22 @@ public sealed class TokenService : ITokenService
     }
 
     /// <inheritdoc/>
+    public Task<RefreshToken?> ValidateRefreshTokenAsync(
+        string tokenHash,
+        CancellationToken cancellationToken)
+    {
+        // This method is intentionally not implemented in TokenService.
+        // Token validation against the backing store requires database access via
+        // IRefreshTokenRepository. The application layer (use-case handlers) directly
+        // calls IRefreshTokenRepository.GetByHashAsync to perform this validation,
+        // rather than delegating it to the token service.
+        throw new NotImplementedException(
+            "ValidateRefreshTokenAsync is not implemented in TokenService. "
+            + "Use IRefreshTokenRepository.GetByHashAsync directly in application-layer use cases "
+            + "to validate refresh tokens against the database.");
+    }
+
+    /// <inheritdoc/>
     /// <remarks>
     /// Validates the access token's signature, expiry, issuer, and audience using
     /// <see cref="JwtSecurityTokenHandler.ValidateToken"/>.  Returns the subject

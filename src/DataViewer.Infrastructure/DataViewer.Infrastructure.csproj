@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="DataViewer.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!--
       Clean Architecture dependency graph (inner → outer allowed; outer → inner forbidden):
         Infrastructure → Application (to implement IEncryptionService and other interfaces)

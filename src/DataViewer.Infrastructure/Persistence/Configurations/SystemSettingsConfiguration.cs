@@ -95,12 +95,14 @@ public sealed class SystemSettingsConfiguration : IEntityTypeConfiguration<Syste
         // UpdatedAt is seeded as DateTime.MinValue (UTC): the Infrastructure
         // SaveChanges interceptor will overwrite this on the first admin update.
         // DateTime.MinValue with UTC kind ensures Npgsql does not reject the value.
-        builder.HasData(new SystemSettings(
-            id: 1,
-            jwtAccessTokenMinutes: 15,
-            jwtRefreshTokenHours: 24,
-            bodySizeCapMb: 10,
-            lockoutThreshold: 5,
-            updatedAt: DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)));
+        builder.HasData(new
+        {
+            Id = 1,
+            JwtAccessTokenMinutes = 15,
+            JwtRefreshTokenHours = 24,
+            BodySizeCapMb = 10,
+            LockoutThreshold = 5,
+            UpdatedAt = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)
+        });
     }
 }

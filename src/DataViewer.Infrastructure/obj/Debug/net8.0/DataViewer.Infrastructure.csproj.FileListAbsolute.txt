@@ -4,3 +4,17 @@
 /home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.AssemblyInfo.cs
 /home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.csproj.CoreCompileInputs.cache
 /home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.sourcelink.json
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/bin/Debug/net8.0/DataViewer.Infrastructure.deps.json
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/bin/Debug/net8.0/DataViewer.Infrastructure.runtimeconfig.json
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/bin/Debug/net8.0/DataViewer.Infrastructure.dll
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/bin/Debug/net8.0/DataViewer.Infrastructure.pdb
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/bin/Debug/net8.0/DataViewer.Application.dll
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/bin/Debug/net8.0/DataViewer.Domain.dll
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/bin/Debug/net8.0/DataViewer.Application.pdb
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/bin/Debug/net8.0/DataViewer.Domain.pdb
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.csproj.CopyComplete
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.dll
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/refint/DataViewer.Infrastructure.dll
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.pdb
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.genruntimeconfig.cache
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/ref/DataViewer.Infrastructure.dll

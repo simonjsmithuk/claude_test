@@ -1,0 +1,8 @@
+/home/simon/code_wsl/claude_test/tests/DataViewer.Tests/bin/Debug/net8.0/.msCoverageSourceRootsMapping_DataViewer.Tests
+/home/simon/code_wsl/claude_test/tests/DataViewer.Tests/bin/Debug/net8.0/CoverletSourceRootsMapping_DataViewer.Tests
+/home/simon/code_wsl/claude_test/tests/DataViewer.Tests/obj/Debug/net8.0/DataViewer.Tests.csproj.AssemblyReference.cache
+/home/simon/code_wsl/claude_test/tests/DataViewer.Tests/obj/Debug/net8.0/DataViewer.Tests.GeneratedMSBuildEditorConfig.editorconfig
+/home/simon/code_wsl/claude_test/tests/DataViewer.Tests/obj/Debug/net8.0/DataViewer.Tests.AssemblyInfoInputs.cache
+/home/simon/code_wsl/claude_test/tests/DataViewer.Tests/obj/Debug/net8.0/DataViewer.Tests.AssemblyInfo.cs
+/home/simon/code_wsl/claude_test/tests/DataViewer.Tests/obj/Debug/net8.0/DataViewer.Tests.csproj.CoreCompileInputs.cache
+/home/simon/code_wsl/claude_test/tests/DataViewer.Tests/obj/Debug/net8.0/DataViewer.Tests.sourcelink.json
