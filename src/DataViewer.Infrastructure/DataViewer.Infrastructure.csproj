@@ -10,11 +10,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Project references: Infrastructure → Domain (clean architecture rule) -->
+    <!--
+      Clean Architecture dependency graph (inner → outer allowed; outer → inner forbidden):
+        Infrastructure → Application (to implement IEncryptionService and other interfaces)
+        Infrastructure → Domain     (to throw EncryptionException and reference domain types)
+      Application already references Domain, so Domain is transitively available here.
+    -->
+    <ProjectReference Include="..\DataViewer.Application\DataViewer.Application.csproj" />
     <ProjectReference Include="..\DataViewer.Domain\DataViewer.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <!--
+      Microsoft.Extensions.DependencyInjection.Abstractions — MIT license (part of .NET 8 SDK)
+      Provides IServiceCollection used in InfrastructureServiceExtensions.
+    -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+
     <!--
       Serilog — Apache 2.0 license
       Core structured logging library used throughout DataViewer (section 2, ADR-001).
@@ -71,7 +83,7 @@
 
     <!--
       Microsoft.Extensions.Configuration.Abstractions — MIT license (part of .NET 8 SDK)
-      Provides IConfiguration for reading Logging.MinimumLevel from appsettings.
+      Provides IConfiguration for reading Logging:MinimumLevel from appsettings.
     -->
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
 

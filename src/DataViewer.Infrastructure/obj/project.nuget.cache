@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "cdV99ypnZZbp8LoppOg8XJuCFfYfWA2M2gB7NZY8jQojvI0DHp5w5Bma0iwCZWGNcqjFEkdT1tLUdm6C02Jghg==",
+  "dgSpecHash": "JABPTRzR+MnhkGgS63Wr2ryJ25wdMg8S8CG4b6KA78UxejPExli/cxQHHPVXKNcp2RMwjH4c+jWfyLEEBItTbA==",
   "success": false,
   "projectFilePath": "/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/DataViewer.Infrastructure.csproj",
   "expectedPackageFiles": [

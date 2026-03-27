@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "buGMVcYzp9nh7JB1oszdBFkuUli7AIlihclqoTjBO+VXDW6L1uXFXi0ziDjiP2NQr3fkvXYIsZMaSv7oEvTsxQ==",
+  "dgSpecHash": "SiQztVvXaKQQrs0bMOopOMhh40pPGstsZRjkar0GKJ90SBC3BA27NmlCVLgWXkQvWrr6a8QQULEiGAl5DtDtBQ==",
   "success": false,
   "projectFilePath": "/home/simon/code_wsl/claude_test/src/DataViewer.API/DataViewer.API.csproj",
   "expectedPackageFiles": [

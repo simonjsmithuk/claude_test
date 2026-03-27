@@ -477,6 +477,19 @@
           }
         }
       },
+      "DataViewer.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "DataViewer.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DataViewer.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DataViewer.Application.dll": {}
+        }
+      },
       "DataViewer.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -491,9 +504,11 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "DataViewer.Application": "1.0.0",
           "DataViewer.Domain": "1.0.0",
           "Microsoft.AspNetCore.Http.Abstractions": "2.2.0",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
           "Microsoft.Extensions.Hosting.Abstractions": "8.0.1",
           "Serilog": "3.1.1",
           "Serilog.AspNetCore": "8.0.3",
@@ -1272,6 +1287,11 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "DataViewer.Application/1.0.0": {
+      "type": "project",
+      "path": "../DataViewer.Application/DataViewer.Application.csproj",
+      "msbuildProject": "../DataViewer.Application/DataViewer.Application.csproj"
     },
     "DataViewer.Domain/1.0.0": {
       "type": "project",

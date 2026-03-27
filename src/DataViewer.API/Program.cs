@@ -6,6 +6,7 @@
 //   for DI registration purposes only.  Business logic MUST NOT live here.
 // =============================================================================
 
+using DataViewer.Infrastructure.DependencyInjection;
 using DataViewer.Infrastructure.Logging;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -48,9 +49,15 @@ try
     // policies — including SensitiveFieldDestructuringPolicy.
     builder.Host.UseSerilog();
 
-    // ── Service registrations (placeholder — expanded in TASK-025) ────────────
+    // ── Step 4: Register service layers ───────────────────────────────────────
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
+
+    // Infrastructure services (encryption, repositories, external clients, etc.).
+    // AesEncryptionService is registered here as Singleton; it validates the
+    // DATAVIEWER_ENCRYPTION_KEY environment variable at construction time, causing
+    // a fast startup failure with a clear error if the key is missing or invalid.
+    builder.Services.AddInfrastructure();
 
     // TODO TASK-025: Register repositories, use cases, auth, EF Core, CORS,
     //               health checks, rate limiting, Swagger.
