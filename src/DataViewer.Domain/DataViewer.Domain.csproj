@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <RootNamespace>DataViewer.Domain</RootNamespace>
+    <AssemblyName>DataViewer.Domain</AssemblyName>
+    <!-- Domain layer: pure business logic — NO external NuGet references allowed. -->
+    <!-- Only BCL / Microsoft.NET.Sdk framework assemblies are permitted here.     -->
+  </PropertyGroup>
+
+  <!-- Zero external NuGet package references — intentional per Clean Architecture rules. -->
+
+</Project>

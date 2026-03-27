@@ -13,7 +13,8 @@ from tools import ALL_TOOLS, handle_tool_call
 logger = logging.getLogger(__name__)
 
 DEFAULT_MODEL = "claude-sonnet-4-6"
-MAX_TOOL_ITERATIONS = 10
+DEFAULT_MAX_TOKENS = 8096
+MAX_TOOL_ITERATIONS = 30  # Increased to allow agents to complete complex tasks
 
 
 class BaseAgent:
@@ -29,10 +30,17 @@ class BaseAgent:
     system_prompt: str = "You are a helpful AI assistant."
     tools: list[dict] = []
 
-    def __init__(self, client: anthropic.Anthropic, context: ContextStore, model: str = DEFAULT_MODEL):
+    def __init__(
+        self,
+        client: anthropic.Anthropic,
+        context: ContextStore,
+        model: str = DEFAULT_MODEL,
+        max_tokens: int = DEFAULT_MAX_TOKENS,
+    ):
         self.client = client
         self.context = context
         self.model = model
+        self.max_tokens = max_tokens
 
     def run(self, task: str, extra_context: dict[str, Any] | None = None) -> str:
         """Run the agent on a task, executing tool calls until completion.
@@ -56,10 +64,11 @@ class BaseAgent:
         for iteration in range(MAX_TOOL_ITERATIONS):
             response = self.client.messages.create(
                 model=self.model,
-                max_tokens=8096,
+                max_tokens=self.max_tokens,
                 system=self.system_prompt,
                 tools=self.tools or [],
                 messages=messages,
+                timeout=600.0,  # 10 minutes timeout for long-running agents
             )
 
             logger.debug("[%s] stop_reason=%s", self.name, response.stop_reason)

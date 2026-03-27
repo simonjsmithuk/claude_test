@@ -2,8 +2,19 @@
 # Adjust model, token budgets, and enabled stages per environment.
 
 default_model: claude-sonnet-4-6
-max_tokens: 8096
-max_tool_iterations: 10
+max_tokens: 8096  # Default for most agents
+max_tool_iterations: 30
+
+# Token overrides per agent (optional — falls back to max_tokens)
+agent_max_tokens:
+  pm_agent: 16384            # Spec can be large for complex apps
+  architect_agent: 16384     # Design documents with ADRs are verbose
+  taskplanner_agent: 20480   # Task breakdown for 50+ tasks (20K tokens ~50-60 tasks)
+  coder_agent: 8096          # Code generation (works task-by-task now)
+  test_writer_agent: 8096
+  code_reviewer_agent: 8096
+  devops_agent: 8096
+  release_agent: 4096
 
 stages:
   spec:
@@ -14,10 +25,14 @@ stages:
     enabled: true
     agent: ArchitectAgent
     description: "Produce System Design Document and ADRs"
+  taskplan:
+    enabled: true
+    agent: TaskPlannerAgent
+    description: "Break design into small, manageable implementation tasks"
   code:
     enabled: true
     agent: CoderAgent
-    description: "Implement features from spec and design"
+    description: "Implement features task-by-task from taskplan"
   tests:
     enabled: true
     agent: TestWriterAgent
