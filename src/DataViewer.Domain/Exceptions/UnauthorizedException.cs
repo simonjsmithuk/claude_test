@@ -33,8 +33,10 @@ public sealed class UnauthorizedException : DomainException
     /// <param name="lockoutUntilUtc">
     /// UTC timestamp at which the automatic lockout expires.
     /// <see langword="null"/> for an indefinite administrative lock.
+    /// <see cref="DateTimeOffset"/> is used (not <see cref="DateTime"/>) to carry
+    /// unambiguous UTC context, matching <see cref="DataViewer.Domain.Entities.User.LockoutUntil"/>.
     /// </param>
-    public UnauthorizedException(string message, DateTime? lockoutUntilUtc)
+    public UnauthorizedException(string message, DateTimeOffset? lockoutUntilUtc)
         : base(message)
     {
         IsAccountLocked = true;
@@ -66,5 +68,5 @@ public sealed class UnauthorizedException : DomainException
     /// (<see cref="IsAccountLocked"/> is <see langword="false"/>), or when the lock
     /// is indefinite and must be cleared manually by an administrator.
     /// </summary>
-    public DateTime? LockoutUntilUtc { get; }
+    public DateTimeOffset? LockoutUntilUtc { get; }
 }

@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace DataViewer.Domain.Entities;
 
 /// <summary>
@@ -97,5 +95,9 @@ public class SystemSettings
     /// persisted value reflects the actual database write time rather than the
     /// in-memory object construction time.
     /// </summary>
-    public DateTime UpdatedAt { get; set; } = default;
+    /// <remarks>
+    /// ⚠️ Risk: if the Infrastructure interceptor is missed, this field persists as
+    /// <c>DateTimeOffset.MinValue</c> (0001-01-01). Monitor this via integration tests.
+    /// </remarks>
+    public DateTimeOffset UpdatedAt { get; set; } = default;
 }

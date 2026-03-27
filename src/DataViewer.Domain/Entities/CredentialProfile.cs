@@ -1,19 +1,22 @@
-#nullable enable
-
 namespace DataViewer.Domain.Entities;
-
-using System.Text.Json.Serialization;
 
 /// <summary>
 /// Represents a named AWS S3 credential profile used to browse and retrieve
 /// HTTP transaction records stored in an S3 bucket.
 /// </summary>
 /// <remarks>
-/// The AWS Secret Access Key is stored AES-256 encrypted as a raw byte array
+/// The AWS Secret Access Key is stored AES-256-CBC encrypted as a raw byte array
 /// (<see cref="EncryptedSecretKey"/>). The byte array layout is
-/// <c>[16-byte IV] + [ciphertext]</c>; the encryption/decryption logic lives
-/// exclusively in the Infrastructure layer and is never exposed to callers of
-/// API endpoints.
+/// <c>[<see cref="IvSizeBytes"/>-byte IV] + [ciphertext]</c>; the encryption/decryption
+/// logic lives exclusively in the Infrastructure layer and is never exposed to callers
+/// of API endpoints.
+///
+/// <para>
+/// <see cref="EncryptedSecretKey"/> MUST NOT be included in any API response. Enforce
+/// this by projecting to a DTO at the controller/service boundary — never return this
+/// entity directly from a controller action. The Domain layer carries no serialisation
+/// attributes; the DTO mapping layer is the sole enforcement point.
+/// </para>
 ///
 /// <para>
 /// Deletion is soft: <see cref="IsDeleted"/> is set to <see langword="true"/>
@@ -29,6 +32,18 @@ using System.Text.Json.Serialization;
 /// </remarks>
 public class CredentialProfile
 {
+    /// <summary>
+    /// Size in bytes of the AES-256-CBC initialisation vector prepended to
+    /// <see cref="EncryptedSecretKey"/>. AES always uses a 128-bit (16-byte) IV
+    /// regardless of key length.
+    /// </summary>
+    /// <remarks>
+    /// Reference this constant in the Infrastructure AES decrypt logic rather than
+    /// hardcoding <c>16</c>, so that the domain contract and the encryption
+    /// implementation remain in sync.
+    /// </remarks>
+    public const int IvSizeBytes = 16;
+
     /// <summary>
     /// Primary key. Generated once on entity construction; never reassigned.
     /// </summary>
@@ -50,14 +65,19 @@ public class CredentialProfile
 
     /// <summary>
     /// AES-256-CBC encrypted AWS Secret Access Key.
-    /// Stored as a raw byte array with layout <c>[16-byte IV] + [ciphertext]</c>.
-    /// This value is NEVER included in any API response payload; the Infrastructure
-    /// layer decrypts it in-memory only when constructing an <c>AmazonS3Client</c>.
-    /// <see cref="JsonIgnoreAttribute"/> is applied to prevent accidental serialisation
-    /// if a controller ever maps this entity directly rather than through a DTO.
+    /// Stored as a raw byte array with layout
+    /// <c>[<see cref="IvSizeBytes"/>-byte IV] + [ciphertext]</c>.
     /// </summary>
-    [JsonIgnore]
-    public byte[] EncryptedSecretKey { get; set; } = Array.Empty<byte>();
+    /// <remarks>
+    /// ⚠️ Security: This value MUST NEVER be included in any API response.
+    /// Enforce DTO projection at the controller/service boundary — never return
+    /// <see cref="CredentialProfile"/> directly from a controller action.
+    /// The Infrastructure layer decrypts this field in-memory only when constructing
+    /// an <c>AmazonS3Client</c>; it is not mapped to any response DTO.
+    /// No serialisation attribute is placed here — the API/Infrastructure layer
+    /// is the sole and correct enforcement point.
+    /// </remarks>
+    public byte[] EncryptedSecretKey { get; set; } = [];
 
     /// <summary>
     /// AWS region code identifying where the target bucket is located.
@@ -102,7 +122,11 @@ public class CredentialProfile
     /// is the authoritative writer so the persisted value reflects the actual
     /// database write time rather than the in-memory object construction time.
     /// </summary>
-    public DateTime CreatedAt { get; set; } = default;
+    /// <remarks>
+    /// ⚠️ Risk: if the Infrastructure interceptor is missed, this field persists as
+    /// <c>DateTimeOffset.MinValue</c> (0001-01-01). Monitor this via integration tests.
+    /// </remarks>
+    public DateTimeOffset CreatedAt { get; set; } = default;
 
     /// <summary>
     /// UTC timestamp of the most recent update to any field on this profile.
@@ -110,7 +134,11 @@ public class CredentialProfile
     /// must refresh this value on every <c>UPDATE</c> operation (e.g. via a
     /// <c>SaveChanges</c> interceptor) to avoid stale construction-time timestamps.
     /// </summary>
-    public DateTime UpdatedAt { get; set; } = default;
+    /// <remarks>
+    /// ⚠️ Risk: if the Infrastructure interceptor is missed, this field persists as
+    /// <c>DateTimeOffset.MinValue</c> (0001-01-01). Monitor this via integration tests.
+    /// </remarks>
+    public DateTimeOffset UpdatedAt { get; set; } = default;
 
     /// <summary>
     /// The <see cref="User.Id"/> of the Admin who created this profile.

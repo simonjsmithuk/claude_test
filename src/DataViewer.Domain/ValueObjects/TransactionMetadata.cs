@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace DataViewer.Domain.ValueObjects;
 
 /// <summary>
@@ -16,6 +14,12 @@ namespace DataViewer.Domain.ValueObjects;
 /// <para>
 /// This type is a <c>record</c> to ensure structural equality, consistent hashing,
 /// and immutability — all properties are <c>init</c>-only by default on records.
+/// </para>
+/// <para>
+/// All timestamp parameters are <see cref="DateTimeOffset"/> to carry unambiguous
+/// UTC context. The Infrastructure S3 parsing layer must ensure both
+/// <see cref="TimestampUtc"/> and <see cref="S3LastModified"/> are constructed with
+/// <c>DateTimeOffset.UtcNow</c> or a UTC-offset of <c>+00:00</c>.
 /// </para>
 /// </remarks>
 /// <param name="S3Key">
@@ -55,8 +59,8 @@ public record TransactionMetadata(
     string Method,
     int StatusCode,
     string UrlPath,
-    DateTime TimestampUtc,
+    DateTimeOffset TimestampUtc,
     long CompressedSizeBytes,
     long DecompressedSizeBytes,
-    DateTime S3LastModified
+    DateTimeOffset S3LastModified
 );

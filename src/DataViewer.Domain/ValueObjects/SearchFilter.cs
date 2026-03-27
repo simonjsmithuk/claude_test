@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace DataViewer.Domain.ValueObjects;
 
 /// <summary>
@@ -28,6 +26,11 @@ namespace DataViewer.Domain.ValueObjects;
 /// object keys (e.g. <c>"/api/orders"</c> matches <c>"/api/orders/1"</c> and
 /// <c>"/api/orders/2"</c>).
 /// </para>
+/// <para>
+/// Date-range bounds are <see cref="DateTimeOffset"/> to carry unambiguous UTC context.
+/// Callers must ensure both <see cref="FromDate"/> and <see cref="ToDate"/> use the
+/// same UTC offset (ideally <c>+00:00</c>) to prevent silent timezone comparison errors.
+/// </para>
 /// </remarks>
 public record SearchFilter
 {
@@ -55,8 +58,8 @@ public record SearchFilter
     /// <param name="page">1-based page number. Values less than 1 are clamped to 1.</param>
     /// <param name="pageSize">Number of records per page. Values less than 1 are clamped to 1; values above <see cref="MaxPageSize"/> are clamped to <see cref="MaxPageSize"/>.</param>
     public SearchFilter(
-        DateTime? fromDate = null,
-        DateTime? toDate = null,
+        DateTimeOffset? fromDate = null,
+        DateTimeOffset? toDate = null,
         int? statusCode = null,
         string? statusClass = null,
         string? method = null,
@@ -87,14 +90,14 @@ public record SearchFilter
     /// Only transactions with <c>TimestampUtc &gt;= FromDate</c> are returned.
     /// <see langword="null"/> means no lower time bound is applied.
     /// </summary>
-    public DateTime? FromDate { get; init; }
+    public DateTimeOffset? FromDate { get; init; }
 
     /// <summary>
     /// Inclusive upper bound on the transaction's captured UTC timestamp.
     /// Only transactions with <c>TimestampUtc &lt;= ToDate</c> are returned.
     /// <see langword="null"/> means no upper time bound is applied.
     /// </summary>
-    public DateTime? ToDate { get; init; }
+    public DateTimeOffset? ToDate { get; init; }
 
     /// <summary>
     /// Exact HTTP status code to filter by (e.g. <c>200</c>, <c>404</c>).

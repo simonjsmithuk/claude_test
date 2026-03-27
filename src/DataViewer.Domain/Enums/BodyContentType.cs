@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace DataViewer.Domain.Enums;
 
 /// <summary>

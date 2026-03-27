@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace DataViewer.Domain.Entities;
 
 using DataViewer.Domain.Enums;
@@ -12,8 +10,8 @@ using DataViewer.Domain.Enums;
 /// Passwords are stored exclusively as bcrypt hashes — the plain-text value is
 /// never persisted or logged. Lockout is triggered automatically when
 /// <see cref="FailedLoginCount"/> reaches the system-configured threshold; it may
-/// also be cleared manually by an Admin by resetting <see cref="IsLocked"/> and
-/// <see cref="LockoutUntil"/> through the administration API.
+/// also be cleared manually by an Admin by calling <see cref="Unlock"/> through
+/// the administration API.
 ///
 /// <para>
 /// Valid lockout state combinations:
@@ -26,6 +24,13 @@ using DataViewer.Domain.Enums;
 /// </list>
 /// Use <see cref="IsEffectivelyLocked"/> to evaluate the combined state correctly
 /// rather than reading <see cref="IsLocked"/> in isolation.
+/// </para>
+///
+/// <para>
+/// Mutate lockout state exclusively through <see cref="Lock"/>, <see cref="Unlock"/>,
+/// <see cref="RecordFailedLogin"/>, and <see cref="RecordSuccessfulLogin"/> to preserve
+/// the state-machine invariants above. Direct property assignment bypasses these
+/// guards and can produce inconsistent two-flag state.
 /// </para>
 /// </remarks>
 public class User
@@ -77,14 +82,16 @@ public class User
     /// UTC timestamp at which an automatic lockout expires.
     /// <see langword="null"/> when the account is not locked, or when the lock is
     /// permanent (administratively imposed with no expiry).
+    /// Always mutate via <see cref="Lock"/> or <see cref="Unlock"/>; never set directly.
     /// </summary>
-    public DateTime? LockoutUntil { get; set; }
+    public DateTimeOffset? LockoutUntil { get; set; }
 
     /// <summary>
     /// Number of consecutive failed login attempts since the last successful
     /// authentication. Reset to zero on every successful login.
     /// When this value reaches the <c>SystemSettings.LockoutThreshold</c>, the
     /// account is locked and <see cref="IsLocked"/> is set to <see langword="true"/>.
+    /// Mutate via <see cref="RecordFailedLogin"/> and <see cref="RecordSuccessfulLogin"/>.
     /// </summary>
     public int FailedLoginCount { get; set; }
 
@@ -95,13 +102,18 @@ public class User
     /// is the authoritative writer so the persisted value reflects the actual
     /// database write time rather than the in-memory object construction time.
     /// </summary>
-    public DateTime CreatedAt { get; set; } = default;
+    /// <remarks>
+    /// ⚠️ Risk: if the Infrastructure interceptor is missed, this field persists as
+    /// <c>DateTimeOffset.MinValue</c> (0001-01-01). Monitor this via integration tests.
+    /// </remarks>
+    public DateTimeOffset CreatedAt { get; set; } = default;
 
     /// <summary>
     /// UTC timestamp of the most recent successful login.
     /// <see langword="null"/> before the user has authenticated for the first time.
+    /// Mutate via <see cref="RecordSuccessfulLogin"/>.
     /// </summary>
-    public DateTime? LastLoginAt { get; set; }
+    public DateTimeOffset? LastLoginAt { get; set; }
 
     // ── Navigation properties ────────────────────────────────────────────────
 
@@ -110,12 +122,17 @@ public class User
     /// Tokens are retained after revocation to preserve the audit trail.
     /// </summary>
     /// <remarks>
-    /// This collection is unbounded and includes revoked tokens. Infrastructure
-    /// queries MUST NOT eagerly load this collection via <c>Include()</c>; always
-    /// query <see cref="RefreshToken"/> directly with an active/non-expired predicate.
-    /// See ADR-003 for the token retention policy.
+    /// ⚠️ Performance: This collection is unbounded and includes revoked tokens.
+    /// Infrastructure queries MUST NOT eagerly load this collection via <c>Include()</c>;
+    /// always query <see cref="RefreshToken"/> directly with an active/non-expired
+    /// predicate. The protected setter prevents external code from replacing the
+    /// collection, but EF Core can still populate it during materialisation. If
+    /// lazy-loading proxies are ever enabled, this collection will be hydrated on
+    /// every <see cref="User"/> access — ensure <c>AutoInclude(false)</c> is set
+    /// in the DbContext Fluent API for this navigation. See ADR-003 for the token
+    /// retention policy.
     /// </remarks>
-    public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
+    public ICollection<RefreshToken> RefreshTokens { get; protected set; } = [];
 
     /// <summary>
     /// Persisted UI preferences for this user.
@@ -133,7 +150,7 @@ public class User
     /// </summary>
     /// <param name="utcNow">
     /// The current UTC instant, supplied by the caller so that this method remains
-    /// pure and testable without a hidden dependency on <see cref="DateTime.UtcNow"/>.
+    /// pure and testable without a hidden dependency on <see cref="DateTimeOffset.UtcNow"/>.
     /// </param>
     /// <returns>
     /// <see langword="true"/> when <see cref="IsLocked"/> is set AND either the
@@ -142,6 +159,67 @@ public class User
     /// <see langword="false"/> in all other cases, including the invalid
     /// <c>IsLocked=false, LockoutUntil=non-null</c> stale-data state.
     /// </returns>
-    public bool IsEffectivelyLocked(DateTime utcNow) =>
+    public bool IsEffectivelyLocked(DateTimeOffset utcNow) =>
         IsLocked && (LockoutUntil is null || LockoutUntil > utcNow);
+
+    /// <summary>
+    /// Applies a lockout to the account, atomically setting both
+    /// <see cref="IsLocked"/> and <see cref="LockoutUntil"/> in one operation.
+    /// </summary>
+    /// <param name="lockoutUntil">
+    /// The UTC expiry of the lockout. Pass <see langword="null"/> for a permanent
+    /// administrative lock with no expiry.
+    /// </param>
+    /// <remarks>
+    /// Always use this method instead of setting <see cref="IsLocked"/> directly —
+    /// this ensures the two flags are never left in an inconsistent state.
+    /// </remarks>
+    public void Lock(DateTimeOffset? lockoutUntil)
+    {
+        IsLocked = true;
+        LockoutUntil = lockoutUntil;
+    }
+
+    /// <summary>
+    /// Clears the lockout state, atomically resetting <see cref="IsLocked"/>,
+    /// <see cref="LockoutUntil"/>, and <see cref="FailedLoginCount"/> in one operation.
+    /// </summary>
+    /// <remarks>
+    /// Always use this method instead of setting <see cref="IsLocked"/> directly —
+    /// this ensures all three interdependent fields are reset together.
+    /// </remarks>
+    public void Unlock()
+    {
+        IsLocked = false;
+        LockoutUntil = null;
+        FailedLoginCount = 0;
+    }
+
+    /// <summary>
+    /// Increments <see cref="FailedLoginCount"/> by one to track a single failed
+    /// authentication attempt.
+    /// </summary>
+    /// <remarks>
+    /// The caller (application layer) is responsible for comparing the updated
+    /// count against <c>SystemSettings.LockoutThreshold</c> and then calling
+    /// <see cref="Lock"/> when the threshold is reached.
+    /// </remarks>
+    public void RecordFailedLogin()
+    {
+        FailedLoginCount++;
+    }
+
+    /// <summary>
+    /// Records a successful authentication by resetting <see cref="FailedLoginCount"/>
+    /// and updating <see cref="LastLoginAt"/>.
+    /// </summary>
+    /// <param name="utcNow">
+    /// The current UTC instant to record as the last login time.
+    /// Supplied by the caller to keep this method pure and testable.
+    /// </param>
+    public void RecordSuccessfulLogin(DateTimeOffset utcNow)
+    {
+        FailedLoginCount = 0;
+        LastLoginAt = utcNow;
+    }
 }
