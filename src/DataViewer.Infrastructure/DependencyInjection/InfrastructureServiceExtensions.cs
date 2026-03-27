@@ -92,7 +92,7 @@ public static class InfrastructureServiceExtensions
     /// <list type="table">
     ///   <listheader><term>Value</term><term>Provider</term></listheader>
     ///   <item><term>postgresql</term><term>Npgsql (PostgreSQL ≥ 14)</term></item>
-    ///   <item><term>mysql</term><term>Pomelo (MySQL ≥ 8.0)</term></item>
+    ///   <item><term>mysql</term><term>Pomelo (MySQL ≥ 8.0.13)</term></item>
     /// </list>
     /// No code change is required to switch databases — only the appsettings value
     /// and connection string need to change (Product Spec G-05).
@@ -102,10 +102,21 @@ public static class InfrastructureServiceExtensions
     /// argument so that entity configurations can emit the correct provider-specific
     /// column type annotations at model-build time (e.g. <c>jsonb</c> vs <c>JSON</c>
     /// for the <c>AuditLogEntry.Parameters</c> column).
-    /// We therefore use the <c>IServiceCollection.AddDbContext</c> overload that
-    /// accepts a factory delegate rather than the simpler options-only overload —
-    /// the factory closure captures the resolved provider string and threads it into
-    /// the <see cref="AppDbContext"/> constructor.
+    ///
+    /// The <c>AddDbContext</c> overload that accepts a <c>(IServiceProvider, DbContextOptionsBuilder)</c>
+    /// factory delegate is used so that both the provider-specific EF Core options AND
+    /// the extra <c>databaseProvider</c> constructor argument are threaded into a single
+    /// <see cref="AppDbContext"/> registration without a second <c>AddScoped</c> call.
+    /// This avoids the previous double-registration pattern (two entries for the same
+    /// type in the service descriptor list) and does not rely on undocumented DI
+    /// container last-writer-wins behaviour.
+    /// </para>
+    ///
+    /// <para>
+    /// EF Core's internal model cache still ensures the compiled model is built only
+    /// once, even though <c>DbContextOptions</c> is no longer registered as a separate
+    /// Singleton. The options builder lambda is invoked per-scope but the expensive
+    /// model compilation is cached by the provider's <c>IModelCacheKeyFactory</c>.
     /// </para>
     /// </remarks>
     private static void ConfigureDbContext(
@@ -121,32 +132,29 @@ public static class InfrastructureServiceExtensions
                 "ConnectionStrings:DefaultConnection is required but was not found in configuration. "
                 + "Set the DATAVIEWER_DB_CONNECTION environment variable or provide it in appsettings.");
 
-        // Build the DbContextOptions<AppDbContext> once and cache in the options-lifetime
-        // (Singleton) so the model is only compiled once across all Scoped context instances.
-        services.AddDbContext<AppDbContext>(
-            optionsAction: dbContextOptions => ConfigureProviderOptions(dbContextOptions, provider, connectionString),
-            contextLifetime: ServiceLifetime.Scoped,
-            optionsLifetime: ServiceLifetime.Singleton);
-
-        // Override the registration with a factory delegate so the extra constructor
-        // argument (provider string) is threaded in.  The DbContextOptions<AppDbContext>
-        // built above is resolved from the container and passed into the constructor.
-        //
-        // ASSUMPTION: Replacing the Scoped registration is safe here because
-        // AddDbContext registers AppDbContext as Scoped and this AddScoped call
-        // replaces that binding (last-writer-wins in the Microsoft DI container).
-        // DbContextOptions<AppDbContext> (Singleton) registered by AddDbContext remains.
-        services.AddScoped<AppDbContext>(serviceProvider =>
-        {
-            var options = serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>();
-            return new AppDbContext(options, provider);
-        });
+        // Single AddDbContext call that captures both the provider-specific EF Core options
+        // and the databaseProvider constructor argument in one factory delegate.
+        // This replaces the previous two-step pattern (AddDbContext + AddScoped replacement)
+        // which produced an orphaned service descriptor and relied on last-writer-wins.
+        services.AddDbContext<AppDbContext>((_, dbContextOptions) =>
+            ConfigureProviderOptions(dbContextOptions, provider, connectionString));
     }
 
     /// <summary>
     /// Configures the provider-specific EF Core options on <paramref name="dbContextOptions"/>
     /// based on the supplied <paramref name="provider"/> name.
     /// </summary>
+    /// <remarks>
+    /// <strong>MySQL server version — pinned, not auto-detected:</strong>
+    /// <c>ServerVersion.AutoDetect(connectionString)</c> opens a real database connection
+    /// during DI container construction (before the application is ready to serve requests).
+    /// If the database is unavailable at startup this throws during <c>WebApplication.Build()</c>.
+    /// In Docker Compose environments the app container often starts before the database
+    /// container is healthy, making auto-detect unreliable. A pinned <c>MySqlServerVersion</c>
+    /// eliminates the live connection requirement and ensures predictable cold-start behaviour.
+    /// The minimum supported MySQL version is 8.0.13 (required for functional/partial indexes
+    /// used by <c>CredentialProfileConfiguration</c>).
+    /// </remarks>
     private static void ConfigureProviderOptions(
         DbContextOptionsBuilder dbContextOptions,
         string provider,
@@ -155,11 +163,15 @@ public static class InfrastructureServiceExtensions
         if (provider == "mysql")
         {
             // Pomelo.EntityFrameworkCore.MySql — MIT license
-            // ServerVersion.AutoDetect requires a live connection at startup; use a
-            // pinned version when writing migration scripts offline.
+            // Pinned to MySQL 8.0.13 — the minimum version that supports functional index
+            // expressions required for the idx_profile_name partial index.
+            // Do NOT use ServerVersion.AutoDetect: it opens a live DB connection at
+            // startup, which fails when the database is not yet ready (e.g. Docker Compose).
+            var mysqlVersion = new MySqlServerVersion(new Version(8, 0, 13));
+
             dbContextOptions.UseMySql(
                 connectionString,
-                ServerVersion.AutoDetect(connectionString),
+                mysqlVersion,
                 mysqlOptions =>
                 {
                     mysqlOptions.EnableRetryOnFailure(

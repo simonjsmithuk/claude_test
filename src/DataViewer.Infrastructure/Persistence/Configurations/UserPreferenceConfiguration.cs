@@ -13,7 +13,7 @@ namespace DataViewer.Infrastructure.Persistence.Configurations;
 ///   <item>
 ///     <description>
 ///       <c>UserId</c> is simultaneously the primary key AND the foreign key to
-///       <see cref="User"/> (shared primary key / table-per-hierarchy pattern).
+///       <see cref="User"/> (shared primary key / one-to-one pattern).
 ///       This enforces the one-to-one cardinality at the database level with no
 ///       additional unique index required — there can only ever be one preference
 ///       row per user because the user's own PK is the row's PK.
@@ -21,9 +21,12 @@ namespace DataViewer.Infrastructure.Persistence.Configurations;
 ///   </item>
 ///   <item>
 ///     <description>
-///       The relationship's principal side is configured in <see cref="UserConfiguration"/>;
-///       this configuration declares the dependent-side mirror so that the configuration
-///       set is self-contained and symmetrical.
+///       Relationship ownership: the <c>User → UserPreference</c> relationship is
+///       declared on the principal side in <see cref="UserConfiguration"/>.
+///       This file does NOT redeclare <c>HasOne/WithOne</c> to avoid duplicate
+///       registration. EF Core's last-writer-wins model resolution means a second
+///       call to configure the same relationship would silently replace the
+///       principal-side configuration, creating invisible ordering fragility.
 ///     </description>
 ///   </item>
 ///   <item>
@@ -46,7 +49,8 @@ public sealed class UserPreferenceConfiguration : IEntityTypeConfiguration<UserP
 
         // ── Primary key / Foreign key (shared-PK pattern) ────────────────────
         // UserId is BOTH the PK and the FK to User.Id.
-        // HasKey() declares the PK; the FK is declared in the relationship below.
+        // HasKey() declares the PK; the FK relationship is declared in UserConfiguration
+        // (principal side) and must NOT be redeclared here.
         builder.HasKey(up => up.UserId);
 
         // ── Properties ───────────────────────────────────────────────────────
@@ -65,13 +69,7 @@ public sealed class UserPreferenceConfiguration : IEntityTypeConfiguration<UserP
             .IsRequired(false);
 
         // ── Relationships ────────────────────────────────────────────────────
-
-        // UserId is the FK for the one-to-one relationship with User.
-        // Cascade delete: removing the User also removes their preferences row.
-        // The principal side is mirrored in UserConfiguration.
-        builder.HasOne(up => up.User)
-            .WithOne(u => u.Preference)
-            .HasForeignKey<UserPreference>(up => up.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // Relationship ownership: see UserConfiguration.cs (principal side).
+        // No HasOne/WithOne is declared here to avoid duplicate registration.
     }
 }

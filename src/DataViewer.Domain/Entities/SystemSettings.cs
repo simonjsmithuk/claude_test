@@ -45,6 +45,45 @@ public class SystemSettings
     //             makes the constraint explicit and self-documenting.
 
     /// <summary>
+    /// Public parameterless constructor for normal application use.
+    /// <see cref="Id"/> is always initialised to 1.
+    /// </summary>
+    public SystemSettings() { }
+
+    /// <summary>
+    /// Internal constructor used exclusively by EF Core's <c>HasData</c> seed
+    /// mechanism in <c>SystemSettingsConfiguration</c>.
+    /// </summary>
+    /// <remarks>
+    /// The <c>internal</c> visibility ensures the strongly-typed <c>HasData</c> overload
+    /// can set <see cref="Id"/> (which has a private setter) at compile time rather than
+    /// relying on an anonymous-type workaround that would bypass property-name validation.
+    /// No other code should call this constructor; use the public parameterless constructor
+    /// or update the singleton row via the Settings repository.
+    /// </remarks>
+    /// <param name="id">The singleton primary key value — always 1.</param>
+    /// <param name="jwtAccessTokenMinutes">Access token lifetime in minutes.</param>
+    /// <param name="jwtRefreshTokenHours">Refresh token lifetime in hours.</param>
+    /// <param name="bodySizeCapMb">Maximum S3 body size in megabytes.</param>
+    /// <param name="lockoutThreshold">Failed login attempts before account lockout.</param>
+    /// <param name="updatedAt">UTC timestamp of last update.</param>
+    internal SystemSettings(
+        int id,
+        int jwtAccessTokenMinutes,
+        int jwtRefreshTokenHours,
+        int bodySizeCapMb,
+        int lockoutThreshold,
+        DateTime updatedAt)
+    {
+        Id = id;
+        JwtAccessTokenMinutes = jwtAccessTokenMinutes;
+        JwtRefreshTokenHours = jwtRefreshTokenHours;
+        BodySizeCapMb = bodySizeCapMb;
+        LockoutThreshold = lockoutThreshold;
+        UpdatedAt = updatedAt;
+    }
+
+    /// <summary>
     /// Surrogate primary key, always 1.
     /// The <see langword="int"/> type (rather than <see langword="Guid"/>) is deliberate:
     /// it prevents accidental multi-row inserts through standard repository patterns

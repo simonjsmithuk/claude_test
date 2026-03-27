@@ -14,6 +14,9 @@ namespace DataViewer.Infrastructure.Persistence.Configurations;
 ///     <description>
 ///       Cascade delete from <c>User</c> ensures that all refresh tokens are removed
 ///       when their owning user is deleted, preventing orphaned token rows.
+///       The relationship itself is declared on the principal side in
+///       <see cref="UserConfiguration"/> — this file does not redeclare it to avoid
+///       duplicate registration and last-writer-wins fragility.
 ///     </description>
 ///   </item>
 ///   <item>
@@ -81,12 +84,10 @@ public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refresh
             .HasDatabaseName("idx_refresh_user");
 
         // ── Relationships ────────────────────────────────────────────────────
-
-        // The principal side (User → RefreshTokens) is configured in UserConfiguration.
-        // Declare the dependent side here so that this configuration is self-contained.
-        builder.HasOne(rt => rt.User)
-            .WithMany(u => u.RefreshTokens)
-            .HasForeignKey(rt => rt.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // Relationship ownership: see UserConfiguration.cs (principal side).
+        // No HasOne/WithMany is declared here to avoid duplicate registration.
+        // EF Core's last-writer-wins model resolution means a second call to configure
+        // the same relationship from the dependent side would silently replace the
+        // principal-side configuration, creating invisible ordering fragility.
     }
 }

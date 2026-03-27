@@ -35,6 +35,15 @@ namespace DataViewer.Infrastructure.Persistence.Configurations;
 ///       initial deployment.
 ///     </description>
 ///   </item>
+///   <item>
+///     <description>
+///       The typed <c>HasData</c> overload is used (via the <c>internal</c> seeding
+///       constructor on <see cref="SystemSettings"/>) rather than the anonymous-type
+///       workaround. This provides compile-time property-name validation: if
+///       <see cref="SystemSettings"/> gains or renames a required property, the seed
+///       call will produce a compile-time error rather than a runtime migration failure.
+///     </description>
+///   </item>
 /// </list>
 /// </remarks>
 public sealed class SystemSettingsConfiguration : IEntityTypeConfiguration<SystemSettings>
@@ -75,20 +84,23 @@ public sealed class SystemSettingsConfiguration : IEntityTypeConfiguration<Syste
         // ── Seed data ────────────────────────────────────────────────────────
 
         // Seed a default singleton row with Id = 1 (acceptance criteria).
+        // The typed HasData overload is used (via SystemSettings' internal seeding
+        // constructor) to gain compile-time property-name validation. An anonymous-type
+        // seed would compile even if SystemSettings properties are renamed, causing
+        // silent migration failures.
+        //
         // Default values mirror the SystemSettings property initialisers to keep
         // the in-memory defaults and the database defaults in sync.
         //
         // UpdatedAt is seeded as DateTime.MinValue (UTC): the Infrastructure
         // SaveChanges interceptor will overwrite this on the first admin update.
         // DateTime.MinValue with UTC kind ensures Npgsql does not reject the value.
-        builder.HasData(new
-        {
-            Id = 1,
-            JwtAccessTokenMinutes = 15,
-            JwtRefreshTokenHours = 24,
-            BodySizeCapMb = 10,
-            LockoutThreshold = 5,
-            UpdatedAt = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)
-        });
+        builder.HasData(new SystemSettings(
+            id: 1,
+            jwtAccessTokenMinutes: 15,
+            jwtRefreshTokenHours: 24,
+            bodySizeCapMb: 10,
+            lockoutThreshold: 5,
+            updatedAt: DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)));
     }
 }

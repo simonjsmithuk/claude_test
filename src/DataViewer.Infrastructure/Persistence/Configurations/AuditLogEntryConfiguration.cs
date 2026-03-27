@@ -15,47 +15,63 @@ namespace DataViewer.Infrastructure.Persistence.Configurations;
 ///     <description>
 ///       The <c>Parameters</c> column type is provider-specific: <c>jsonb</c> on
 ///       PostgreSQL (binary JSON with GIN indexing support) and <c>JSON</c> on MySQL
-///       (validated text JSON). The provider name is passed in at construction time
-///       to emit the correct annotation without any runtime branching in the context.
+///       (validated text JSON). The provider name is resolved at construction time
+///       to a validated column type string, eliminating silent fallback on typos.
 ///     </description>
 ///   </item>
 ///   <item>
 ///     <description>
-///       A composite index on <c>(UserId, TimestampUtc DESC)</c> supports the most
+///       A composite index on <c>(UserId ASC, TimestampUtc DESC)</c> supports the most
 ///       common audit log query: "show me all actions for user X, newest first".
 ///     </description>
 ///   </item>
 ///   <item>
 ///     <description>
-///       A second composite index on <c>(ActionType, TimestampUtc DESC)</c> supports
+///       A second composite index on <c>(ActionType ASC, TimestampUtc DESC)</c> supports
 ///       admin queries filtered by operation category (e.g. "show all Login failures
 ///       in the last 24 hours").
 ///     </description>
 ///   </item>
 ///   <item>
 ///     <description>
+///       A standalone index on <c>TimestampUtc DESC</c> supports time-range-only
+///       dashboard queries (e.g. "all events in the last hour") that have no leading
+///       equality filter on UserId or ActionType. Without this index such queries
+///       would produce full table scans on a large audit log.
+///     </description>
+///   </item>
+///   <item>
+///     <description>
 ///       <c>AuditLogEntry</c> uses private setters and a private constructor; EF Core
-///       accesses them via reflection. The entity is append-only — no navigation
-///       property to <see cref="User"/> is declared (ADR-004).
+///       accesses them via reflection in default (non-compiled-model) mode.
+///       No <c>UsePropertyAccessMode</c> override is required for standard reflection-based
+///       materialisation — EF Core 8 resolves private constructors automatically.
+///       The entity is append-only — no navigation property to <see cref="User"/>
+///       is declared (ADR-004).
 ///     </description>
 ///   </item>
 /// </list>
 /// </remarks>
 public sealed class AuditLogEntryConfiguration : IEntityTypeConfiguration<AuditLogEntry>
 {
-    // Lowercase provider identifier: "postgresql" or "mysql"
-    private readonly string _databaseProvider;
+    // Resolved once at construction time; never re-evaluated per Configure() call.
+    private readonly string _parametersColumnType;
 
     /// <summary>
     /// Initialises the configuration with the active database provider name so that
-    /// the <c>Parameters</c> column can receive the correct provider-specific type annotation.
+    /// the <c>Parameters</c> column receives the correct provider-specific type annotation.
     /// </summary>
     /// <param name="databaseProvider">
-    /// <c>"postgresql"</c> → column type <c>jsonb</c>; any other value → column type <c>JSON</c>.
+    /// Lowercase provider identifier — <c>"postgresql"</c> or <c>"mysql"</c>.
     /// </param>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="databaseProvider"/> is not a recognised value.
+    /// An unrecognised provider (e.g. a typo such as <c>"postgre"</c>) would silently
+    /// produce an incorrect column type annotation, which is worse than a fast-fail.
+    /// </exception>
     public AuditLogEntryConfiguration(string databaseProvider)
     {
-        _databaseProvider = databaseProvider;
+        _parametersColumnType = ResolveParametersColumnType(databaseProvider);
     }
 
     /// <inheritdoc/>
@@ -91,12 +107,11 @@ public sealed class AuditLogEntryConfiguration : IEntityTypeConfiguration<AuditL
             .HasMaxLength(45); // IPv6 max length is 39 chars; 45 provides padding
 
         // Provider-specific JSON column type annotation (acceptance criteria):
-        //   PostgreSQL  → jsonb  (binary JSON; supports GIN indexing and efficient operators)
-        //   MySQL       → JSON   (validated text JSON; enforced by the MySQL engine)
-        var parametersColumnType = IsPostgres() ? "jsonb" : "JSON";
+        //   PostgreSQL → jsonb (binary JSON; supports GIN indexing and efficient operators)
+        //   MySQL      → JSON  (validated text JSON; enforced by the MySQL engine)
         builder.Property(a => a.Parameters)
             .IsRequired(false)
-            .HasColumnType(parametersColumnType);
+            .HasColumnType(_parametersColumnType);
 
         builder.Property(a => a.ResultCount)
             .IsRequired(false);
@@ -122,11 +137,38 @@ public sealed class AuditLogEntryConfiguration : IEntityTypeConfiguration<AuditL
         builder.HasIndex(a => new { a.ActionType, a.TimestampUtc })
             .HasDatabaseName("idx_audit_actiontype_timestamp")
             .IsDescending(false, true); // ActionType ASC, TimestampUtc DESC
+
+        // Standalone index: TimestampUtc DESC
+        // Supports time-range-only dashboard queries (e.g. "all events in the last hour")
+        // without requiring a leading equality filter on UserId or ActionType.
+        // Without this index, range-only WHERE TimestampUtc > @cutoff queries would
+        // produce full table scans on a large audit log (PERF-2).
+        builder.HasIndex(a => a.TimestampUtc)
+            .HasDatabaseName("idx_audit_timestamp")
+            .IsDescending(true); // TimestampUtc DESC
     }
 
     /// <summary>
-    /// Returns <see langword="true"/> when the active database provider is PostgreSQL.
+    /// Maps the database provider name to the correct JSON column type string.
+    /// Throws <see cref="NotSupportedException"/> for unrecognised provider names
+    /// rather than silently falling back to a potentially incorrect type.
     /// </summary>
-    private bool IsPostgres() =>
-        _databaseProvider.Equals("postgresql", StringComparison.OrdinalIgnoreCase);
+    /// <param name="databaseProvider">
+    /// Lowercase provider identifier — <c>"postgresql"</c> or <c>"mysql"</c>.
+    /// </param>
+    /// <returns>The EF Core column type string for the <c>Parameters</c> JSON column.</returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="databaseProvider"/> is not <c>"postgresql"</c>
+    /// or <c>"mysql"</c> (case-insensitive). A silent fallback would mask typos
+    /// such as <c>"postgre"</c> or <c>"pgsql"</c> and produce wrong column annotations.
+    /// </exception>
+    private static string ResolveParametersColumnType(string databaseProvider) =>
+        databaseProvider.ToLowerInvariant() switch
+        {
+            "postgresql" => "jsonb",
+            "mysql"      => "JSON",
+            _            => throw new NotSupportedException(
+                                $"Unsupported database provider: '{databaseProvider}'. " +
+                                "Expected 'postgresql' or 'mysql'.")
+        };
 }
