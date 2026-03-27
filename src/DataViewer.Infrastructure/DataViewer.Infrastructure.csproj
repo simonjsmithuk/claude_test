@@ -65,6 +65,22 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
 
     <!--
+      Microsoft.IdentityModel.Tokens — MIT license
+      Provides SymmetricSecurityKey, SigningCredentials, and core token primitives
+      used by System.IdentityModel.Tokens.Jwt for JWT generation and validation.
+    -->
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.5.0" />
+
+    <!--
+      System.IdentityModel.Tokens.Jwt — MIT license
+      BCL-aligned JWT library for generating (JwtSecurityTokenHandler.WriteToken)
+      and validating (JwtSecurityTokenHandler.ValidateToken) compact serialised JWTs.
+      Chosen over third-party alternatives for its first-party Microsoft provenance
+      and alignment with ASP.NET Core Bearer authentication middleware.
+    -->
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.0" />
+
+    <!--
       Serilog — Apache 2.0 license
       Core structured logging library used throughout DataViewer (section 2, ADR-001).
     -->
@@ -129,6 +145,7 @@
       Provides IHostEnvironment to detect Production vs Development at configure time.
     -->
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+
   </ItemGroup>
 
 </Project>

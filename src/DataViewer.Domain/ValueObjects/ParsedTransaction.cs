@@ -21,17 +21,22 @@ using DataViewer.Domain.Enums;
 /// cut off at the capture-time size limit; the frontend should surface this to the user.
 /// </para>
 /// <para>
+/// Header dictionaries are exposed as <see cref="IReadOnlyDictionary{TKey,TValue}"/>
+/// to enforce the immutability contract of this domain value object. Downstream
+/// consumers must not mutate the header collections.
+/// </para>
+/// <para>
 /// This type is a <c>record</c> to ensure structural equality and immutability
 /// — all properties are <c>init</c>-only by default on records.
 /// </para>
 /// </remarks>
 /// <param name="RequestHeaders">
-///   Dictionary of HTTP request header names to their values, normalised to
-///   lowercase keys. Empty dictionary when the record contains no request headers.
+///   Read-only dictionary of HTTP request header names to their values, normalised
+///   to lowercase keys. Empty dictionary when the record contains no request headers.
 /// </param>
 /// <param name="ResponseHeaders">
-///   Dictionary of HTTP response header names to their values, normalised to
-///   lowercase keys. Empty dictionary when the record contains no response headers.
+///   Read-only dictionary of HTTP response header names to their values, normalised
+///   to lowercase keys. Empty dictionary when the record contains no response headers.
 /// </param>
 /// <param name="RequestBody">
 ///   Decoded text of the HTTP request body.
@@ -62,8 +67,8 @@ using DataViewer.Domain.Enums;
 ///   status code, URL path, timestamps, and sizes).
 /// </param>
 public record ParsedTransaction(
-    Dictionary<string, string> RequestHeaders,
-    Dictionary<string, string> ResponseHeaders,
+    IReadOnlyDictionary<string, string> RequestHeaders,
+    IReadOnlyDictionary<string, string> ResponseHeaders,
     string? RequestBody,
     string? ResponseBody,
     BodyContentType? RequestBodyContentType,

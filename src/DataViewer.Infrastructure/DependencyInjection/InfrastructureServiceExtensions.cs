@@ -2,9 +2,11 @@ using DataViewer.Application.Interfaces;
 using DataViewer.Infrastructure.Encryption;
 using DataViewer.Infrastructure.Persistence;
 using DataViewer.Infrastructure.Persistence.Repositories;
+using DataViewer.Infrastructure.S3.Parsers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace DataViewer.Infrastructure.DependencyInjection;
 
@@ -33,8 +35,8 @@ public static class InfrastructureServiceExtensions
     /// </summary>
     /// <param name="services">The application's service collection.</param>
     /// <param name="configuration">
-    /// The application configuration used to resolve the connection string and
-    /// database provider name.
+    /// The application configuration used to resolve the connection string,
+    /// database provider name, and parser format selection.
     /// </param>
     /// <returns>
     /// The same <paramref name="services"/> instance to support method chaining.
@@ -91,6 +93,13 @@ public static class InfrastructureServiceExtensions
     /// <see cref="UserPreferencesRepository"/> consume the Singleton
     /// <see cref="Microsoft.Extensions.Caching.Memory.IMemoryCache"/> from their
     /// Scoped constructors — consuming a Singleton from a Scoped service is safe.
+    ///
+    /// <strong>ITransactionParser lifetime — Singleton:</strong>
+    /// Both <see cref="DelimiterTransactionParser"/> and <see cref="SidecarTransactionParser"/>
+    /// are stateless beyond their injected loggers. The active parser is resolved by a
+    /// factory delegate that reads <see cref="TransactionParserOptions.TransactionFormat"/>
+    /// at first resolution (Singleton) and returns the appropriate named implementation.
+    /// This is safe for concurrent use because both parsers hold no mutable state.
     /// </remarks>
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
@@ -120,10 +129,113 @@ public static class InfrastructureServiceExtensions
         // are never referenced from other layers (Clean Architecture rule).
         RegisterRepositories(services);
 
+        // ── Transaction parsers ───────────────────────────────────────────────
+        // Both concrete parsers are registered as Singletons (named registrations)
+        // and the active ITransactionParser is resolved by configuration at startup.
+        RegisterTransactionParsers(services, configuration);
+
         return services;
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Registers both <see cref="ITransactionParser"/> implementations and binds
+    /// the primary <see cref="ITransactionParser"/> to the implementation selected
+    /// by <c>S3:TransactionFormat</c> in configuration.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <strong>Options validation:</strong>
+    /// <see cref="TransactionParserOptions"/> is registered using
+    /// <c>AddOptions&lt;T&gt;().Bind(...).ValidateDataAnnotations().ValidateOnStart()</c>.
+    /// This causes the <see cref="System.ComponentModel.DataAnnotations"/> attributes on
+    /// the options class (e.g. <c>[AllowedValues]</c>, <c>[Range]</c>) to be evaluated
+    /// at application startup, before any request is served. An invalid configuration
+    /// value (e.g. <c>S3:MaxDecompressedSizeBytes = 0</c>) therefore produces a clear
+    /// startup error rather than a cryptic runtime failure.
+    /// </para>
+    ///
+    /// <para>
+    /// <strong>Keyed registrations:</strong>
+    /// Both <see cref="DelimiterTransactionParser"/> and
+    /// <see cref="SidecarTransactionParser"/> are registered as keyed Singleton
+    /// services using the format string as the key (<c>"delimiter"</c> /
+    /// <c>"sidecar"</c>). This supports future extensibility (e.g. integration
+    /// tests that resolve a specific parser by key without touching configuration).
+    /// </para>
+    ///
+    /// <para>
+    /// <strong>Active parser:</strong>
+    /// The unkeyed <see cref="ITransactionParser"/> registration uses a factory
+    /// delegate that reads <see cref="TransactionParserOptions.TransactionFormat"/>
+    /// at first resolution and delegates to the corresponding keyed registration.
+    /// The factory is registered as Singleton; the resolved implementation is also
+    /// Singleton, so the factory delegate executes at most once.
+    /// </para>
+    ///
+    /// <para>
+    /// <strong>Fail-fast validation:</strong>
+    /// An unrecognised <c>TransactionFormat</c> value causes an
+    /// <see cref="InvalidOperationException"/> to be thrown from the factory
+    /// delegate. Because the unkeyed <see cref="ITransactionParser"/> is a
+    /// Singleton, this exception is thrown during the first DI resolution — which
+    /// typically occurs during application startup health checks — rather than
+    /// silently at first use.
+    /// </para>
+    /// </remarks>
+    private static void RegisterTransactionParsers(
+        IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // ── BUG-3 FIX: Replace services.Configure<T>() with the full validation
+        // pipeline so that [AllowedValues] and [Range] attributes on
+        // TransactionParserOptions are actually evaluated at startup.
+        //
+        // Previously: services.Configure<TransactionParserOptions>(...)
+        //   → no validation; invalid values were silently ignored until parser resolution.
+        //
+        // Now: AddOptions<T>().Bind(...).ValidateDataAnnotations().ValidateOnStart()
+        //   → all DataAnnotation constraints are checked during host startup,
+        //     producing a clear OptionsValidationException before any request is served.
+        services.AddOptions<TransactionParserOptions>()
+            .Bind(configuration.GetSection(TransactionParserOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        // ── Named (keyed) Singleton registrations ─────────────────────────────
+        // Both parsers are always registered regardless of which format is active,
+        // so that they can be resolved individually in integration tests or by
+        // future runtime-switchable parser selection logic.
+        services.AddKeyedSingleton<ITransactionParser, DelimiterTransactionParser>(
+            serviceKey: "delimiter");
+
+        services.AddKeyedSingleton<ITransactionParser, SidecarTransactionParser>(
+            serviceKey: "sidecar");
+
+        // ── Active (unkeyed) Singleton resolution ─────────────────────────────
+        // The factory reads the TransactionFormat option at first resolution and
+        // returns the corresponding keyed implementation.  The factory itself is
+        // Singleton — it executes at most once per application lifetime.
+        services.AddSingleton<ITransactionParser>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<TransactionParserOptions>>().Value;
+            var format = (options.TransactionFormat ?? "delimiter")
+                .Trim()
+                .ToLowerInvariant();
+
+            return format switch
+            {
+                "delimiter" => sp.GetRequiredKeyedService<ITransactionParser>("delimiter"),
+                "sidecar"   => sp.GetRequiredKeyedService<ITransactionParser>("sidecar"),
+                _ => throw new InvalidOperationException(
+                    $"Unrecognised S3:TransactionFormat value '{options.TransactionFormat}'. "
+                    + "Valid values are: 'delimiter', 'sidecar'. "
+                    + "Update the S3:TransactionFormat key in appsettings.json or via the "
+                    + "DATAVIEWER__S3__TRANSACTIONFORMAT environment variable.")
+            };
+        });
+    }
 
     /// <summary>
     /// Binds all repository interfaces to their Infrastructure implementations.

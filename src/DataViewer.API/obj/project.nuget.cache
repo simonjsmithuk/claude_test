@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GZhn3/SyERPTZ7pz3fQit62bNTPrI3t9k0zZF/m4czaADcKx49HWbqBWH2DrizRTfghN2n/uhySgRYzPP7nMCA==",
+  "dgSpecHash": "p8PzSA4jREI9EXyW18dFiQQldahKbAaFvhbArv7hxvNTJPKszVvZ0s+MGE6WMCoUhNGYbGErbhEcTrFVB+h9Rg==",
   "success": false,
   "projectFilePath": "/home/simon/code_wsl/claude_test/src/DataViewer.API/DataViewer.API.csproj",
   "expectedPackageFiles": [
@@ -24,6 +24,10 @@
     "/home/simon/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
     "/home/simon/.nuget/packages/microsoft.extensions.options/8.0.2/microsoft.extensions.options.8.0.2.nupkg.sha512",
     "/home/simon/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.identitymodel.abstractions/7.5.0/microsoft.identitymodel.abstractions.7.5.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.identitymodel.jsonwebtokens/7.5.0/microsoft.identitymodel.jsonwebtokens.7.5.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.identitymodel.logging/7.5.0/microsoft.identitymodel.logging.7.5.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.identitymodel.tokens/7.5.0/microsoft.identitymodel.tokens.7.5.0.nupkg.sha512",
     "/home/simon/.nuget/packages/mysqlconnector/2.3.5/mysqlconnector.2.3.5.nupkg.sha512",
     "/home/simon/.nuget/packages/npgsql/8.0.3/npgsql.8.0.3.nupkg.sha512",
     "/home/simon/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.4/npgsql.entityframeworkcore.postgresql.8.0.4.nupkg.sha512",
@@ -40,6 +44,7 @@
     "/home/simon/.nuget/packages/serilog.sinks.console/6.0.0/serilog.sinks.console.6.0.0.nupkg.sha512",
     "/home/simon/.nuget/packages/serilog.sinks.debug/2.0.0/serilog.sinks.debug.2.0.0.nupkg.sha512",
     "/home/simon/.nuget/packages/serilog.sinks.file/6.0.0/serilog.sinks.file.6.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/system.identitymodel.tokens.jwt/7.5.0/system.identitymodel.tokens.jwt.7.5.0.nupkg.sha512",
     "/home/simon/.nuget/packages/system.text.encodings.web/4.5.0/system.text.encodings.web.4.5.0.nupkg.sha512"
   ],
   "logs": [

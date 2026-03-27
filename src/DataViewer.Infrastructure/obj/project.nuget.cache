@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QJ59sKo0gv3FmPoDFYfpUVQG7XUN0sNpIKSS29KuplQC1h96Xfdb6R5qEZnk95xvh/OZXOaNEULr+uyJCU9Rug==",
+  "dgSpecHash": "67SWAprHpeCrX1rhisxNZXSBJTtp3LuDjOabEqOeeFZqm/h/BqZMAO5U3N3pkZWlROhg6niTLYwyhErRnZ7udA==",
   "success": false,
   "projectFilePath": "/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/DataViewer.Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -32,6 +32,10 @@
     "/home/simon/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
     "/home/simon/.nuget/packages/microsoft.extensions.options/8.0.2/microsoft.extensions.options.8.0.2.nupkg.sha512",
     "/home/simon/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.identitymodel.abstractions/7.5.0/microsoft.identitymodel.abstractions.7.5.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.identitymodel.jsonwebtokens/7.5.0/microsoft.identitymodel.jsonwebtokens.7.5.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.identitymodel.logging/7.5.0/microsoft.identitymodel.logging.7.5.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.identitymodel.tokens/7.5.0/microsoft.identitymodel.tokens.7.5.0.nupkg.sha512",
     "/home/simon/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
     "/home/simon/.nuget/packages/mysqlconnector/2.3.5/mysqlconnector.2.3.5.nupkg.sha512",
     "/home/simon/.nuget/packages/npgsql/8.0.3/npgsql.8.0.3.nupkg.sha512",
@@ -57,6 +61,7 @@
     "/home/simon/.nuget/packages/system.composition.hosting/6.0.0/system.composition.hosting.6.0.0.nupkg.sha512",
     "/home/simon/.nuget/packages/system.composition.runtime/6.0.0/system.composition.runtime.6.0.0.nupkg.sha512",
     "/home/simon/.nuget/packages/system.composition.typedparts/6.0.0/system.composition.typedparts.6.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/system.identitymodel.tokens.jwt/7.5.0/system.identitymodel.tokens.jwt.7.5.0.nupkg.sha512",
     "/home/simon/.nuget/packages/system.io.pipelines/6.0.3/system.io.pipelines.6.0.3.nupkg.sha512",
     "/home/simon/.nuget/packages/system.reflection.metadata/6.0.1/system.reflection.metadata.6.0.1.nupkg.sha512",
     "/home/simon/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
