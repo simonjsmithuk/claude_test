@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DataViewer.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a355e7f6b1dd8ddb0c6a48631ea0447c73709864")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+633f2cdc058b4559028e7481b487f48ca9412542")]
 [assembly: System.Reflection.AssemblyProductAttribute("DataViewer.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DataViewer.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

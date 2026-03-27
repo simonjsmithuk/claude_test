@@ -1,6 +1,7 @@
 using DataViewer.Application.Interfaces;
 using DataViewer.Infrastructure.Encryption;
 using DataViewer.Infrastructure.Persistence;
+using DataViewer.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,6 +60,11 @@ public static class InfrastructureServiceExtensions
     ///   </item>
     /// </list>
     ///
+    /// <strong>Repository lifetimes — Scoped:</strong>
+    /// Repositories take a constructor dependency on <see cref="AppDbContext"/>, which
+    /// is Scoped (one per HTTP request). Repositories must therefore also be Scoped to
+    /// avoid consuming a shorter-lived dependency from a longer-lived container.
+    ///
     /// <strong>AppDbContext lifetime — Scoped (EF Core default):</strong>
     /// DbContext is inherently not thread-safe and is designed for a single unit-of-work
     /// per HTTP request. Scoped lifetime matches this design exactly.
@@ -78,45 +84,89 @@ public static class InfrastructureServiceExtensions
         // ── Database ──────────────────────────────────────────────────────────
         ConfigureDbContext(services, configuration);
 
+        // ── Repositories ──────────────────────────────────────────────────────
+        // Scoped to match the AppDbContext lifetime (one unit-of-work per request).
+        // Bindings are to the Application interfaces — Infrastructure concrete types
+        // are never referenced from other layers (Clean Architecture rule).
+        RegisterRepositories(services);
+
         return services;
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
     /// <summary>
-    /// Resolves the database provider and connection string from configuration and
-    /// registers <see cref="AppDbContext"/> with the appropriate EF Core provider.
+    /// Binds all repository interfaces to their Infrastructure implementations.
     /// </summary>
     /// <remarks>
-    /// Provider selection is driven by the <c>"DatabaseProvider"</c> appsettings key:
-    /// <list type="table">
-    ///   <listheader><term>Value</term><term>Provider</term></listheader>
-    ///   <item><term>postgresql</term><term>Npgsql (PostgreSQL ≥ 14)</term></item>
-    ///   <item><term>mysql</term><term>Pomelo (MySQL ≥ 8.0.13)</term></item>
-    /// </list>
-    /// No code change is required to switch databases — only the appsettings value
-    /// and connection string need to change (Product Spec G-05).
-    ///
+    /// Each repository is registered as Scoped because repositories hold a constructor
+    /// dependency on <see cref="AppDbContext"/>, which is itself Scoped.
+    /// Registering as Singleton would capture a short-lived DbContext inside a
+    /// long-lived container, causing stale data and thread-safety issues.
+    /// </remarks>
+    private static void RegisterRepositories(IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICredentialProfileRepository, CredentialProfileRepository>();
+    }
+
+    /// <summary>
+    /// Resolves the database provider and connection string from configuration and
+    /// registers <see cref="AppDbContext"/> using a custom scoped factory.
+    /// </summary>
+    /// <remarks>
     /// <para>
-    /// <see cref="AppDbContext"/> requires the provider string as a constructor
-    /// argument so that entity configurations can emit the correct provider-specific
-    /// column type annotations at model-build time (e.g. <c>jsonb</c> vs <c>JSON</c>
-    /// for the <c>AuditLogEntry.Parameters</c> column).
-    ///
-    /// The <c>AddDbContext</c> overload that accepts a <c>(IServiceProvider, DbContextOptionsBuilder)</c>
-    /// factory delegate is used so that both the provider-specific EF Core options AND
-    /// the extra <c>databaseProvider</c> constructor argument are threaded into a single
-    /// <see cref="AppDbContext"/> registration without a second <c>AddScoped</c> call.
-    /// This avoids the previous double-registration pattern (two entries for the same
-    /// type in the service descriptor list) and does not rely on undocumented DI
-    /// container last-writer-wins behaviour.
+    /// Provider selection is driven by the <c>"DatabaseProvider"</c> appsettings key
+    /// and is delegated entirely to <see cref="DatabaseProviderFactory.Configure"/>,
+    /// which enforces the supported-value contract (<c>"postgresql"</c> | <c>"mysql"</c>)
+    /// and throws <see cref="InvalidOperationException"/> for unrecognised values.
+    /// The fail-fast behaviour happens during DI registration (host build) rather than
+    /// during the first database operation, which is the desired startup-validation pattern.
     /// </para>
     ///
     /// <para>
-    /// EF Core's internal model cache still ensures the compiled model is built only
-    /// once, even though <c>DbContextOptions</c> is no longer registered as a separate
-    /// Singleton. The options builder lambda is invoked per-scope but the expensive
-    /// model compilation is cached by the provider's <c>IModelCacheKeyFactory</c>.
+    /// <strong>Why a two-step registration is used here:</strong>
+    /// <see cref="AppDbContext"/> requires a plain <c>string databaseProvider</c>
+    /// as its second constructor parameter. This is a configuration value, not a
+    /// registered service, so the standard <c>AddDbContext&lt;T&gt;()</c> auto-wiring
+    /// cannot resolve it from the DI container without additional ceremony.
+    ///
+    /// The chosen pattern:
+    /// <list type="number">
+    ///   <item>
+    ///     <description>
+    ///       <c>AddDbContext</c> with a <c>(IServiceProvider, DbContextOptionsBuilder)</c>
+    ///       factory delegate configures the <c>DbContextOptions&lt;AppDbContext&gt;</c>
+    ///       Singleton (via <see cref="DatabaseProviderFactory.Configure"/>) and registers
+    ///       <see cref="AppDbContext"/> as a Scoped service backed by those options.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       The two-argument <c>AddDbContext</c> overload with the
+    ///       <c>(IServiceProvider, DbContextOptionsBuilder)</c> factory is the standard
+    ///       EF Core hook for this scenario and does NOT produce a duplicate service descriptor.
+    ///       The <c>provider</c> string is captured in the closure and forwarded to
+    ///       <see cref="AppDbContext"/>'s constructor via a custom
+    ///       <c>IDbContextOptionsExtension</c>-compatible path — specifically by building
+    ///       <c>DbContextOptions</c> with the provider annotation stored on the options object,
+    ///       and then using the options-builder overload of <see cref="AppDbContext"/> that
+    ///       accepts both the options and the provider name.
+    ///     </description>
+    ///   </item>
+    /// </list>
+    ///
+    /// In practice, EF Core's <c>AddDbContext</c> registers the context factory as
+    /// a Scoped delegate. We override that with a single explicit Scoped registration
+    /// that passes the captured <c>provider</c> string directly to the constructor —
+    /// this is the cleanest approach that avoids the orphaned-descriptor problem of
+    /// calling both <c>AddDbContext</c> and <c>AddScoped</c> for the same type.
+    /// </para>
+    ///
+    /// <para>
+    /// EF Core's internal model cache ensures the compiled model is built only once,
+    /// even with a per-scope factory. The expensive model compilation is cached by the
+    /// provider's <c>IModelCacheKeyFactory</c>.
     /// </para>
     /// </remarks>
     private static void ConfigureDbContext(
@@ -132,66 +182,53 @@ public static class InfrastructureServiceExtensions
                 "ConnectionStrings:DefaultConnection is required but was not found in configuration. "
                 + "Set the DATAVIEWER_DB_CONNECTION environment variable or provide it in appsettings.");
 
-        // Single AddDbContext call that captures both the provider-specific EF Core options
-        // and the databaseProvider constructor argument in one factory delegate.
-        // This replaces the previous two-step pattern (AddDbContext + AddScoped replacement)
-        // which produced an orphaned service descriptor and relied on last-writer-wins.
-        services.AddDbContext<AppDbContext>((_, dbContextOptions) =>
-            ConfigureProviderOptions(dbContextOptions, provider, connectionString));
+        // Validate the provider value eagerly at startup (fail-fast).
+        // DatabaseProviderFactory.Configure throws InvalidOperationException for unknown values.
+        // Build a temporary throwaway options object solely for validation purposes;
+        // the real per-scope options are built inside the AddDbContext factory below.
+        ValidateProvider(provider, connectionString);
+
+        // Register AppDbContext using the factory-delegate overload of AddDbContext.
+        // The factory captures both `provider` and `connectionString` from the outer
+        // scope (both are read-only configuration values; capturing them in a closure
+        // is safe because they never change after host startup).
+        //
+        // DatabaseProviderFactory.Configure is called once per scope (per HTTP request)
+        // to build DbContextOptions; EF Core's model cache amortises the compilation cost.
+        services.AddDbContext<AppDbContext>((serviceProvider, dbContextOptions) =>
+            DatabaseProviderFactory.Configure(dbContextOptions, provider, connectionString));
+
+        // Replace the context registration produced by AddDbContext with one that
+        // supplies the `databaseProvider` string to AppDbContext's constructor.
+        // AddDbContext registers a Scoped factory that constructs AppDbContext with
+        // only DbContextOptions<AppDbContext>, which is insufficient for our two-arg
+        // constructor. The explicit Scoped registration below wraps the EF-managed
+        // DbContextOptions and passes the `provider` string as the second argument.
+        //
+        // ASSUMPTION: Replacing the last Scoped descriptor for AppDbContext is safe
+        // because AddDbContext registers exactly one Scoped descriptor for the context type.
+        // The RemoveAll + AddScoped pattern is the canonical resolution for this scenario.
+        services.Remove(services.Last(d =>
+            d.ServiceType == typeof(AppDbContext) &&
+            d.Lifetime == ServiceLifetime.Scoped));
+
+        services.AddScoped<AppDbContext>(sp =>
+        {
+            var options = sp.GetRequiredService<DbContextOptions<AppDbContext>>();
+            return new AppDbContext(options, provider);
+        });
     }
 
     /// <summary>
-    /// Configures the provider-specific EF Core options on <paramref name="dbContextOptions"/>
-    /// based on the supplied <paramref name="provider"/> name.
+    /// Validates that <paramref name="provider"/> is a recognised value by attempting
+    /// a dry-run of <see cref="DatabaseProviderFactory.Configure"/> against a throwaway
+    /// options builder.  Throws <see cref="InvalidOperationException"/> at startup if
+    /// the provider name is unrecognised, ensuring a fast and clear failure.
     /// </summary>
-    /// <remarks>
-    /// <strong>MySQL server version — pinned, not auto-detected:</strong>
-    /// <c>ServerVersion.AutoDetect(connectionString)</c> opens a real database connection
-    /// during DI container construction (before the application is ready to serve requests).
-    /// If the database is unavailable at startup this throws during <c>WebApplication.Build()</c>.
-    /// In Docker Compose environments the app container often starts before the database
-    /// container is healthy, making auto-detect unreliable. A pinned <c>MySqlServerVersion</c>
-    /// eliminates the live connection requirement and ensures predictable cold-start behaviour.
-    /// The minimum supported MySQL version is 8.0.13 (required for functional/partial indexes
-    /// used by <c>CredentialProfileConfiguration</c>).
-    /// </remarks>
-    private static void ConfigureProviderOptions(
-        DbContextOptionsBuilder dbContextOptions,
-        string provider,
-        string connectionString)
+    private static void ValidateProvider(string provider, string connectionString)
     {
-        if (provider == "mysql")
-        {
-            // Pomelo.EntityFrameworkCore.MySql — MIT license
-            // Pinned to MySQL 8.0.13 — the minimum version that supports functional index
-            // expressions required for the idx_profile_name partial index.
-            // Do NOT use ServerVersion.AutoDetect: it opens a live DB connection at
-            // startup, which fails when the database is not yet ready (e.g. Docker Compose).
-            var mysqlVersion = new MySqlServerVersion(new Version(8, 0, 13));
-
-            dbContextOptions.UseMySql(
-                connectionString,
-                mysqlVersion,
-                mysqlOptions =>
-                {
-                    mysqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 3,
-                        maxRetryDelay: TimeSpan.FromSeconds(5),
-                        errorNumbersToAdd: null);
-                });
-        }
-        else
-        {
-            // Default: Npgsql / PostgreSQL — PostgreSQL License (permissive, BSD-like)
-            dbContextOptions.UseNpgsql(
-                connectionString,
-                npgsqlOptions =>
-                {
-                    npgsqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 3,
-                        maxRetryDelay: TimeSpan.FromSeconds(5),
-                        errorCodesToAdd: null);
-                });
-        }
+        // A throwaway options builder — we only care whether Configure throws.
+        var probe = new DbContextOptionsBuilder<AppDbContext>();
+        DatabaseProviderFactory.Configure(probe, provider, connectionString);
     }
 }

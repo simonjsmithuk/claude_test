@@ -17,35 +17,33 @@ namespace DataViewer.Infrastructure.Persistence;
 /// </para>
 ///
 /// <para>
-/// This factory is intentionally wired to PostgreSQL because:
-/// <list type="bullet">
-///   <item>
-///     <description>
-///       PostgreSQL is the primary development database (see appsettings.Development.json).
-///     </description>
-///   </item>
-///   <item>
-///     <description>
-///       Migrations generated against PostgreSQL use the correct provider-specific
-///       annotations (<c>bytea</c>, <c>jsonb</c>, partial index filters with
-///       double-quoted identifiers) that match the production configuration.
-///     </description>
-///   </item>
-///   <item>
-///     <description>
-///       MySQL-specific migration scripts should be generated separately in a
-///       MySQL-targeted migration project or by overriding the
-///       <c>DATAVIEWER_DB_PROVIDER</c> environment variable before running
-///       <c>dotnet ef migrations add</c>.
-///     </description>
-///   </item>
-/// </list>
+/// <strong>Provider selection at design time:</strong>
+/// The provider is read from the <c>DATAVIEWER_DB_PROVIDER</c> environment variable
+/// (defaulting to <c>"postgresql"</c> when absent). This allows the same factory
+/// to serve both PostgreSQL and MySQL migration workflows without code changes:
+/// <code>
+/// # PostgreSQL migrations (default):
+/// dotnet ef migrations add InitialCreate \
+///     --project src/DataViewer.Infrastructure \
+///     --startup-project src/DataViewer.API \
+///     --namespace DataViewer.Infrastructure.Migrations.Postgresql
+///
+/// # MySQL migrations:
+/// DATAVIEWER_DB_PROVIDER=mysql \
+/// DATAVIEWER_DESIGN_TIME_CONNECTION="Server=localhost;Port=3306;Database=dataviewer_dev;User=dataviewer;Password=dataviewer" \
+/// dotnet ef migrations add InitialCreate \
+///     --project src/DataViewer.Infrastructure \
+///     --startup-project src/DataViewer.API \
+///     --namespace DataViewer.Infrastructure.Migrations.MySql
+/// </code>
 /// </para>
 ///
 /// <para>
-/// The connection string targets a local development PostgreSQL instance.
-/// Override it with the <c>DATAVIEWER_DESIGN_TIME_CONNECTION</c> environment
-/// variable for CI environments.
+/// <strong>MigrationsAssembly routing:</strong>
+/// Provider selection is delegated to <see cref="DatabaseProviderFactory.Configure"/>,
+/// which registers the correct <c>MigrationsAssembly</c> and <c>MigrationsHistoryTable</c>
+/// for each provider. This guarantees that <c>dotnet ef</c> tooling finds the
+/// generated migration files in the correct provider-specific namespace subfolder.
 /// </para>
 ///
 /// <para>
@@ -59,23 +57,46 @@ public sealed class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
     /// <inheritdoc/>
     public AppDbContext CreateDbContext(string[] args)
     {
+        // Read the provider from the environment so that the same factory handles
+        // both PostgreSQL (default) and MySQL migration generation workflows.
+        // See the class-level remarks for the full usage examples.
+        var provider = (
+            Environment.GetEnvironmentVariable("DATAVIEWER_DB_PROVIDER")
+            ?? "postgresql")
+            .Trim()
+            .ToLowerInvariant();
+
         // Allow CI/CD environments to override the design-time connection string
         // without modifying this file.
         var connectionString =
             Environment.GetEnvironmentVariable("DATAVIEWER_DESIGN_TIME_CONNECTION")
-            ?? "Host=localhost;Port=5432;Database=dataviewer_dev;Username=dataviewer;Password=dataviewer";
+            ?? ResolveDefaultConnectionString(provider);
 
-        var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseNpgsql(connectionString, npgsqlOptions =>
-            {
-                // No retry on failure during migrations — a transient failure mid-migration
-                // should surface immediately rather than being silently retried.
-            })
-            .Options;
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-        // "postgresql" matches the provider string used by entity configurations so
-        // that design-time migrations emit the correct provider-specific annotations
-        // (bytea, jsonb, double-quoted HasFilter expressions).
-        return new AppDbContext(options, "postgresql");
+        // Delegate provider wiring (UseNpgsql / UseMySql, MigrationsAssembly,
+        // retry policy) entirely to DatabaseProviderFactory so there is a single
+        // authoritative source for these decisions.
+        // Note: no retry on failure during migrations — a transient failure
+        // mid-migration should surface immediately rather than being silently retried.
+        DatabaseProviderFactory.Configure(optionsBuilder, provider, connectionString);
+
+        // "provider" is passed to AppDbContext so entity configurations emit the
+        // correct provider-specific column type annotations (bytea/jsonb for PostgreSQL,
+        // longblob/JSON for MySQL) in the generated migration Up() code.
+        return new AppDbContext(optionsBuilder.Options, provider);
     }
+
+    /// <summary>
+    /// Returns the default local development connection string for <paramref name="provider"/>
+    /// when <c>DATAVIEWER_DESIGN_TIME_CONNECTION</c> is not set.
+    /// </summary>
+    /// <param name="provider">Normalised (lower-case) provider name.</param>
+    /// <returns>A connection string for a local database instance.</returns>
+    private static string ResolveDefaultConnectionString(string provider) =>
+        provider switch
+        {
+            "mysql"      => "Server=localhost;Port=3306;Database=dataviewer_dev;User=dataviewer;Password=dataviewer",
+            _            => "Host=localhost;Port=5432;Database=dataviewer_dev;Username=dataviewer;Password=dataviewer"
+        };
 }
