@@ -165,20 +165,50 @@ class TaskLevelOrchestrator:
                 }
                 self._update_task_status(task_id, "tested")
 
-            # Stage 3: Review
-            t0 = time.time()
-            review_result = self._run_review_stage(task)
-            task_result["stages"]["review"] = {
-                "duration": time.time() - t0,
-                "success": review_result["success"],
-                "message": review_result.get("message", "")
-            }
+            # Stage 3: Review (with auto-fix retry loop)
+            max_fix_attempts = 2  # Allow 2 fix attempts (3 total reviews)
+            fix_attempt = 0
+            review_success = False
 
-            if review_result["success"]:
-                self._update_task_status(task_id, "completed")
-                task_result["final_status"] = "completed"
-            else:
-                self._update_task_status(task_id, "failed")
+            while fix_attempt <= max_fix_attempts and not review_success:
+                attempt_label = f"review_attempt_{fix_attempt + 1}" if fix_attempt > 0 else "review"
+
+                t0 = time.time()
+                review_result = self._run_review_stage(task)
+                task_result["stages"][attempt_label] = {
+                    "duration": time.time() - t0,
+                    "success": review_result["success"],
+                    "message": review_result.get("message", "")
+                }
+
+                if review_result["success"]:
+                    review_success = True
+                    self._update_task_status(task_id, "completed")
+                    task_result["final_status"] = "completed"
+                    logger.info("[TaskLevelOrchestrator] %s passed review on attempt %d", task_id, fix_attempt + 1)
+                elif fix_attempt < max_fix_attempts:
+                    # Review failed but we have retries left - run fix stage
+                    logger.info("[TaskLevelOrchestrator] %s failed review (attempt %d/%d), running fix stage",
+                               task_id, fix_attempt + 1, max_fix_attempts + 1)
+
+                    t0 = time.time()
+                    fix_result = self._run_fix_stage(task, spec, design, review_result.get("message", ""))
+                    task_result["stages"][f"fix_attempt_{fix_attempt + 1}"] = {
+                        "duration": time.time() - t0,
+                        "success": fix_result["success"],
+                        "message": fix_result.get("message", "")
+                    }
+
+                    if not fix_result["success"]:
+                        logger.warning("[TaskLevelOrchestrator] %s fix stage failed, stopping retries", task_id)
+                        break
+
+                    fix_attempt += 1
+                else:
+                    # No more retries left
+                    logger.warning("[TaskLevelOrchestrator] %s failed review after %d attempts",
+                                 task_id, max_fix_attempts + 1)
+                    self._update_task_status(task_id, "failed")
 
         except Exception as exc:
             logger.error("[TaskLevelOrchestrator] Task %s failed with exception: %s", task_id, exc, exc_info=True)
@@ -274,6 +304,60 @@ class TaskLevelOrchestrator:
 
         except Exception as exc:
             logger.error("[TaskLevelOrchestrator] Review stage failed for %s: %s", task_id, exc)
+            return {"success": False, "message": str(exc)}
+
+    def _run_fix_stage(self, task: dict, spec: str, design: str, review_feedback: str) -> dict[str, Any]:
+        """Run CoderAgent again to fix issues identified in review.
+
+        Args:
+            task: Task definition
+            spec: Product specification
+            design: System design
+            review_feedback: The review report containing issues to fix
+
+        Returns:
+            Dictionary with success status and message
+        """
+        task_id = task.get("id", "UNKNOWN")
+        logger.info("[TaskLevelOrchestrator] Running fix stage for %s", task_id)
+
+        try:
+            agent = CoderAgent(self.client, self.context, self.model, self.max_tokens)
+
+            # Build fix prompt with review feedback
+            fix_prompt = f"""Fix the issues identified in the code review for {task_id}: {task.get('title', '')}
+
+REVIEW FEEDBACK:
+{review_feedback}
+
+Please address all the issues mentioned in the review feedback above.
+Focus on:
+1. Fixing any bugs or gaps identified
+2. Addressing naming inconsistencies
+3. Improving type safety where suggested
+4. Adding missing functionality
+
+The files to fix are:
+{chr(10).join('- ' + f for f in task.get('files', []))}
+
+Please read the current implementation, understand the issues, and make the necessary fixes."""
+
+            result = agent.run(
+                fix_prompt,
+                extra_context={
+                    "Task ID": task_id,
+                    "Files to Fix": "\n".join(task.get("files", [])),
+                    "Original Acceptance Criteria": "\n".join(f"- {ac}" for ac in task.get("acceptance_criteria", [])),
+                    "Review Feedback": review_feedback[:3000],  # Truncate if very long
+                    "Product Specification (for reference)": spec[:2000],
+                    "System Design (for reference)": design[:2000],
+                },
+            )
+
+            return {"success": True, "message": result}
+
+        except Exception as exc:
+            logger.error("[TaskLevelOrchestrator] Fix stage failed for %s: %s", task_id, exc)
             return {"success": False, "message": str(exc)}
 
     def _load_taskplan(self) -> dict | None:

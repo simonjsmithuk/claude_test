@@ -55,8 +55,14 @@ if results.get("task_results"):
         for stage_name, stage_info in task_result.get("stages", {}).items():
             success_icon = "✅" if stage_info["success"] else "❌"
             print(f"  {success_icon} {stage_name}: {stage_info['duration']:.1f}s")
-            if not stage_info["success"] and stage_name == "review":
-                # Print full review message if review failed
-                print(f"\n    REVIEW FAILURE DETAILS:\n{stage_info['message']}\n")
+
+            # Show which review attempt succeeded
+            if "review_attempt" in stage_name and stage_info["success"]:
+                attempt_num = stage_name.split("_")[-1]
+                print(f"      → Passed on attempt {attempt_num} (after fix)")
+
+            # Show fix stage progress
+            if "fix_attempt" in stage_name:
+                print(f"      → Fix applied")
 
 print("\n" + "=" * 80 + "\n")

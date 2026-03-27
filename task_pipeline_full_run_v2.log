@@ -722,3 +722,1545 @@
 10:03:26 [INFO] agents.base: [coder_agent] Calling tool: search_files
 10:03:40 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
 10:03:40 [INFO] agents.base: [coder_agent] Calling tool: git_add_commit
+10:04:06 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:06 [INFO] agents.base: [coder_agent] Completed after 21 iteration(s).
+10:04:06 [INFO] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-033: in_progress → coded
+10:04:06 [INFO] agents.task_level_orchestrator: [TaskLevelOrchestrator] Running test stage for TASK-033
+10:04:06 [INFO] agents.base: [test_writer_agent] Starting task: Write tests for TASK-033: Implement Redux Slices
+10:04:09 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:09 [INFO] agents.base: [test_writer_agent] Calling tool: list_directory
+10:04:09 [INFO] agents.base: [test_writer_agent] Calling tool: list_directory
+10:04:12 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:12 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:12 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:12 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:12 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:12 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:12 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:16 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:16 [INFO] agents.base: [test_writer_agent] Calling tool: list_directory
+10:04:16 [INFO] agents.base: [test_writer_agent] Calling tool: list_directory
+10:04:21 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:21 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:21 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:24 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:24 [INFO] agents.base: [test_writer_agent] Calling tool: list_directory
+10:04:24 [INFO] agents.base: [test_writer_agent] Calling tool: search_files
+10:04:27 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:27 [INFO] agents.base: [test_writer_agent] Calling tool: search_files
+10:04:27 [INFO] agents.base: [test_writer_agent] Calling tool: search_files
+10:04:29 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:29 [INFO] agents.base: [test_writer_agent] Calling tool: list_directory
+10:04:29 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:04:31 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:04:31 [INFO] agents.base: [test_writer_agent] Calling tool: read_file
+10:05:18 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:05:18 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:06:10 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:06:10 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:07:07 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:07:07 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:07:46 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:07:46 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:08:39 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:08:39 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:09:19 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:09:19 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:10:34 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:10:34 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:10:49 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:10:49 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:10:57 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:10:57 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:11:05 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:11:05 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:11:20 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:11:20 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:11:34 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:11:34 [INFO] agents.base: [test_writer_agent] Calling tool: write_file
+10:12:05 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:05 [INFO] agents.base: [test_writer_agent] Completed after 21 iteration(s).
+10:12:05 [INFO] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-033: coded → tested
+10:12:05 [INFO] agents.task_level_orchestrator: [TaskLevelOrchestrator] Running review stage for TASK-033
+10:12:05 [INFO] agents.base: [code_reviewer_agent] Starting task: Review implementation of TASK-033: Implement Redux Slices
+10:12:07 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:07 [INFO] agents.base: [code_reviewer_agent] Calling tool: list_directory
+10:12:07 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:11 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:11 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:11 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:11 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:11 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:11 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:11 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:15 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:15 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:15 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:15 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:15 [INFO] agents.base: [code_reviewer_agent] Calling tool: list_directory
+10:12:19 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:19 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:19 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:19 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:19 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:19 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:23 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:23 [INFO] agents.base: [code_reviewer_agent] Calling tool: read_file
+10:12:23 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:26 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:26 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:26 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:29 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:29 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:29 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:32 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:32 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:32 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:38 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:38 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:38 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:41 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:12:41 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:12:41 [INFO] agents.base: [code_reviewer_agent] Calling tool: search_files
+10:14:39 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+10:14:39 [INFO] agents.base: [code_reviewer_agent] Completed after 11 iteration(s).
+10:14:39 [INFO] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-033: tested → failed
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-033 failed, continuing with remaining tasks
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-033 not completed (status: failed)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-034 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-033 not completed (status: failed)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-035 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-034 not completed (status: pending)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-036 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-033 not completed (status: failed)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-037 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-037 not completed (status: pending)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-038 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-035 not completed (status: pending)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-039 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-039 not completed (status: pending)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-040 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-034 not completed (status: pending)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-041 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-034 not completed (status: pending)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-042 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-035 not completed (status: pending)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-043 dependencies not met, skipping
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] Dependency TASK-025 not completed (status: pending)
+10:14:39 [WARNING] agents.task_level_orchestrator: [TaskLevelOrchestrator] TASK-044 dependencies not met, skipping
+10:14:39 [INFO] agents.task_level_orchestrator: [TaskLevelOrchestrator] Pipeline complete: 3 completed, 5 failed, 36 skipped
+
+================================================================================
+TASK-LEVEL PIPELINE TEST
+Running TASK-001 through: code → tests → review
+================================================================================
+
+
+================================================================================
+PIPELINE RESULTS
+================================================================================
+Total tasks: 44
+Completed: 3
+Failed: 5
+Skipped: 36
+
+Per-Task Results:
+
+TASK-002: Implement Domain Entities
+  Final Status: failed
+  ✅ code: 190.4s
+  ✅ tests: 0.0s
+  ❌ review: 142.7s
+
+    REVIEW FAILURE DETAILS:
+Now I have a comprehensive picture of the entire implementation. Let me produce the full Code Review Report.
+
+---
+
+# Code Review Report — TASK-002: Implement Domain Entities
+
+**Reviewer:** Principal Engineer
+**Date:** 2025-07-14
+**Scope:** `src/DataViewer.Domain/Entities/` (6 files) + supporting enums and project configuration
+
+---
+
+## 1. Summary
+
+> **Verdict: ✅ APPROVE WITH MINOR REQUESTS**
+
+All six entities are present and satisfy every field listed in the acceptance criteria. The project file correctly enforces zero external NuGet dependencies, nullable reference types are enabled both at the project level and per-file, and the XML documentation is exemplary. A handful of lower-severity issues need to be addressed before the layer is consumed by upper layers; none are blockers, but two are MUST FIX because they will produce subtle runtime bugs and architectural drift.
+
+---
+
+## 2. Correctness
+
+Every acceptance-criterion field has been verified against each entity.
+
+| Entity | AC Fields | Status | Gap |
+|---|---|---|---|
+| `User` | Id, UserName, Email, PasswordHash, Role(enum), IsLocked, LockoutUntil, FailedLoginCount, CreatedAt, LastLoginAt | ✅ All present | — |
+| `RefreshToken` | Id, UserId(FK), TokenHash, ExpiresAt, IsRevoked, CreatedAt, RevokedAt, nav to User | ✅ All present | — |
+| `CredentialProfile` | Id, Name, AccessKeyId, EncryptedSecretKey(byte[]), Region, BucketName, KeyPrefix(?), IsActive, IsDeleted, CreatedAt, UpdatedAt, CreatedByUserId | ✅ All present | — |
+| `AuditLogEntry` | Id, UserId, ActionType(enum), TimestampUtc, IpAddress, Parameters(?), ResultCount(?), S3ObjectKey(?), ProfileName(?) | ✅ All present | — |
+| `UserPreference` | UserId(PK/FK), DefaultPageSize, DefaultDateRangeDays, PreferredProfileId(?) | ✅ All present | — |
+| `SystemSettings` | Id=1(int), JwtAccessTokenMinutes, JwtRefreshTokenHours, BodySizeCapMb, LockoutThreshold, UpdatedAt | ✅ All present | — |
+
+### Functional gaps / behavioural concerns
+
+1. **`User.cs` line 58 — `CreatedAt` default:** `= DateTime.UtcNow` is evaluated **at object construction time**, not at database persist time. When EF Core materialises an existing row from the database, the column value will correctly be loaded from the DB, so this is safe at runtime — but it means two `new User()` instances created in the same test will have `CreatedAt` values that differ by microseconds, making equality testing fragile. The same applies to `RefreshToken.CreatedAt` (line 40), `CredentialProfile.CreatedAt` / `UpdatedAt` (lines 68, 71), `AuditLogEntry.TimestampUtc` (line 44), and `SystemSettings.UpdatedAt` (line 60). The convention is acceptable if the Infrastructure layer always overwrites these with `DateTime.UtcNow` captured at command-handling time, but that contract is not written down anywhere (see Action Item #1).
+
+2. **`SystemSettings.cs` — singleton enforcement is advisory only.** The comment explains that Id = 1 is always the singleton sentinel, but there is no constructor, factory method, or private setter preventing `new SystemSettings { Id = 42 }`. The constraint is only enforced in prose and in the seed migration. A rogue application layer call could insert a second row undetected (see Action Item #2).
+
+3. **`CredentialProfile.cs` — `UpdatedAt` is not automatically maintained.** There is no `OnUpdating` hook or domain event to bump `UpdatedAt` when a profile is mutated. Callers must remember to set it manually, which is error-prone (see Action Item #3).
+
+4. **`DataViewer.Core` entity conflict.** The solution still contains `src/DataViewer.Core/Domain/User.cs`, `RefreshToken.cs`, `UserPreference.cs`, `AuditLog.cs`, and `S3CredentialProfile.cs`. These are the **old** domain models (using `int` PKs, string roles, `DefaultDateRangeHours` instead of `DefaultDateRangeDays`, `EncryptedSecretAccessKey:string` instead of `byte[]`, etc.) and are now **in direct conflict** with the new TASK-002 entities. The solution will not have a coherent domain model until the `DataViewer.Core` models are removed or migrated (see Action Item #4 — MUST FIX).
+
+---
+
+## 3. Code Quality
+
+### Positives
+- XML documentation is thorough and consistent across all six files — every public member has a `<summary>` and most have a `<remarks>`.
+- Null safety is properly annotated: non-nullable strings default to `string.Empty`; required navigation properties use the `null!` suppressor pattern with an explanatory comment.
+- Namespace-scoped `using` directives (C# 10 file-scoped namespaces) are used consistently.
+- `ICollection<T>` is correctly used for the `User.RefreshTokens` collection — programming to an interface rather than a concrete type.
+
+### Issues
+
+**[Readability] `User.cs` line 71 — inconsistent collection initialisation syntax.**
+```csharp
+// User.cs line 71 — old initialiser syntax
+public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+```
+Everywhere else in the solution (e.g., `DataViewer.Core/Domain/User.cs`) the C# 12 collection expression `= []` is used. This is purely stylistic, but inconsistency will cause friction in code review going forward. Prefer `= []` to match the target language version (LangVersion 12 is already set in the csproj).
+
+**[Naming] `AuditLogEntry.cs` — entity named `AuditLogEntry`, but the corresponding `DataViewer.Core` entity is `AuditLog`.** The mismatch (singular entry vs. log) should be deliberately reconciled in the migration plan from Core → Domain, not left to diverge silently (also covered under Action Item #4).
+
+**[SOLID / SRP] `UserPreference.cs` line 29 — default values baked into the entity.**
+```csharp
+public int DefaultPageSize { get; set; } = 25;
+public int DefaultDateRangeDays { get; set; } = 7;
+```
+Default values for UI preferences are a **policy decision** that ideally lives in the Application layer (or pulled from `SystemSettings`), not hardcoded in the Domain entity. If the product owner changes the default page size, it requires a Domain model change rather than an application configuration change. Consider removing defaults here and having the Application layer apply them on first-use materialisation (see Action Item #5 — NICE TO HAVE).
+
+**[SOLID / OCP] `SystemSettings.cs` — no range guards on any numeric property.** `LockoutThreshold = 0` disables lockout (documented), but `JwtAccessTokenMinutes = 0` or `BodySizeCapMb = -1` have no documented meaning and could cause undefined behaviour downstream. The Domain layer is the right place to own these invariants via a private setter or a `Validate()` method (see Action Item #6 — NICE TO HAVE).
+
+---
+
+## 4. Security
+
+**[HIGH] `CredentialProfile.cs` line 34 — `AccessKeyId` stored in plain text is correctly documented, but there is no indication of its expected format or length.**
+AWS Access Key IDs are always 20 uppercase alphanumeric characters starting with `AKIA` (or similar prefix for temporary credentials). Without a maximum-length annotation or domain validation, a caller could persist an arbitrarily long string into this field. While format validation belongs in the Application layer, the Domain entity should signal intent (see Action Item #7).
+
+**[MEDIUM] `AuditLogEntry.cs` line 53 — `IpAddress` is a plain `string` with no validation.**
+The field's XML doc notes it is extracted from `X-Forwarded-For`. That header is **trivially forgeable** by any client and can contain multiple comma-separated addresses. If the Application layer forwards the raw header value into this field, it becomes a stored, unvalidated string that could exceed database column widths or contain misleading data. This is not a Domain-layer fix per se, but the Domain entity should document the expectation that the Infrastructure/API layer is responsible for normalising and validating this value before it reaches the entity (see Action Item #8).
+
+**[LOW] `User.cs` lines 19-25 — `UserName` and `Email` have no maximum-length signals.**
+Without a `[MaxLength]` attribute (not available in a pure Domain layer) or a domain constant, EF Core will default to `nvarchar(max)` unless the Infrastructure mapping adds column constraints. Consider declaring public constants `MaxUserNameLength = 64` and `MaxEmailLength = 254` (the RFC 5321 limit) on the entity class to communicate intent to the Infrastructure mapping layer without taking a dependency on `System.ComponentModel.DataAnnotations` (see Action Item #9).
+
+**[LOW] `RefreshToken.cs` line 29 — `TokenHash` field comment says SHA-256 but that is an application-layer concern.**
+The entity correctly stores only the hash, but there is no domain constant or marker indicating the expected byte length of the hash (32 bytes = 64 hex chars). This makes it impossible for the Infrastructure layer to set an appropriate column size without reading the application code (see Action Item #9).
+
+**[INFO] No secrets are exposed** in the domain entities themselves. The `EncryptedSecretKey` is correctly typed as `byte[]` and documented as AES-256 encrypted. `PasswordHash` is documented as bcrypt. These are correct.
+
+---
+
+## 5. Test Coverage
+
+> **Status: ❌ No test suite exists for the Domain layer.**
+
+The `DataViewer.Tests` project is registered in `DataViewer.sln` but the `tests/` directory does not exist on disk. There are zero test files anywhere in the repository (confirmed by a recursive search for `[Fact]`, `[Theory]`, `[Test]`, `[TestClass]`).
+
+For entities this simple (plain data containers), full integration tests are not warranted, but the following unit tests MUST be written before the layer is depended on by Application:
+
+| # | Test Case | Why |
+|---|---|---|
+| T-01 | `new User()` → `Id != Guid.Empty`, `Role == UserRole.Viewer`, `IsLocked == false`, `FailedLoginCount == 0` | Guards against accidental default-value regressions |
+| T-02 | `new RefreshToken()` → `IsRevoked == false`, `Id != Guid.Empty`, `User` collection property safe to traverse | Guards nav-property initialisation |
+| T-03 | `new SystemSettings()` → `Id == 1`, all int fields > 0 | Documents and enforces singleton sentinel and safe defaults |
+| T-04 | `new UserPreference()` → `DefaultPageSize == 25`, `DefaultDateRangeDays == 7`, `PreferredProfileId == null` | Documents defaults |
+| T-05 | `new CredentialProfile()` → `IsActive == false`, `IsDeleted == false`, `EncryptedSecretKey` is empty array not null | Guards against null-reference exceptions downstream |
+| T-06 | `new AuditLogEntry()` → `TimestampUtc` is close to `DateTime.UtcNow` (within 1 second) | Guards clock-capture behaviour |
+| T-07 | `UserRole` enum — verify `Viewer = 0`, `Admin = 1` (protect DB persistence ordinals) | Regression guard against enum reordering |
+| T-08 | `AuditActionType` enum — verify all 11 members and their explicit int values | Same as above |
+| T-09 | Two `new User()` instances → `Id` values are not equal | Guid.NewGuid() uniqueness sanity check |
+| T-10 | `new SystemSettings { Id = 99 }` compiles but violates intent — documents need for factory method | Documents Action Item #2 |
+
+---
+
+## 6. Performance
+
+**[LOW] `User.cs` line 71 — `new List<RefreshToken>()` allocates on every entity instantiation**, including when EF Core materialises the entity from a database query where lazy or explicit loading is used instead of `Include()`. The allocation is tiny, but it means every `SELECT * FROM Users` row materialises an empty `List<T>`. The C# 12 collection expression `= []` compiles to the same allocation; the real fix is to understand that EF Core will replace this collection reference when it materialises a tracked entity anyway. No action needed, but the inconsistency with `= []` elsewhere should still be fixed.
+
+**[MEDIUM] `CreatedAt` / `UpdatedAt` set via `DateTime.UtcNow` in property initialisers.** This is evaluated at `new` time, not at EF Core materialisation time (EF Core bypasses constructors and property initialisers during hydration). This means there is no performance or correctness issue for reads. However, it does mean that if an entity is constructed in a factory and then not immediately saved (e.g., sitting in a queue), the timestamp will drift. This should be documented as a constraint or mitigated by setting the timestamp in the repository/unit-of-work (see Action Item #1).
+
+**[INFO] No N+1 risks in the Domain layer itself** — navigation properties are present for EF Core to `Include()` correctly but no lazy-loading proxies are configured at this layer.
+
+---
+
+## 7. Action Items
+
+### 🔴 MUST FIX
+
+**1. Remove or reconcile the conflicting `DataViewer.Core` domain models.**
+`src/DataViewer.Core/Domain/` contains `User.cs`, `RefreshToken.cs`, `UserPreference.cs`, `AuditLog.cs`, and `S3CredentialProfile.cs` — all using `int` PKs, `string` roles, and different field names. Leaving both sets of models in the same solution will cause EF Core migration ambiguity, namespace confusion, and potentially two separate DbContexts mapping the same database tables. Either:
+- Delete the Core domain models and update all references to point to `DataViewer.Domain.Entities`, **or**
+- Introduce a clear mapping layer and document which model is the authoritative domain model.
+This is the single highest-priority action item.
+
+**2. Create the `tests/DataViewer.Tests` project directory and implement the test suite.**
+The project is registered in the `.sln` but the directory is missing. The build will fail on a clean clone, and there is no confidence that the entity defaults or enum ordinals are regression-proof. Implement at minimum the ten test cases listed in Section 5.
+
+**3. Protect the `SystemSettings` singleton Id.**
+`src/DataViewer.Domain/Entities/SystemSettings.cs` line 31:
+```csharp
+// Current — fully public setter, easily violated
+public int Id { get; set; } = 1;
+```
+Change to a `private set` (or `init`) with a factory method or constructor to prevent accidental multi-row inserts:
+```csharp
+// Option A — init-only (C# 9+)
+public int Id { get; init; } = 1;
+
+// Option B — private setter with static factory
+private SystemSettings() { }
+public static SystemSettings CreateSingleton() => new() { Id = 1 };
+```
+
+### 🟡 NICE TO HAVE
+
+**4. Document the `CreatedAt`/`UpdatedAt` timestamp ownership contract.**
+Add an XML `<remarks>` to each timestamp property (or a single file-level remark per entity) stating: *"This value is set by the Application/Infrastructure layer at command-handling time. The constructor default is a safety net only and should not be relied upon for persistence semantics."* This prevents the subtle drift bug described in Section 6.
+
+**5. Fix collection initialisation inconsistency.**
+`src/DataViewer.Domain/Entities/User.cs` line 71:
+```csharp
+// Before
+public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
+// After — consistent with LangVersion 12 used elsewhere in the solution
+public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
+```
+
+**6. Add domain-level string-length constants to `User`, `CredentialProfile`, and `RefreshToken`.**
+Without a dependency on `DataAnnotations`, declare public constants on each entity class:
+```csharp
+// User.cs
+public const int MaxUserNameLength = 64;
+public const int MaxEmailLength = 254;  // RFC 5321
+
+// CredentialProfile.cs
+public const int AccessKeyIdLength = 20;  // AWS IAM fixed length
+
+// RefreshToken.cs
+public const int TokenHashLength = 64;    // SHA-256 hex = 64 chars
+```
+These are consumed by the Infrastructure mapping layer to set `HasMaxLength()` and by validators without creating a cross-layer dependency.
+
+**7. Remove `DefaultPageSize` and `DefaultDateRangeDays` defaults from `UserPreference` entity.**
+Move the defaults to an `ApplicationDefaults` static class in the Application layer (or drive them from `SystemSettings`). The Domain entity should carry `0` as the zero-value and let the Application layer apply policy defaults on read. This prevents a Domain change being required when a product decision changes the default page size.
+
+**8. Add a `LockoutDurationMinutes` field to `SystemSettings`.**
+Currently the lockout *threshold* is configurable, but the lockout *duration* (how many minutes until `LockoutUntil` expires) is presumably hardcoded in the Application layer. If so, this is an inconsistency — one half of the lockout policy is in `SystemSettings`, the other half is a magic number. Add `LockoutDurationMinutes` to `SystemSettings` for full configurability.
+
+**9. Add inline guidance on `IpAddress` normalisation.**
+`src/DataViewer.Domain/Entities/AuditLogEntry.cs` line 53 — Extend the XML `<summary>` to explicitly state that the Application/API layer MUST normalise `X-Forwarded-For` to a single validated IP string before assigning it to this field, protecting against header injection storing multi-value or malformed strings in the audit log.
+
+
+TASK-003: Implement Domain Enums and Value Objects
+  Final Status: completed
+  ✅ code: 167.7s
+  ✅ tests: 0.0s
+  ✅ review: 164.5s
+
+TASK-004: Implement Domain Exceptions
+  Final Status: failed
+  ✅ code: 132.9s
+  ✅ tests: 0.0s
+  ❌ review: 124.3s
+
+    REVIEW FAILURE DETAILS:
+I now have a complete picture of the entire implementation. Here is the full Code Review Report.
+
+---
+
+# Code Review Report — TASK-004: Implement Domain Exceptions
+
+**Reviewer:** Principal Engineer (AI-Driven SDLC Pipeline)
+**Task ID:** TASK-004
+**Files Reviewed:**
+- `src/DataViewer.Domain/Exceptions/DomainException.cs`
+- `src/DataViewer.Domain/Exceptions/UnauthorizedException.cs`
+- `src/DataViewer.Domain/Exceptions/NotFoundException.cs`
+- `src/DataViewer.Domain/Exceptions/S3AccessException.cs`
+- `src/DataViewer.Domain/Exceptions/AuditFailureException.cs`
+- `src/DataViewer.Domain/Exceptions/EncryptionException.cs`
+
+---
+
+## 1. Summary
+
+> **REQUEST CHANGES**
+
+The implementation is well-structured and clearly written, and satisfies the majority of the acceptance criteria. Documentation is thorough and the Clean Architecture constraint (zero NuGet dependencies in the Domain layer) is correctly respected. However, there are several correctness gaps, a meaningful security concern, and a complete absence of tests that must be resolved before this can be merged.
+
+---
+
+## 2. Correctness
+
+### ✅ Passing Criteria
+
+| Criterion | Status |
+|---|---|
+| `DomainException` extends `System.Exception` with message + optional inner exception constructors | ✅ Pass |
+| All specialised exceptions extend `DomainException` | ✅ Pass |
+| `UnauthorizedException` carries optional lockout info | ✅ Pass |
+| `NotFoundException` carries resource type and identifier | ✅ Pass |
+| `S3AccessException` carries error code and S3 key | ✅ Pass |
+| `AuditFailureException` carries the original action that failed | ✅ Pass |
+| `EncryptionException` carries context of which operation failed | ✅ Pass |
+| All specialised exception classes are `sealed` | ✅ Pass |
+
+### ❌ Gaps & Defects
+
+**GAP-1 — `DomainException` is not `sealed`, but also not intended to be subclassed further than one level (`DomainException.cs`, line 12)**
+
+The spec states *"All exception classes are sealed."* `DomainException` itself is `abstract`, which is a valid architectural choice (it *must* be abstract to prevent direct instantiation), but this creates an ambiguity: the AC reads as applying to all files in scope. The intent is almost certainly that only the concrete leaf classes must be `sealed`, and `DomainException` must remain `abstract` — but this should be explicitly clarified and documented in the class summary.
+
+**GAP-2 — `UnauthorizedException`: naming mismatch with `User` entity (`UnauthorizedException.cs` line 37 vs. `User.cs` line 46)**
+
+`User.LockoutUntil` (the authoritative domain entity field, `User.cs:46`) is named `LockoutUntil`. The exception property is named `LockoutUntilUtc` (`UnauthorizedException.cs:70`). Callers mapping from the entity to the exception will need to remember the asymmetry. Either rename the exception property to `LockoutUntil` for consistency, or rename the entity field to `LockoutUntil**Utc**` to make the UTC contract explicit everywhere. The latter is the safer choice.
+
+**GAP-3 — `AuditFailureException.AuditedAction` accepts a raw `string`, but a strongly-typed `AuditActionType` enum already exists (`AuditActionType.cs`)**
+
+`AuditedAction` is documented as matching `AuditActionType` enum members (`AuditFailureException.cs:66–67`). Accepting `string` instead of `AuditActionType` allows any arbitrary freeform value — including misspellings — to be silently swallowed. The property type should be `AuditActionType` with a separate overload or a `string` fallback for the documented "infrastructure-level operations" edge-case. At minimum, the `string` overload should co-exist with an `AuditActionType` overload so typed callers cannot accidentally pass an un-validated string.
+
+**GAP-4 — `EncryptionException.OperationContext` accepts unconstrained `string` with no validation (`EncryptionException.cs:32`)**
+
+Only three values are meaningful: `"Encrypt"`, `"Decrypt"`, `"KeyDerivation"`. An `enum EncryptionOperation { Encrypt, Decrypt, KeyDerivation }` would give compile-time safety at zero cost. The current `string` type allows invalid context values to be logged and silently obscure the failure stage.
+
+**GAP-5 — Missing serialisation constructor on all exception classes**
+
+.NET serialisation of `Exception` subclasses (used by some logging frameworks, cross-AppDomain marshalling, and BinaryFormatter in legacy contexts) requires the protected `(SerializationInfo, StreamingContext)` constructor. While `BinaryFormatter` is now obsolete in .NET 8 and the `[Serializable]` attribute is not mandatory, `System.Exception` still implements `ISerializable`, and omitting this constructor generates compiler warning `SYSLIB0051` in some toolchains and breaks serialisation-based test frameworks. For a `sealed` domain exception this is lower risk, but it is a recognised .NET exception best-practice gap.
+
+---
+
+## 3. Code Quality
+
+Overall quality is high. Documentation is exemplary — every public member has an XML doc comment, parameter docs are accurate, and `<remarks>` blocks capture intent. A few focused observations:
+
+**CQ-1 — `NotFoundException.BuildMessage` uses `string identifier` directly without sanitisation (`NotFoundException.cs:73`)**
+```csharp
+// Line 73
+private static string BuildMessage(string resourceType, string identifier) =>
+    $"{resourceType} with identifier '{identifier}' was not found.";
+```
+If `identifier` originates from user input (e.g. a URL path segment), the generated `Message` string will contain raw user data. This is propagated into the exception's `.Message` property, which many middleware pipelines (including ASP.NET Core's `ProblemDetails`) can inadvertently surface. See Security section.
+
+**CQ-2 — `UnauthorizedException` has three constructors but no way to combine lockout info *and* an inner exception (`UnauthorizedException.cs:16–53`)**
+
+There is a constructor for `(message, lockoutUntilUtc)` and one for `(message, innerException)`, but no `(message, lockoutUntilUtc, innerException)`. An authentication provider that wraps a lower-level exception *and* returns lockout information has no single constructor to use; it would need to post-construct the object, which is impossible given all properties are `get`-only.
+
+**CQ-3 — `S3AccessException` constructor parameter ordering is inconsistent with the single-overload convention (`S3AccessException.cs:53–60`)**
+```csharp
+// The inner-exception overload uses positional params: message, errorCode, s3Key, innerException
+// This is the correct pattern, but s3Key loses its optional default in the 4-param overload.
+public S3AccessException(string message, string errorCode, string? s3Key, Exception innerException)
+```
+`s3Key` is optional (`= null`) in the 3-parameter overload but required (no default) in the 4-parameter overload. This is inconsistent. Callers who previously omitted `s3Key` in the 3-param overload must now explicitly pass `null` in the 4-param overload. Adding `string? s3Key = null` to the 4-param overload is not possible in C# when `innerException` follows, so a named-parameter call pattern should be documented.
+
+**CQ-4 — `NotFoundException` properties are non-nullable `string` but no guard clauses are present (`NotFoundException.cs:30–55`)**
+
+All specialised exceptions accept `string` parameters that are stored in `get`-only properties typed as non-nullable `string`. Passing `null` bypasses the nullable reference type system at runtime (NRTs are a compiler feature, not a runtime guarantee). A one-liner guard per constructor would make this robust:
+```csharp
+// Suggested addition — NotFoundException.cs:33
+ArgumentException.ThrowIfNullOrWhiteSpace(resourceType);
+ArgumentException.ThrowIfNullOrWhiteSpace(identifier);
+```
+The same applies to `AuditFailureException.AuditedAction`, `S3AccessException.ErrorCode`, and `EncryptionException.OperationContext`.
+
+**CQ-5 — `DomainException.cs` has no `[ExcludeFromCodeCoverage]` or explanation for its abstract nature**
+
+Minor. An `abstract` base class that has only two constructors and no logic is sometimes annotated so code coverage tools don't penalise it. Not a blocker, but worth adding.
+
+---
+
+## 4. Security
+
+**SEC-1 — MEDIUM: User-controlled data embedded in exception `Message` via `NotFoundException.BuildMessage` (OWASP A03: Injection / Information Exposure)**
+
+`NotFoundException.cs:73`:
+```csharp
+private static string BuildMessage(string resourceType, string identifier) =>
+    $"{resourceType} with identifier '{identifier}' was not found.";
+```
+`identifier` is caller-supplied and frequently originates from an HTTP path parameter (e.g. `/api/users/{id}`). The constructed string becomes `Exception.Message`. If the API middleware forwards `Exception.Message` to error responses without environment-gating (a common misconfiguration), the raw identifier — which could be a crafted payload or sensitive internal key — is returned to the caller. The same risk exists in `S3AccessException` if `S3Key` is logged verbatim in production without redaction.
+
+**Mitigation:** The API layer's global exception handler must ensure `Exception.Message` is never forwarded to clients in production. This should be enforced at the middleware layer, but a defensive note should be added to `BuildMessage`'s XML doc, and the `Identifier` property doc should flag that it *must not* be returned to clients in production (the existing remarks do this for structured logging — extend it explicitly to the `Message` property).
+
+**SEC-2 — LOW: `EncryptionException.Message` parameter contract is advisory only (`EncryptionException.cs:26–29`)**
+
+The XML doc instructs:
+> *"Must not include raw key material, plaintext, or ciphertext."*
+
+This is documentation-only enforcement. There is no runtime validation. For a cryptographic exception in a system handling AWS Secret Access Keys, this is worth noting. Consider renaming the parameter to `safeMessage` as a naming-level reminder, and/or adding a debug-mode assertion that the message doesn't contain byte-array-like patterns.
+
+**SEC-3 — LOW: `UnauthorizedException.LockoutUntilUtc` leaks account-state information (`UnauthorizedException.cs:70`)**
+
+If the exception's properties are serialised into an API error response, `LockoutUntilUtc` reveals to an attacker exactly when they can retry, enabling precise timed brute-force attacks. The API layer must not expose this field. This should be explicitly documented in the property XML doc (currently the remarks say it maps to HTTP 401 but do not warn against property exposure in responses).
+
+---
+
+## 5. Test Coverage
+
+**The `tests/` directory contains zero test files for this task.** The search returned no matches for any of the six exception class names under the `tests/` directory. This is a blocker.
+
+### Minimum required test cases
+
+A test class (e.g., `DomainExceptionsTests.cs`) should cover:
+
+| # | Test Case | Class |
+|---|---|---|
+| T-01 | Constructor sets `Message` correctly | `DomainException` (via concrete subclass) |
+| T-02 | Constructor sets `InnerException` correctly | All |
+| T-03 | `IsAccountLocked` is `false` when constructed with message-only | `UnauthorizedException` |
+| T-04 | `IsAccountLocked` is `true` when constructed with `lockoutUntilUtc` | `UnauthorizedException` |
+| T-05 | `LockoutUntilUtc` is set correctly (non-null and null variants) | `UnauthorizedException` |
+| T-06 | `ResourceType` and `Identifier` properties are populated | `NotFoundException` |
+| T-07 | `Message` matches expected format from `BuildMessage` | `NotFoundException` |
+| T-08 | `ErrorCode` and `S3Key` are populated; `S3Key` nullable | `S3AccessException` |
+| T-09 | `AuditedAction` is populated | `AuditFailureException` |
+| T-10 | `OperationContext` is populated | `EncryptionException` |
+| T-11 | All concrete types are `is DomainException` (hierarchy) | All |
+| T-12 | All concrete types are `sealed` via reflection | All |
+| T-13 | `null` arguments throw `ArgumentException`/`ArgumentNullException` (once guards added — GAP #4) | All |
+| T-14 | `NotFoundException.Message` is correct when both args provided | `NotFoundException` |
+| T-15 | `UnauthorizedException` with lockout + inner exception is constructable (once CQ-2 is fixed) | `UnauthorizedException` |
+
+---
+
+## 6. Performance
+
+No performance concerns for exception classes in isolation. Two minor observations:
+
+**PERF-1 — `NotFoundException.BuildMessage` uses string interpolation (`NotFoundException.cs:73`)**
+
+String interpolation is efficient in C# 10+ (compiler lowers to `string.Create` or `DefaultInterpolatedStringHandler`). No action needed.
+
+**PERF-2 — Avoid capturing stack traces in hot paths**
+
+All exceptions capture a full stack trace on construction (standard .NET behaviour). `AuditFailureException` is documented as being raised on every failed audit write. Depending on throw frequency, this could be visible in profiling. Consider documenting that callers should not construct these exceptions in tight loops or swallowed `catch` blocks. Not a code change — a comment in `AuditFailureException`.
+
+---
+
+## 7. Action Items
+
+### 🔴 MUST FIX
+
+| # | Severity | File | Description |
+|---|---|---|---|
+| **1** | **BLOCKER** | `tests/` | **Write a test suite covering at minimum T-01 through T-14 from the test coverage section above. Zero tests exist for this entire task.** |
+| **2** | **BLOCKER** | `AuditFailureException.cs:34,52` | **Change `string auditedAction` → `AuditActionType auditedAction` (and update `AuditedAction` property type). Add a secondary overload accepting `string` only for infrastructure-level freeform actions, keeping the typed overload as the primary path. The `AuditActionType` enum already exists in `DataViewer.Domain.Enums` — use it.** |
+| **3** | **HIGH** | `UnauthorizedException.cs:37` | **Add a fourth constructor `(string message, DateTime? lockoutUntilUtc, Exception innerException)` to cover the case where lockout state and an inner cause are both available (CQ-2).** |
+| **4** | **HIGH** | All specialised exception constructors | **Add null/empty guard clauses for all non-nullable `string` parameters using `ArgumentException.ThrowIfNullOrWhiteSpace(...)` (available since .NET 7). This affects: `NotFoundException` (`resourceType`, `identifier`), `S3AccessException` (`errorCode`), `AuditFailureException` (`auditedAction`), `EncryptionException` (`operationContext`).** |
+| **5** | **HIGH** | `UnauthorizedException.cs:70` | **Add an explicit security warning to `LockoutUntilUtc`'s XML doc: this property must never be serialised into an API error response, as it enables timed brute-force attacks (SEC-3).** |
+
+### 🟡 NICE TO HAVE
+
+| # | Priority | File | Description |
+|---|---|---|---|
+| **6** | Medium | `DomainException.cs:12` | Clarify in the class XML doc that "sealed" in the AC applies to concrete leaf classes only; `DomainException` is intentionally `abstract` and not `sealed`. Prevents future reviewers raising the same AC ambiguity. |
+| **7** | Medium | `User.cs:46` vs `UnauthorizedException.cs:70` | Rename `User.LockoutUntil` → `User.LockoutUntilUtc` for UTC-explicit naming consistency across the domain (CQ-2 / GAP-2). If touching the entity is out of scope for this task, log a follow-up ticket. |
+| **8** | Medium | `EncryptionException.cs` | Replace `string operationContext` with a new `enum EncryptionOperation { Encrypt, Decrypt, KeyDerivation }` for compile-time safety (GAP-4). The enum can live in `DataViewer.Domain.Enums`. |
+| **9** | Low | `NotFoundException.cs:73` | Add an XML doc note to `BuildMessage` and the `Identifier` property explicitly stating the generated `Message` string must not be forwarded to API clients in production environments (SEC-1). |
+| **10** | Low | All exception classes | Add `[System.Diagnostics.StackTraceHidden]` attribute to constructors (available .NET 6+) so the exception constructor frame is excluded from displayed stack traces, giving cleaner throw-site attribution in logs. |
+| **11** | Low | `AuditFailureException.cs` | Add an inline comment or `<remarks>` note warning that this exception must never be swallowed in `catch` blocks (the remark exists in the class doc but is easy to miss at the call site). Consider implementing a Roslyn analyzer rule or at minimum a code comment. |
+| **12** | Low | `S3AccessException.cs:53–60` | Document in the XML `<param name="s3Key">` of the 4-param overload that callers must pass `null` explicitly when no key is applicable, since the optional default is unavailable in this overload (CQ-3). |
+
+---
+
+*Report generated against commit HEAD of `src/DataViewer.Domain/Exceptions/`. Re-review required after action items 1–5 are addressed.*
+
+
+TASK-006: Implement Application Layer DTOs
+  Final Status: failed
+  ✅ code: 198.8s
+  ✅ tests: 0.0s
+  ❌ review: 178.8s
+
+    REVIEW FAILURE DETAILS:
+Now I have a complete picture. The `src/DataViewer.Application` project directory does not exist on disk — the implementation was tracked as "completed" in the pipeline metadata but the `.cs` files were never materialized to the filesystem. The frontend `api.types.ts` gives us the authoritative TypeScript mirror of what the backend DTOs should look like. Let me produce the full review report.
+
+---
+
+# Code Review Report — TASK-006: Application Layer DTOs
+
+**Reviewer:** Principal Engineer (AI-Assisted Pipeline Review)
+**Task ID:** TASK-006
+**Review Date:** Based on current repository state
+**Verdict:** 🔴 **BLOCK**
+
+---
+
+## 1. Summary — Overall Assessment
+
+> **BLOCK — The implementation does not exist on the filesystem.**
+
+The pipeline metadata (`.sdlc_runs/run_755492e6/implementation.json`) records TASK-006 as ✅ COMPLETED with 15 files, and the task status is marked `"tested"`. **However, a complete filesystem search reveals that `src/DataViewer.Application/` does not exist at all.** None of the 15 `.cs` files listed in the acceptance criteria are present in the repository.
+
+The only artifacts that can be reviewed are:
+1. The **TypeScript mirror** of the DTO contracts in `frontend/src/types/api.types.ts` (which exists and is well-formed), and
+2. The design document that specifies the required shapes.
+
+The backend C# DTOs are the deliverable for this task — they are **entirely absent**. No build, no compilation, no contract enforcement, and no test coverage for the Application layer is possible downstream until these files exist.
+
+---
+
+## 2. Correctness — Does the Implementation Satisfy All Functional Requirements?
+
+All 8 acceptance criteria are **unverifiable** because the files do not exist. Against each criterion:
+
+| # | Acceptance Criterion | Status |
+|---|---|---|
+| 1 | `LoginResponseDto` has `accessToken`, `expiresAt`, `refreshToken` | ❌ File absent |
+| 2 | `CredentialProfileDto` NEVER includes `secretAccessKey` | ❌ File absent — highest security risk gap |
+| 3 | `TransactionDetailDto` has nested `request`/`response` with `headers`, `body`, `bodyContentType`, `isBodyTruncated` | ❌ File absent |
+| 4 | `TransactionDetailDto.metadata` has `s3Key`, `compressedSizeBytes`, `decompressedSizeBytes`, `timestampUtc`, `s3LastModified` | ❌ File absent |
+| 5 | `PagedResultDto<T>` generic with `Data (IReadOnlyList<T>)`, `TotalCount`, `Page`, `PageSize` | ❌ File absent |
+| 6 | `SearchTransactionsRequestDto` has all query params from §5.4 with DataAnnotations | ❌ File absent |
+| 7 | All DTOs use init-only properties or records | ❌ File absent |
+| 8 | DataAnnotations applied: `[Required]`, `[MaxLength]`, `[Range]` | ❌ File absent |
+
+Beyond the missing files, the review of the TypeScript mirror (`api.types.ts`) reveals the following **design-level gaps** that would need to be addressed when the C# files are created:
+
+**Gap 1 — `PagedResult<T>` uses `T[]` not `IReadOnlyList<T>`**
+The TypeScript type uses `data: T[]` (line 14 of `api.types.ts`). The acceptance criterion explicitly requires `IReadOnlyList<T>` on the C# side. These must agree contractually, and the C# type is the authoritative contract. This inconsistency must be resolved.
+
+**Gap 2 — `AuditLogEntryDto` missing `profileName` field**
+The design document (§5.7) and `AuditLogEntry` domain entity include `ProfileName (string?)`. The TypeScript `AuditLogEntryDto` (line 183) omits `profileName`. The C# DTO must include it; the TypeScript type should be updated accordingly.
+
+**Gap 3 — `TransactionSummaryDto` missing `urlPath` context fields**
+The design (§5.4) specifies `method` and `urlPath` in `TransactionSummaryDto`. The TypeScript interface has both (lines 104–110) — this is correct — but the design doc also shows `httpVersion` in the nested request/response objects. The C# nested DTOs must include `httpVersion` for both `request` and `response`.
+
+**Gap 4 — `UpdateCredentialProfileDto` field nullability**
+The design requires all fields to be optional (partial update). The C# DTO must use nullable types (`string?`) for all fields, not just rely on default null behaviour, to correctly distinguish "not provided" from "explicitly set to null/empty".
+
+**Gap 5 — `SearchTransactionsRequestDto` missing `profileId` field**
+The design (§5.4) requires a `profileId?` query parameter. It is present in the TypeScript type (line 135) but must be explicitly declared and validated in the C# DTO.
+
+---
+
+## 3. Code Quality — Readability, Naming, Structure, SOLID Adherence
+
+Since no C# files exist, this section evaluates the **design intent** and the TypeScript proxy for quality signals.
+
+**Positive observations (from TypeScript mirror):**
+- The TypeScript types are well-organised into logical sections with clear comments referencing spec sections (§5.2–§5.8). This pattern should be replicated in C# XML doc comments.
+- `CredentialProfileDto` in TypeScript (line 46) explicitly excludes `secretAccessKey` with a comment — this discipline must be enforced in C# via the absence of the field and not via a `[JsonIgnore]` attribute (which would be a weaker guarantee).
+- `TransactionDetailDto` correctly composes `TransactionMetadataDto` + nested request/response objects rather than flattening — good SOLID structure.
+
+**Required design decisions for C# implementation:**
+
+| Issue | Recommendation |
+|---|---|
+| **Record vs class** | Prefer `record` types for all response DTOs (immutable by default, value equality). Request DTOs that need model binding may use `class` with `init`-only setters. | 
+| **Nullable reference types** | Every `.cs` file must have `#nullable enable` at the top. |
+| **Namespace** | Must be `DataViewer.Application.DTOs.*` — not `DataViewer.Core` or mismatched namespaces that exist in the current repo structure. |
+| **Naming consistency** | The `PagedResult<T>` TypeScript type uses `data` (lowercase), but the C# acceptance criterion requires `Data` (PascalCase). Both are correct for their language — just ensure JSON serialisation uses `camelCase` via `JsonNamingPolicy.CamelCase` in `Program.cs`. |
+| **Nested DTO types** | `TransactionDetailDto` requires nested types `TransactionRequestDto` and `TransactionResponseDto`. These should be defined in the same file or in a dedicated `TransactionBodyDto.cs` — not inlined anonymously. |
+
+---
+
+## 4. Security — OWASP Top 10, Secrets Exposure, Injection Risks
+
+This is the **highest-risk category** for this task given the nature of the data.
+
+### 🔴 CRITICAL: `CredentialProfileDto` Absence of `secretAccessKey` — Unverifiable
+The single most security-critical requirement of this task — that `CredentialProfileDto` NEVER exposes `secretAccessKey` — **cannot be verified** because the file doesn't exist. When the file is created:
+
+- **MUST NOT** have a `SecretAccessKey` property, even with `[JsonIgnore]`.
+- **MUST NOT** have an `EncryptedSecretKey` property.
+- Code review of the mapping from `CredentialProfile` entity → `CredentialProfileDto` (in `GetCredentialProfilesUseCase`) must be verified by a second reviewer specifically for this field.
+- Consider adding a compile-time or reflection-based unit test that asserts `typeof(CredentialProfileDto).GetProperties()` does not contain any property named `SecretAccessKey`, `EncryptedSecretKey`, or similar.
+
+### 🟡 HIGH: `LoginResponseDto` — Refresh Token in Response Body
+The design places `refreshToken` in the JSON response body (§5.2). The TypeScript confirms this (line 35). This is acceptable per the design but should be documented:
+- The downstream `LoginUseCase` (TASK-021) must ensure the refresh token is generated cryptographically securely (64 bytes via `RandomNumberGenerator` per TASK-014 acceptance criteria).
+- The DTO itself carries no security risk — it is a pure data carrier.
+
+### 🟡 HIGH: `CreateCredentialProfileDto` — `secretAccessKey` is a Write-Only Field
+When implementing `CreateCredentialProfileDto`:
+- It must accept `secretAccessKey` as a `[Required]` string input.
+- The DTO is **only used as a request model** — never serialised back to a response.
+- Add `[JsonIgnore(Condition = JsonIgnoreCondition.Always)]` on any accidental re-use path, or better: define separate `CreateCredentialProfileRequestDto` (input only) vs `CredentialProfileDto` (output only) clearly with different classes and never cross-return them.
+
+### 🟡 MEDIUM: `SearchTransactionsRequestDto` — Injection via `urlPrefix`
+When `urlPrefix` is bound from the query string:
+- The field must have `[MaxLength(500)]` as specified in the design (§6.5).
+- No regex must be performed against it on the DTO itself — enforce this note for the `SearchTransactionsUseCase` implementation.
+- Consider adding `[RegularExpression(@"^[a-zA-Z0-9/\-_.~]*$")]` to restrict to valid S3 key prefix characters.
+
+### 🟡 MEDIUM: `SearchTransactionsRequestDto` — `statusCode` type
+The TypeScript uses `statusCode?: string` (line 122) — a string like `"200"`. The C# DTO should use `int?` and let model binding parse it, or explicitly validate with `[Range(100, 599)]`. Using `string` in C# and parsing manually is an anti-pattern here.
+
+### 🟢 LOW: `AuditLogEntryDto` — `parameters` as `object`
+The TypeScript uses `Record<string, unknown> | null`. The C# DTO should use `JsonDocument?` or `string?` (raw JSON string) — **not** a `Dictionary<string, object>` which could allow unintended deserialisation. Raw JSON string is the safest approach given this is audit data.
+
+---
+
+## 5. Test Coverage — Are Tests Sufficient? Missing Cases?
+
+The `tests.json` file is **empty** — no tests were generated for TASK-006. The task is marked `"testable": false` in the task plan, but critical security properties of DTOs are absolutely testable and should be tested.
+
+### Required Tests (MUST ADD):
+
+**1. Security Guard Test — `CredentialProfileDto` has no secret fields**
+```csharp
+// File: tests/DataViewer.Tests/Unit/DTOs/CredentialProfileDtoSecurityTests.cs
+[Fact]
+public void CredentialProfileDto_DoesNotExposeSecretAccessKey()
+{
+    var properties = typeof(CredentialProfileDto)
+        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        .Select(p => p.Name.ToLowerInvariant())
+        .ToList();
+    
+    Assert.DoesNotContain("secretaccesskey", properties);
+    Assert.DoesNotContain("encryptedsecretkey", properties);
+    Assert.DoesNotContain("secret", properties);
+}
+```
+
+**2. `PagedResultDto<T>` Immutability Test**
+```csharp
+[Fact]
+public void PagedResultDto_DataProperty_IsIReadOnlyList()
+{
+    var dataProp = typeof(PagedResultDto<string>).GetProperty("Data");
+    Assert.NotNull(dataProp);
+    Assert.True(typeof(IReadOnlyList<string>).IsAssignableFrom(dataProp.PropertyType));
+    // Setter must not exist or must be init-only
+    Assert.Null(dataProp.SetMethod?.IsPublic == true ? dataProp.SetMethod : null);
+}
+```
+
+**3. DataAnnotations Validation Tests — `LoginRequestDto`**
+```csharp
+[Theory]
+[InlineData("", "password", false)]   // username required
+[InlineData("user", "", false)]        // password required
+[InlineData("user", "password", true)] // valid
+public void LoginRequestDto_ValidationBehavesCorrectly(
+    string username, string password, bool expectedValid)
+{
+    var dto = new LoginRequestDto { UserName = username, Password = password };
+    var results = new List<ValidationResult>();
+    var isValid = Validator.TryValidateObject(dto, 
+        new ValidationContext(dto), results, true);
+    Assert.Equal(expectedValid, isValid);
+}
+```
+
+**4. `SearchTransactionsRequestDto` Range Validation Test**
+```csharp
+[Theory]
+[InlineData(0, false)]    // page < 1
+[InlineData(1, true)]     // min valid
+[InlineData(201, false)]  // pageSize > 200
+[InlineData(200, true)]   // max valid pageSize
+public void SearchTransactionsRequestDto_PageValidation(int pageSize, bool expectedValid)
+{ ... }
+```
+
+**5. Serialisation Round-Trip Tests for `TransactionDetailDto`**
+```csharp
+[Fact]
+public void TransactionDetailDto_SerialiseDeserialise_PreservesAllFields()
+{ 
+    // Ensures camelCase naming, nullable fields, and nested type shapes survive JSON round-trip
+}
+```
+
+---
+
+## 6. Performance — N+1 Queries, Blocking I/O, Memory Leaks
+
+DTOs themselves carry no performance risk. However, design decisions made here directly impact downstream performance:
+
+**Issue 1 — `PagedResultDto<T>.Data` as `IReadOnlyList<T>` vs `IEnumerable<T>`**
+`IReadOnlyList<T>` is the correct choice (spec-required). `IEnumerable<T>` would risk lazy evaluation of the S3 listing pipeline after the response has already started serialising — a subtle but real bug.
+
+**Issue 2 — `TransactionDetailDto` body fields as `string?`**
+Request/response bodies can be up to 5 MB. Storing them as `string` in the DTO means they are held in the Gen-2 heap for the duration of serialisation. This is acceptable given the `BodyTruncator` 5 MB cap, but must be confirmed: the cap enforcement belongs in `GetTransactionDetailUseCase`, not in the DTO.
+
+**Issue 3 — `AuditLogEntryDto.Parameters` as `string?` vs `JsonDocument`**
+If `Parameters` is returned as a parsed `JsonDocument` in the DTO, it must be disposed. If it is returned as a raw `string?` (JSON), no disposal is needed. The raw string approach is recommended for this DTO to avoid accidental `ObjectDisposedException` when the response is serialised asynchronously.
+
+**Issue 4 — `SearchTransactionsRequestDto` defaults**
+`page` defaults to 1, `pageSize` defaults to 50. These defaults must be set in the DTO (e.g., `public int Page { get; init; } = 1;`) — without them, the use case will receive 0 for both and silently return no results.
+
+---
+
+## 7. Action Items
+
+### 🔴 MUST FIX
+
+1. **[BLOCKER] Create all 15 missing `.cs` files** under `src/DataViewer.Application/DTOs/`. The `DataViewer.Application` project directory itself does not exist. The `.csproj` file must be created first per TASK-001's intent. All files listed in the acceptance criteria must be created before any dependent task (TASK-021 through TASK-024) can proceed.
+
+2. **[SECURITY-CRITICAL] Verify `CredentialProfileDto` has no secret fields after creation.** Add a compile-time guard test (see §5 above) that must pass in CI before the PR is merged. A simple `[JsonIgnore]` approach is insufficient — the property must not exist at all.
+
+3. **[CORRECTNESS] `PagedResultDto<T>.Data` must be `IReadOnlyList<T>`, not `T[]` or `IEnumerable<T>`.** The TypeScript mirror uses `T[]` (line 14, `api.types.ts`), which is incorrect per the acceptance criterion. The C# authoritative type must use `IReadOnlyList<T>`, and the TypeScript type must be updated to note this maps to a read-only array from the server perspective.
+
+4. **[CORRECTNESS] `AuditLogEntryDto` must include `profileName` field.** The TypeScript type (line 183) is missing `profileName: string | null`. Both the C# DTO and the TypeScript interface must be updated.
+
+5. **[CORRECTNESS] `SearchTransactionsRequestDto` must include `profileId` (UUID) field.** This is present in the TypeScript (line 135) and required by §5.4 but was not listed in the acceptance criteria. The C# DTO must include it with `[RegularExpression]` or Guid model binding.
+
+6. **[CORRECTNESS] `SearchTransactionsRequestDto` must set default values** for `Page = 1` and `PageSize = 50` in the property initialiser to prevent the use case receiving `0` values.
+
+7. **[VALIDATION] `CreateCredentialProfileDto.SecretAccessKey` must be `[Required]` and `[MaxLength(128)]`.** AWS secret access keys are 40 characters but the stored encrypted value is longer — use 512 as the MaxLength to be safe.
+
+8. **[VALIDATION] `SearchTransactionsRequestDto` must apply `[Range(1, int.MaxValue)]` on `Page` and `[Range(1, 200)]` on `PageSize`.** Without this, the controller will accept `pageSize=999` and the cap must be enforced redundantly in the use case.
+
+9. **[VALIDATION] `urlPrefix` in `SearchTransactionsRequestDto` must have `[MaxLength(500)]`** per §6.5 of the design document.
+
+10. **[IMMUTABILITY] All response DTOs must use `init`-only properties or be declared as C# `record` types.** Request DTOs that require model binding may use classes with `init`-only setters. No `set;` accessor may appear on any response DTO.
+
+11. **[NULLABLE] All files must have `#nullable enable`** at the top (or enabled project-wide in the `.csproj`). The Domain project sets this precedent.
+
+---
+
+### 🟡 NICE TO HAVE
+
+12. **Add XML doc comments** to all DTO properties referencing the spec section (e.g., `/// <summary>See §5.4 TransactionDetailDto.</summary>`). The TypeScript file does this well — replicate the pattern in C#.
+
+13. **Consider a `[JsonConverter]` attribute** on `BodyContentType` in C# to map the enum values to lowercase strings (`"json"`, `"xml"`, `"text"`) matching the TypeScript discriminated union. Without this, `System.Text.Json` will serialise to `"Json"`, `"Xml"`, `"Text"` (PascalCase) which would break the frontend type guards.
+
+14. **`TransactionRequestBodyDto` and `TransactionResponseBodyDto` should be separate classes** rather than a single shared nested type. While they share most fields, the request-only fields (`method`, `urlPath`) and response-only fields (`statusCode`, `statusText`) create an awkward optional-everything shape if shared. Two distinct record types with the shared fields extracted to a base record would be cleaner and more type-safe.
+
+15. **Add a `[FromQuery]` attribute hint** (via XML docs or swagger annotation) to `SearchTransactionsRequestDto` properties to explicitly document their binding source for the OpenAPI schema generation in TASK-030.
+
+16. **`UpdateCredentialProfileDto` should be a separate record from `CreateCredentialProfileDto`** — they are already different (all fields optional in Update vs required in Create). Do not use inheritance or a shared base class, as this creates ambiguity in DataAnnotations validation.
+
+17. **Consider `DateTimeOffset` instead of `DateTime`** for all timestamp properties in DTOs to make UTC-ness structurally enforced rather than a documentation convention. `DateTimeOffset` with `Offset == 0` is unambiguously UTC.
+
+18. **Add `[StringLength]` (not just `[MaxLength]`) for properties validated server-side**, as `[StringLength]` includes a minimum length which is useful for fields like `Name` (min 1 character) and `BucketName` (min 3 characters per AWS naming rules).
+
+---
+
+## Summary Table
+
+| Category | Rating | Key Finding |
+|---|---|---|
+| **Correctness** | 🔴 Fail | 15/15 required files absent from filesystem |
+| **Code Quality** | ⚪ N/A | Cannot evaluate absent code; TypeScript mirror is well-structured |
+| **Security** | 🔴 Fail | `CredentialProfileDto` secret exclusion is unverifiable; AWS key field guard absent |
+| **Test Coverage** | 🔴 Fail | `tests.json` is empty; no DTO security guard tests exist |
+| **Performance** | 🟡 Warning | Design-level risks noted (IReadOnlyList, defaults, string body size) |
+| **Pipeline Integrity** | 🔴 Fail | Pipeline marks task "tested" with no files and empty test artefact |
+
+**The pipeline's status tracking is unreliable for this task.** The `implementation.json` records completion and `tests.json` is empty but non-null, which allowed the status to advance to `"tested"` without any actual code or tests being committed. The CI gate must verify file existence before advancing task status.
+
+
+TASK-020: Implement Serilog Configuration
+  Final Status: failed
+  ✅ code: 265.7s
+  ✅ tests: 0.0s
+  ❌ review: 179.2s
+
+    REVIEW FAILURE DETAILS:
+Now I have a complete picture. Let me compile the full code review report.
+
+---
+
+# Code Review Report — TASK-020: Implement Serilog Configuration
+
+**Reviewer:** Principal Engineer
+**Files Reviewed:**
+- `src/DataViewer.Infrastructure/Logging/SerilogConfiguration.cs`
+- `src/DataViewer.Infrastructure/Logging/SensitiveFieldDestructuringPolicy.cs`
+- `src/DataViewer.API/Program.cs` *(integration context)*
+- `src/DataViewer.API/appsettings.json`, `appsettings.Development.json`, `appsettings.Production.json`
+- `src/DataViewer.Infrastructure/DataViewer.Infrastructure.csproj`
+- `src/DataViewer.Domain/Entities/CredentialProfile.cs`, `User.cs`, `RefreshToken.cs`
+
+---
+
+## 1. Summary
+
+**Verdict: ⚠️ Request Changes**
+
+The implementation is architecturally sound and covers the majority of acceptance criteria with commendable documentation quality. However, there are **four issues that must be fixed** before merging: a critical security bypass in `SensitiveFieldDestructuringPolicy` (only structured objects are intercepted — top-level scalar and dictionary log values are not redacted), a missing X-Forwarded-For IP spoofing guard, a field-name mismatch against the live domain entity (`EncryptedSecretKey` vs. `SecretAccessKey`), and the complete absence of a test suite for a security-critical component. Remaining items are improvement suggestions.
+
+---
+
+## 2. Correctness — Functional Requirements vs. Implementation
+
+| Acceptance Criterion | Status | Notes |
+|---|---|---|
+| `Configure()` is static, called before host build | ✅ **Met** | `Program.cs` line 37, before `WebApplication.CreateBuilder()` |
+| Console sink: JSON in Production, human-readable in Dev | ✅ **Met** | `WriteTo.Conditional` with `isProduction` flag (`SerilogConfiguration.cs` lines 122–131) |
+| Rolling file sink: daily rotation, 7-day retention | ✅ **Met** | `RollingInterval.Day`, `RetainedFileCount = 7` (lines 132–142) |
+| `SensitiveFieldDestructuringPolicy` redacts the five fields | ⚠️ **Partial** | See §4 — only intercepts **structured objects**; plain-string and dictionary/anonymous-object log calls bypass the policy entirely |
+| All 7 section-7.6 fields on every log entry | ⚠️ **Partial** | `StatusCode` and `ElapsedMs` are *documented* as auto-set by Serilog middleware but are **not explicitly set** in `EnrichDiagnosticContext` — this is fragile; a middleware ordering mistake would silently drop them |
+| Minimum level read from `Logging:MinimumLevel` | ✅ **Met** | `ReadMinimumLevel()` (lines 215–225) reads from config with safe default |
+| No sensitive data in any log output | ⚠️ **Partial** | See §4 — bypasses exist; `EncryptedSecretKey` (domain entity actual name) is not in the redaction set |
+
+---
+
+## 3. Code Quality
+
+Overall, the code quality is **high**. Documentation is thorough, naming is consistent, and `static`/`sealed` modifiers are used appropriately. Issues below are targeted.
+
+### 3.1 `SensitiveFieldDestructuringPolicy.cs`
+
+**Line 70 — Collection and dictionary logging are unprotected:**
+```csharp
+if (value is null || value.GetType().IsPrimitive || value is string)
+{
+    result = null;
+    return false; // ← exits early; Dictionary<string,object> reaches this path
+}
+```
+The policy only intercepts `class`/`record` types with reflected `PropertyInfo[]`. If a developer logs `Log.Information("Headers: {@Headers}", requestHeaders)` where `requestHeaders` is a `Dictionary<string, string>` that contains an `Authorization` key, Serilog's built-in dictionary destructurer handles it **before** this policy can act, and the value reaches the sink in plaintext. This is the single most important correctness gap.
+
+**Line 77 — Short-circuit optimization is correct but the description could mislead:**
+The comment says "skip objects that have no sensitive properties to avoid unnecessary reflection overhead on every logged value." This is accurate, but note that `ContainsSensitiveProperty` (line 126) allocates a new iteration on every call. Consider using `Array.Exists` or a compiled LINQ expression for slightly less allocation on the hot path.
+
+**Line 100 — Exception swallowing is acceptable but should be `Warning` logged:**
+```csharp
+catch (Exception)
+{
+    propertyValue = new ScalarValue("<unreadable>"); // swallowed silently
+}
+```
+If a getter throws unexpectedly on a sensitive property, the `<unreadable>` marker would replace `***REDACTED***`. This is safe from a data-leakage perspective (the value is unreadable anyway), but the swallowed exception makes debugging harder in staging. A `Log.Warning` call here would add useful diagnostic signal without risk.
+
+### 3.2 `SerilogConfiguration.cs`
+
+**Lines 164–173 — `GetLevel` lambda is slightly over-complex:**
+```csharp
+options.GetLevel = static (httpContext, elapsed, ex) =>
+    ex is not null
+        ? LogEventLevel.Error
+        : httpContext.Response.StatusCode >= 500
+            ? LogEventLevel.Error
+            : httpContext.Response.StatusCode >= 400
+                ? LogEventLevel.Warning
+                : LogEventLevel.Information;
+```
+The first two branches both produce `LogEventLevel.Error`. They can be collapsed to one condition `(ex is not null || statusCode >= 500)` for clarity, reducing nesting by one level.
+
+**Lines 196–199 — `StatusCode` and `ElapsedMs` comment vs. explicit control:**
+```csharp
+// StatusCode is set by Serilog automatically when response completes.
+// ElapsedMs is computed internally by UseSerilogRequestLogging.
+```
+These are only populated if the `UseSerilogRequestLogging` middleware is wired **after** the response has completed *and* before the connection closes. The comment is correct under normal circumstances, but it creates an implicit dependency that has no compile-time enforcement. Section 7.6 mandates these fields — if they are required, they should be explicitly set with appropriate guard checks, or at a minimum the comment should reference the precise middleware ordering requirement.
+
+**Lines 244–249 — `GetClientIpAddress` has no length/format validation:**
+```csharp
+var firstIp = forwardedFor.ToString().Split(',', StringSplitOptions.TrimEntries)[0];
+if (!string.IsNullOrEmpty(firstIp))
+    return firstIp;
+```
+The split result is used directly. This value comes from a client-controlled HTTP header (see §4 for security impact). Beyond the security concern, the raw string is also never length-capped, meaning a malicious client can inject an arbitrarily long string into every log event, creating a **log inflation / disk exhaustion** vector.
+
+**Line 56 — `LogFilePath` uses a relative path:**
+```csharp
+private const string LogFilePath = "logs/dataviewer-.log";
+```
+In a Docker container, the working directory is the assembly location. This is typically acceptable, but the value is not configurable from `appsettings`. If the container uses a read-only filesystem layer (common in hardened production images), the relative write will fail silently or throw at startup. The path should be configurable or validated on startup.
+
+**Lines 108–120 — `WriteTo.Conditional` requires `Serilog.Sinks.Conditional`:**
+`WriteTo.Conditional` is provided by the `Serilog.Sinks.Conditional` NuGet package, but that package is **not listed** in `DataViewer.Infrastructure.csproj`. This is a build-time error. The project will fail to compile as shipped.
+
+---
+
+## 4. Security
+
+### 🔴 CRITICAL — Destructuring policy does not protect scalar string log calls
+
+**`SensitiveFieldDestructuringPolicy.cs`, lines 62–68**
+
+`IDestructuringPolicy.TryDestructure` is **only invoked when an object is destructured via the `{@...}` operator** (or equivalent). It is never called for:
+1. **Scalar string values**: `Log.Warning("Token: {TokenHash}", user.TokenHash)` — the `string` early-exit at line 64 means this passes through unredacted.
+2. **Dictionaries**: `Log.Information("Context: {@ctx}", new Dictionary<string,string> { ["Authorization"] = bearer })` — Serilog's built-in dictionary destructurer runs first.
+3. **Anonymous objects with sensitive properties where the *caller* doesn't destructure them**: `Log.Error("Failed for {PasswordHash}", hash)` — same issue.
+
+The policy provides a **false sense of complete protection**. The correct defence is a layered approach:
+- Keep the destructuring policy for structured objects.
+- **Also** implement a `Serilog.Core.ILogEventSink` wrapper (or `ILogEventEnricher`) that scrubs property values by name **after all destructuring is complete**, immediately before writing to any sink.
+- Alternatively, use `Destructure.ByTransforming<T>` for known entity types in addition to the policy.
+
+### 🔴 HIGH — X-Forwarded-For IP spoofing / header injection
+
+**`SerilogConfiguration.cs`, lines 244–249**
+
+The `X-Forwarded-For` header is read unconditionally without any trust boundary check. When the server is **not** behind a reverse proxy (e.g. in local development or a misconfigured deployment), any client can forge this header and inject arbitrary content — including control characters, log format escape sequences, or excessively long strings — directly into every log entry. This can facilitate:
+- Log injection attacks (inserting fake log lines).
+- Disk exhaustion via extremely large IP strings.
+
+**Fix**: Validate that the extracted value matches a valid IPv4/IPv6 pattern before logging it:
+```csharp
+if (System.Net.IPAddress.TryParse(firstIp, out _))
+    return firstIp;
+```
+Return `"invalid"` or fall through to `RemoteIpAddress` otherwise.
+
+### 🟡 MEDIUM — `EncryptedSecretKey` vs. `SecretAccessKey` field name mismatch
+
+**`SensitiveFieldDestructuringPolicy.cs`, line 43** vs. **`src/DataViewer.Domain/Entities/CredentialProfile.cs`, line 38**
+
+The domain entity stores the AWS secret as `EncryptedSecretKey` (a `byte[]`). The redaction set contains `"SecretAccessKey"` — a name that does **not exist on the domain entity**. Meanwhile, `src/DataViewer.Core/Domain/S3CredentialProfile.cs` (a legacy/parallel model) has `EncryptedSecretAccessKey`. Neither matches the registered redaction string exactly.
+
+More dangerously, if the secret is ever decrypted in-memory and assigned to a temporary object property named `SecretAccessKey` during credential testing (`TestConnectionUseCase`), a developer logging that intermediary object would expect the policy to redact it — but the mismatch means the actual stored field name on the entity goes unprotected.
+
+**Fix**: Add `"EncryptedSecretKey"` and `"EncryptedSecretAccessKey"` to the `SensitivePropertyNames` set. Keep `"SecretAccessKey"` to cover in-memory decrypted use.
+
+### 🟡 MEDIUM — Staging environment has no dedicated appsettings
+
+**`Program.cs`, line 21** / **`appsettings.Development.json`**
+
+The `appsettings.Staging.json` file does not exist. For the `Staging` environment, `SerilogConfiguration.Configure()` falls back to the base `appsettings.json` `Logging.MinimumLevel = "Information"` but will use the **human-readable** console format (because `!isProduction` is `true` for Staging). This means Staging logs are not in machine-parseable JSON — breaking any log-shipping pipeline pointed at Staging. The comments in `SerilogConfiguration.cs` lines 24 and 128 explicitly mention "Development/Staging" as human-readable, suggesting this is intentional, but the SDD implies JSON output should be standard for shipping. This design decision must be explicitly documented.
+
+### 🟢 LOW — `BootstrapHostEnvironment` in `Program.cs` exposes a `ContentRootFileProvider`
+
+**`Program.cs`, lines 97–104**
+
+The `BootstrapHostEnvironment` creates a `PhysicalFileProvider` on `Directory.GetCurrentDirectory()`. In a Docker container this resolves to `/app`. This is not a logging concern per se, but the `IFileProvider` is a live directory traversal object that is retained in memory for the lifetime of the bootstrap phase. It should be disposed after `SerilogConfiguration.Configure()` returns.
+
+---
+
+## 5. Test Coverage
+
+**The `tests/DataViewer.Tests/` directory does not exist on disk** (confirmed via directory listing — the path is declared in the `.sln` but the folder is absent). There are **zero tests** for either file under review.
+
+For a security-critical component whose entire purpose is to prevent sensitive data from appearing in logs, the absence of tests is a **blocking gap**.
+
+### Required Tests
+
+| Test Case | Priority | Why |
+|---|---|---|
+| `SensitiveFieldDestructuringPolicy` — class with a sensitive property is redacted | MUST | Core contract |
+| `SensitiveFieldDestructuringPolicy` — class *without* sensitive property passes through unmodified | MUST | No false positives |
+| `SensitiveFieldDestructuringPolicy` — nested class with sensitive property on inner object is redacted | MUST | Recursive destructuring path |
+| `SensitiveFieldDestructuringPolicy` — case-insensitive match (`passwordhash`, `PASSWORDHASH`) | MUST | Explicit spec requirement |
+| `SensitiveFieldDestructuringPolicy` — `null` value on sensitive property is redacted (not null-propagated) | MUST | Edge case, line 85 |
+| `SensitiveFieldDestructuringPolicy` — getter that throws returns `<unreadable>`, not exception | MUST | Exception swallow path, line 100 |
+| `SensitiveFieldDestructuringPolicy` — `string` value is **not** intercepted (documents limitation) | SHOULD | Documents the known gap |
+| `SensitiveFieldDestructuringPolicy` — `Dictionary<string,string>` with `Authorization` key | SHOULD | Documents bypass |
+| `SerilogConfiguration.Configure()` — does not throw on valid config (smoke test) | MUST | Boot safety |
+| `SerilogConfiguration.Configure()` — invalid `Logging:MinimumLevel` falls back to `Information` | MUST | `ReadMinimumLevel` contract |
+| `SerilogConfiguration.ConfigureRequestLogging` — `UserId` absent for unauthenticated request | MUST | Section 7.6 conditional field |
+| `SerilogConfiguration.ConfigureRequestLogging` — `UserId` present for authenticated request (NameIdentifier claim) | MUST | Section 7.6 |
+| `SerilogConfiguration.ConfigureRequestLogging` — `UserId` present for `sub` claim fallback | SHOULD | JWT `sub` claim path, line 190 |
+| `GetClientIpAddress` — `X-Forwarded-For` with multiple IPs returns only first | MUST | Proxy chain scenario |
+| `GetClientIpAddress` — missing `X-Forwarded-For` falls back to `RemoteIpAddress` | MUST | Direct connection path |
+| `GetClientIpAddress` — forged/invalid IP in `X-Forwarded-For` is rejected (once fix applied) | MUST | Security regression test |
+| Log output integration — `User` entity logged with `@` operator does not contain `PasswordHash` value | MUST | End-to-end security assertion |
+| Log output integration — `RefreshToken` entity logged does not contain `TokenHash` value | MUST | End-to-end security assertion |
+
+---
+
+## 6. Performance
+
+### 6.1 Reflection on every log call (`SensitiveFieldDestructuringPolicy.cs`, lines 72–84)
+
+```csharp
+var properties = value.GetType().GetProperties();
+if (!ContainsSensitiveProperty(properties))
+{ ... }
+```
+`Type.GetProperties()` is called for **every structured object in every log event**. This includes EF Core entities, DTOs, exceptions, and framework objects. In high-throughput scenarios (e.g. a request handler logging 20+ structured values), this translates to hundreds of reflective calls per second.
+
+**Fix**: Cache the `PropertyInfo[]` results per `Type` in a `ConcurrentDictionary<Type, PropertyInfo[]>` at the class level. Also cache the `bool HasSensitiveProperty` result per `Type` so `ContainsSensitiveProperty` is only called once per type lifetime:
+
+```csharp
+private static readonly ConcurrentDictionary<Type, (PropertyInfo[] Props, bool HasSensitive)>
+    _typeCache = new();
+```
+
+### 6.2 `flushToDiskInterval: TimeSpan.FromSeconds(2)` is appropriate but undocumented for Production
+
+**`SerilogConfiguration.cs`, line 141**
+
+A 2-second flush interval is a reasonable trade-off between durability and I/O. However, in the event of a hard crash, up to 2 seconds of log events could be lost. The comment should state this explicitly so operators understand the risk. In high-compliance deployments consider `flushToDiskInterval: null` (flush on every write) or bumping `shared: true` + `flushToDiskInterval: TimeSpan.Zero`, at the cost of throughput.
+
+### 6.3 `WriteTo.Conditional` — no missing NuGet package guard at runtime
+
+As noted in §3.2, `Serilog.Sinks.Conditional` is not in the `.csproj`. The build will fail before this performance concern materialises, but it is worth noting that even if the package were present, `WriteTo.Conditional` evaluates its predicate per log event. Since `isProduction` is captured as a `bool` in the closure and never changes, this is not a hot-path concern — but using `if (isProduction) ... else ...` on two separate `.WriteTo.Console(...)` calls would be marginally more efficient and removes the external package dependency.
+
+---
+
+## 7. Action Items
+
+### 🔴 MUST FIX
+
+**1. Add `Serilog.Sinks.Conditional` to `DataViewer.Infrastructure.csproj` — or replace `WriteTo.Conditional` with two separate `if`-guarded sink registrations.**
+`WriteTo.Conditional` is not in a referenced package. The project will not compile.
+*File:* `DataViewer.Infrastructure.csproj`
+*Suggested fix:* Add `<PackageReference Include="Serilog.Sinks.Conditional" Version="1.0.1" />`, or replace with:
+```csharp
+if (isProduction)
+    loggerConfig.WriteTo.Console(new CompactJsonFormatter());
+else
+    loggerConfig.WriteTo.Console(outputTemplate: HumanReadableTemplate,
+        theme: AnsiConsoleTheme.Code);
+```
+
+**2. Implement a sink-level (post-destructuring) property scrubber to catch scalar, dictionary, and anonymous-type sensitive values.**
+The `IDestructuringPolicy` alone does not intercept `string` or `Dictionary` log parameters. Add a custom `ILogEventEnricher` (or wrapping sink) that walks all `LogEvent.Properties` after destructuring completes and replaces any `ScalarValue` or `SequenceValue`/`StructureValue` whose property key matches `SensitivePropertyNames` with the redaction marker.
+*Files:* `SensitiveFieldDestructuringPolicy.cs` (extend), new `SensitivePropertyScrubber.cs`
+
+**3. Add `"EncryptedSecretKey"` and `"EncryptedSecretAccessKey"` to `SensitivePropertyNames`.**
+The live domain entity `CredentialProfile.EncryptedSecretKey` is not matched by `"SecretAccessKey"`. Even though the value is a `byte[]` (and thus not intercepted by the early-exit string check), future refactoring may change the type. Lock in all variants now.
+*File:* `SensitiveFieldDestructuringPolicy.cs`, line 43
+
+**4. Validate the `X-Forwarded-For` extracted IP against a valid IP address pattern before logging it.**
+Prevents log injection and unbounded string injection via client-controlled headers.
+*File:* `SerilogConfiguration.cs`, `GetClientIpAddress()`, lines 244–249
+```csharp
+if (!string.IsNullOrEmpty(firstIp) && System.Net.IPAddress.TryParse(firstIp, out _))
+    return firstIp;
+```
+
+**5. Create `tests/DataViewer.Tests/` and implement the security-critical test cases listed in §5.**
+A component whose sole purpose is preventing credential leakage must have automated test coverage. At minimum: redaction happy path, case-insensitive match, nested-object redaction, `string`-bypass documentation test, and two end-to-end log-output tests for `User` and `RefreshToken` entities.
+*Files:* `tests/DataViewer.Tests/Unit/Logging/SensitiveFieldDestructuringPolicyTests.cs`, `tests/DataViewer.Tests/Unit/Logging/SerilogConfigurationTests.cs`
+
+---
+
+### 🟡 NICE TO HAVE
+
+**6. Cache `Type.GetProperties()` results in `SensitiveFieldDestructuringPolicy`.**
+Replace per-call reflection with a `ConcurrentDictionary<Type, (PropertyInfo[], bool)>` cache to avoid GC pressure in high-throughput logging paths.
+*File:* `SensitiveFieldDestructuringPolicy.cs`
+
+**7. Collapse the redundant `GetLevel` branches in `ConfigureRequestLogging`.**
+*File:* `SerilogConfiguration.cs`, lines 167–175
+```csharp
+options.GetLevel = static (ctx, _, ex) =>
+    ex is not null || ctx.Response.StatusCode >= 500 ? LogEventLevel.Error :
+    ctx.Response.StatusCode >= 400 ? LogEventLevel.Warning : LogEventLevel.Information;
+```
+
+**8. Add `appsettings.Staging.json` with `"MinimumLevel": "Information"` and explicitly comment on the console format choice for Staging.**
+Prevents silent misconfiguration of log-shipping pipelines pointed at a Staging environment.
+
+**9. Make the rolling file path configurable via `appsettings.json` (e.g. `Logging:FilePath`).**
+The hard-coded relative path `"logs/dataviewer-.log"` will fail on read-only container filesystems. Allow operators to override it to `/var/log/dataviewer/dataviewer-.log` or a volume mount without code changes.
+*File:* `SerilogConfiguration.cs`, line 51; `appsettings.json`
+
+**10. Explicitly set `StatusCode` and `ElapsedMs` in `EnrichDiagnosticContext` with guard checks, or add a code comment with a direct reference to the required middleware order.**
+The current comment at lines 201–202 implies these are guaranteed, but they depend on middleware pipeline ordering that has no compile-time enforcement.
+*File:* `SerilogConfiguration.cs`, lines 198–202
+
+**11. Wrap exception swallowing in `TryDestructure` with a `Log.Warning` call.**
+*File:* `SensitiveFieldDestructuringPolicy.cs`, lines 100–102
+```csharp
+catch (Exception ex)
+{
+    Log.Warning(ex, "Unreadable property {Property} during destructuring", prop.Name);
+    propertyValue = new ScalarValue("<unreadable>");
+}
+```
+
+**12. Dispose the `PhysicalFileProvider` in `BootstrapHostEnvironment` after `SerilogConfiguration.Configure()` returns.**
+*File:* `Program.cs`, lines 97–116
+
+
+TASK-033: Implement Redux Slices
+  Final Status: failed
+  ✅ code: 220.7s
+  ✅ tests: 478.7s
+  ❌ review: 154.4s
+
+    REVIEW FAILURE DETAILS:
+I now have a complete picture of all files. Here is the full structured review:
+
+---
+
+# Code Review Report — TASK-033: Redux Slices
+
+| | |
+|---|---|
+| **Task** | TASK-033 — Implement Redux Slices |
+| **Reviewer** | Principal Engineer |
+| **Files Reviewed** | 6 slices + 6 unit test files + 1 integration test + `api.types.ts` + `store.ts` |
+| **Overall Verdict** | ✅ **Approve with Action Items** |
+
+---
+
+## 1. Summary
+
+The implementation is of high quality. All six slices are correctly scaffolded with `createSlice`, all acceptance-criteria state shapes are satisfied, TypeScript types are tightly bound to `api.types.ts`, sessionStorage persistence is guarded properly, and the test suite is exceptionally thorough with unit and integration layers. There are **no blocking defects**. However, there are three **must-fix** items (two correctness bugs, one missing acceptance-criteria selector) and several important suggestions that should be addressed before the feature ships.
+
+---
+
+## 2. Correctness
+
+### ✅ Satisfied requirements
+| Requirement | Status |
+|---|---|
+| `authSlice` state shape (accessToken, refreshToken, user, isAuthenticated) | ✅ |
+| `setCredentials` / `clearCredentials` actions | ✅ |
+| accessToken / refreshToken persisted to `sessionStorage` | ✅ |
+| `credentialProfilesSlice`: profiles, activeProfileId, testConnectionStatus | ✅ |
+| `transactionsSlice`: all required fields present | ✅ |
+| `preferencesSlice`: `UserPreferenceDto` state, `setPreferences` action | ✅ |
+| `auditSlice`: entries, totalCount, currentPage, filters | ✅ |
+| `uiSlice`: isLoading, errorMessage, successMessage; all four required actions | ✅ |
+| All slices use `createSlice` from RTK | ✅ |
+| State types derived from `api.types.ts` interfaces | ✅ |
+
+### ❌ Gaps and Bugs
+
+#### BUG-1 — `clearTransactions` does not reset `searchFilters` (MUST FIX)
+**File:** `frontend/src/redux/slices/transactionsSlice.ts`, lines 166–174
+
+```typescript
+clearTransactions(state) {
+  state.results = [];
+  state.totalCount = 0;
+  state.currentPage = 1;
+  state.selectedTransaction = null;
+  state.isLoading = false;
+  // ❌ state.searchFilters is NOT reset here
+},
+```
+
+After logout or navigation-away, `searchFilters` retains stale values (e.g. a previous user's `profileId`, date ranges, or method filters). The spec states this action is called "on logout or when the user navigates away." Not resetting filters means the next session opens with contaminated query state. The parallel `clearAudit` action correctly resets `filters`, making this an inconsistency.
+
+**Fix:** Add `state.searchFilters = { ...initialState.searchFilters };` to the `clearTransactions` reducer body.
+
+---
+
+#### BUG-2 — `upsertProfile` does not deactivate sibling profiles (MUST FIX)
+**File:** `frontend/src/redux/slices/credentialProfilesSlice.ts`, lines 100–110
+
+```typescript
+upsertProfile(state, action: PayloadAction<CredentialProfileDto>) {
+  const idx = state.profiles.findIndex((p) => p.id === action.payload.id);
+  if (idx !== -1) {
+    state.profiles[idx] = action.payload;
+  } else {
+    state.profiles.push(action.payload);
+  }
+  // ❌ Only sets activeProfileId, does NOT flip isActive = false on all others
+  if (action.payload.isActive) {
+    state.activeProfileId = action.payload.id;
+  }
+},
+```
+
+`setActiveProfileId` correctly maps over all profiles to flip `isActive`, but `upsertProfile` only updates `activeProfileId` on the state object without touching the `isActive` flags of other cached profiles. This creates a split-brain: the `profiles` array can contain two entries both with `isActive: true` while `activeProfileId` points to only one.
+
+**Fix:** Mirror the same `state.profiles.map(...)` pattern from `setActiveProfileId` inside `upsertProfile` when `action.payload.isActive` is true.
+
+---
+
+#### GAP-1 — Missing `selectExpiresAt` selector on `authSlice` (MUST FIX)
+**File:** `frontend/src/redux/slices/authSlice.ts`, lines 144–155
+
+`expiresAt` is stored in state (line 37), populated on `setCredentials` (line 120), and consumed by `apiClient.ts` (line 135) for proactive token refresh decisions. However, no typed selector is exported for it. Every consumer is forced to read `state.auth.expiresAt` directly, coupling them to the internal slice key and bypassing the selector pattern used consistently everywhere else in this file. This is also a testability gap — no existing test verifies `expiresAt` through a selector.
+
+**Fix:** Add and export `export const selectExpiresAt = (state: RootState): string | null => state.auth.expiresAt;`
+
+---
+
+#### OBSERVATION — `authSlice` stores `expiresAt` but does NOT persist it to `sessionStorage`
+**File:** `frontend/src/redux/slices/authSlice.ts`, lines 52–60
+
+On page reload, `accessToken` and `refreshToken` are rehydrated from `sessionStorage`, so `isAuthenticated` becomes `true`. However, `expiresAt` stays `null` (line 97). Code in `apiClient.ts` (line 135) that reads `expiresAt` to decide whether to proactively refresh will always trigger a refresh on the first call after reload. This is likely a deliberate conservative choice (it is safe), but it is worth documenting explicitly in the slice comment to prevent a future developer from "fixing" it by adding a third key — which would reintroduce a different set of timing issues. Not a blocking bug, but should be clarified with a comment.
+
+---
+
+## 3. Code Quality
+
+Overall: **Excellent.** JSDoc headers, section separators, and inline comments are consistent and informative across all six files. Naming is precise and domain-appropriate. Observations below are minor.
+
+### 3a. `transactionsSlice.ts` — Duplicated pagination state (lines 43–55)
+
+```typescript
+export interface TransactionsState {
+  searchFilters: SearchFilter;  // contains .page
+  ...
+  currentPage: number;          // mirrors searchFilters.page
+}
+```
+
+`currentPage` at the slice root and `searchFilters.page` are kept manually in sync by every mutating action (`setSearchFilters`, `mergeSearchFilters`, `clearSearchFilters`, `setCurrentPage`, `setSearchResults`). This is a classic dual-source-of-truth problem. If any single action ever misses one of the two, they silently diverge. The `auditSlice` has the same structure (lines 50–62). Consider a derived selector approach instead:
+
+```typescript
+// auditSlice.ts — derived, not stored
+export const selectAuditCurrentPage = (state: RootState): number =>
+  state.audit.currentPage; // OK as-is, but could be derived from filters
+```
+
+For `transactionsSlice`, a cleaner approach would be to remove the top-level `currentPage` field and derive it from `searchFilters.page` via a selector. This is a **NICE TO HAVE** given the tests already lock in the current behaviour.
+
+### 3b. `credentialProfilesSlice.ts` — `defaultTestState` used as a prototype (line 67)
+
+```typescript
+const defaultTestState: ProfileTestState = {
+  status: 'idle',
+  result: null,
+  lastTestedAt: null,
+};
+```
+
+This object is exported-adjacent and re-used as a fallback in `selectTestConnectionStatus` (line 218) via `?? defaultTestState`. Since Immer can mutate state slices, returning a shared sentinel object from a selector is technically safe for reading but risky if any future consumer tries to mutate the selector result. Wrapping with `{ ...defaultTestState }` in the selector is defensive:
+
+```typescript
+state.credentialProfiles.testConnectionStatus[profileId] ?? { ...defaultTestState }
+```
+
+**NICE TO HAVE.**
+
+### 3c. `uiSlice.ts` — `setError` accepts empty string (line 85)
+
+```typescript
+setError(state, action: PayloadAction<string>) {
+  state.errorMessage = action.payload; // accepts ''
+```
+
+The test suite explicitly calls this a valid edge case (`uiSlice.test.ts` line 133: `"accepts an empty string as an error message (edge case)"`). An empty-string error message is semantically meaningless and will render a blank toast in the UI. The payload type should be narrowed or validated. Consider `PayloadAction<string>` with a runtime guard, or changing the type to a non-empty string type alias. **NICE TO HAVE.**
+
+### 3d. `preferencesSlice.ts` — `patchPreferences` is not rolled back on API failure
+
+```typescript
+patchPreferences(state, action: PayloadAction<Partial<UserPreferenceDto>>) {
+  if (state.preferences !== null) {
+    state.preferences = { ...state.preferences, ...action.payload };
+  }
+},
+```
+
+The JSDoc on line 81 says _"If the server call fails, callers should dispatch `setPreferences` with the original value to roll back."_ This puts rollback responsibility entirely on the consumer, which is fragile and not documented in the thunk/API layer. Consider whether an explicit `rollbackPreferences(originalValue)` action would be clearer, or whether optimistic patching should simply not be done at the slice level. **NICE TO HAVE.**
+
+### 3e. `authSlice.ts` — `UserRole` union type is defined in the slice, not `api.types.ts` (line 22)
+
+```typescript
+// authSlice.ts line 22
+export type UserRole = 'Admin' | 'Viewer';
+```
+
+This type belongs in `api.types.ts` alongside `LoginResponse` and other auth types. The `AuthUser` interface (line 24) and `SetCredentialsPayload` (line 30) are legitimately Redux-local constructs, but `UserRole` is a domain value derived from the backend enum. Placing it in the slice creates a separate import path consumers must know about. **NICE TO HAVE.**
+
+---
+
+## 4. Security
+
+### SEC-1 — Refresh token stored in `sessionStorage` — documented but re-verify threat model (LOW)
+
+**File:** `authSlice.ts`, lines 7–9 (module comment), lines 52–60 (storage helpers)
+
+The implementation correctly uses `sessionStorage` (not `localStorage`) for both tokens, which prevents persistence across browser tab sessions. The implementation also wraps all storage calls in `try/catch` to handle private browsing and iframe CSP restrictions. This is the right approach.
+
+However, storing the **refresh token** in `sessionStorage` means it is accessible via `window.sessionStorage` in any XSS context. The comment on line 8 says _"mirrors accessToken lifetime in browser"_ — this is accurate, but ensure the threat model has accepted this. If a strict XSS-hardened posture is required, the refresh token should be moved to an `HttpOnly` cookie managed by the backend and removed from client-side storage entirely. This is an **architectural decision** that should be validated against the security design doc, not a bug in the current implementation.
+
+### SEC-2 — No validation on `SetCredentialsPayload` fields before writing to storage (LOW)
+
+**File:** `authSlice.ts`, lines 108–122
+
+```typescript
+setCredentials(state, action: PayloadAction<SetCredentialsPayload>) {
+  const { accessToken, refreshToken, user, expiresAt } = action.payload;
+  // ❌ No validation: empty strings, malformed ISO dates, etc. are accepted
+  persistTokens(accessToken, refreshToken);
+}
+```
+
+An empty string `accessToken` would be written to `sessionStorage` and cause `isAuthenticated` to be `true` with an empty token, which would then fail all API calls. TypeScript types don't enforce non-emptiness at runtime. A minimal guard (`if (!accessToken || !refreshToken) return;`) would prevent accidental misuse. **NICE TO HAVE**, but worth addressing.
+
+### SEC-3 — `uiSlice` error messages may inadvertently echo raw server error strings (LOW)
+
+**File:** `uiSlice.ts`, lines 74–79
+
+The `setError(string)` action accepts arbitrary strings. If callers pass raw API error text (e.g., SQL error messages or internal paths from `ProblemDetails.detail`), this data will be rendered in the UI, potentially disclosing internal system information. The slice itself cannot enforce sanitisation — this is a call-site concern — but a code comment here could remind consumers to normalise error text before dispatching. **NICE TO HAVE.**
+
+### SEC-4 — `AuditLogEntryDto.parameters` is typed as `Record<string, unknown> | null` — consumers must not render raw values (INFO)
+
+**File:** `api.types.ts` line 233, `auditSlice.ts` line 49
+
+The `parameters` field is opaque and will be rendered in the Admin audit log UI. Consumers of `selectAuditEntries` must sanitise or escape this field before rendering, as it could contain user-controlled strings. This is not a slice bug, but should be noted in the slice JSDoc for consumer awareness.
+
+---
+
+## 5. Test Coverage
+
+The test suite is thorough and well-structured. The combination of per-slice unit tests and a multi-slice integration test with real user stories is commendable. The following gaps should be addressed.
+
+### MISSING-1 — `clearTransactions` does not test that `searchFilters` is reset (follows BUG-1)
+
+**File:** `frontend/src/redux/slices/__tests__/transactionsSlice.test.ts`, lines 447–494
+
+None of the five existing `clearTransactions` tests assert on `state.searchFilters`. Once BUG-1 is fixed, add:
+
+```typescript
+it('resets searchFilters to initial defaults', () => {
+  let state = transactionsReducer(
+    makeInitialState(),
+    setSearchFilters({ method: 'POST', statusCode: '500', pageSize: 50, page: 3 }),
+  );
+  state = transactionsReducer(state, clearTransactions());
+  expect(state.searchFilters).toEqual({ page: 1, pageSize: 20 });
+});
+```
+
+### MISSING-2 — `authSlice` rehydration test is incomplete (MUST FIX companion)
+
+**File:** `frontend/src/redux/slices/__tests__/authSlice.test.ts`, lines 79–93
+
+The test on line 82 (`"rehydrates accessToken and refreshToken from sessionStorage"`) seeds storage and then only asserts that `sessionStorage` contains the values — it does not actually verify that the *reducer's initial state* reflects them. The module-level `loadPersistedTokens()` call executes once at import time, so Jest's module cache means re-seeding storage between tests has no effect without `jest.resetModules()`. The test comment on line 87 acknowledges this indirectly. This is a significant gap: the rehydration path is the primary reason for the `loadPersistedTokens` function.
+
+**Suggested fix using `jest.isolateModules`:**
+
+```typescript
+it('rehydrates accessToken from sessionStorage on module load', () => {
+  sessionStorage.setItem('dv_access_token', 'pre-seeded-token');
+  sessionStorage.setItem('dv_refresh_token', 'pre-seeded-refresh');
+
+  let rehydratedReducer!: typeof authReducer;
+  jest.isolateModules(() => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    rehydratedReducer = require('../authSlice').default;
+  });
+
+  const state = rehydratedReducer(undefined, { type: '@@INIT' });
+  expect(state.accessToken).toBe('pre-seeded-token');
+  expect(state.isAuthenticated).toBe(true);
+});
+```
+
+### MISSING-3 — `upsertProfile` does not test that sibling `isActive` flags are cleared (follows BUG-2)
+
+**File:** `frontend/src/redux/slices/__tests__/credentialProfilesSlice.test.ts`, lines 185–205
+
+Tests verify that `activeProfileId` is updated but do not assert that `profileB.isActive` becomes `false` when `profileC` is upserted with `isActive: true`. Add:
+
+```typescript
+it('clears isActive on all other profiles when upserted profile is active', () => {
+  let state = credentialProfilesReducer(makeInitialState(), setProfiles([profileA, profileB]));
+  const nowActive = { ...profileC, isActive: true };
+  state = credentialProfilesReducer(state, upsertProfile(nowActive));
+
+  const profileBInState = state.profiles.find((p) => p.id === 'prof-002');
+  expect(profileBInState?.isActive).toBe(false); // was true
+});
+```
+
+### MISSING-4 — No test for `selectExpiresAt` (follows GAP-1)
+
+Once the selector is added, add a test:
+```typescript
+it('selectExpiresAt returns null from initial state', ...);
+it('selectExpiresAt returns the ISO string after setCredentials', ...);
+it('selectExpiresAt returns null after clearCredentials', ...);
+```
+
+### MISSING-5 — No negative page number / zero page guard tests on `setCurrentPage` / `setAuditCurrentPage`
+
+**Files:** `transactionsSlice.test.ts` lines 296–329, `auditSlice.test.ts` lines 188–209
+
+Both slices accept `page: 0` or `page: -1` without validation. Tests for `setCurrentPage(0)` and `setAuditCurrentPage(-1)` should be added to document whether this is intentional (the backend is expected to reject it) or a gap.
+
+### MINOR — `makeSuccessResult` in `credentialProfilesSlice.test.ts` has an unused parameter
+
+**File:** `frontend/src/redux/slices/__tests__/credentialProfilesSlice.test.ts`, line 50
+
+```typescript
+function makeSuccessResult(profileId: string): TestConnectionResult {
+  // 'profileId' parameter is declared but never used inside the function body
+  return { success: true, message: 'Connected successfully', testedAt: '...' };
+}
+```
+
+Remove the `profileId` parameter or use it. This will produce a TypeScript `noUnusedParameters` warning in strict mode.
+
+---
+
+## 6. Performance
+
+### PERF-1 — Curried selector `selectTestConnectionStatus` creates a new function on every call (LOW)
+
+**File:** `frontend/src/redux/slices/credentialProfilesSlice.ts`, lines 214–218
+
+```typescript
+export const selectTestConnectionStatus =
+  (profileId: string) =>
+  (state: RootState): ProfileTestState =>
+    state.credentialProfiles.testConnectionStatus[profileId] ?? defaultTestState;
+```
+
+Every component that calls `selectTestConnectionStatus('prof-001')` inside a render or `useSelector` call will produce a **new function reference** per call, defeating `react-redux`'s referential equality check and causing unnecessary re-renders. This pattern is known as the "factory selector" problem.
+
+**Fix:** Use `createSelector` from RTK (re-exported from `reselect`) to memoize:
+
+```typescript
+import { createSelector } from '@reduxjs/toolkit';
+
+// Components should call this once outside the render function:
+export const makeSelectTestConnectionStatus = (profileId: string) =>
+  createSelector(
+    (state: RootState) => state.credentialProfiles.testConnectionStatus,
+    (statusMap) => statusMap[profileId] ?? { ...defaultTestState },
+  );
+```
+
+Or use `createSelector` with a parameter approach per the RTK docs.
+
+### PERF-2 — `setProfiles` and `upsertProfile` both perform `Array.find` / `Array.findIndex` on the full list
+
+**File:** `credentialProfilesSlice.ts`, lines 86, 100
+
+For typical credential profile list sizes (< 50 items) this is not a concern. If the list can grow large (e.g. a multi-tenant admin scenario), consider normalising with `createEntityAdapter` from RTK, which provides O(1) lookups by id. **NICE TO HAVE / future consideration.**
+
+### PERF-3 — `setActiveProfileId` uses `Array.map` to produce a new array (acceptable)
+
+**File:** `credentialProfilesSlice.ts`, lines 117–122
+
+```typescript
+state.profiles = state.profiles.map((p) => ({
+  ...p,
+  isActive: p.id === action.payload,
+}));
+```
+
+This is correct Immer usage (assigning a new array). No performance issue at current scale, but if profiling ever reveals this as a hotspot, `createEntityAdapter` would eliminate it.
+
+---
+
+## 7. Action Items
+
+### 🔴 MUST FIX
+
+| # | Item | File | Lines |
+|---|---|---|---|
+| 1 | **BUG-1**: `clearTransactions` does not reset `searchFilters` — stale filter state survives logout/navigation | `transactionsSlice.ts` | 166–174 |
+| 2 | **BUG-2**: `upsertProfile` does not deactivate sibling profiles' `isActive` flag — creates dual-active-profile split-brain | `credentialProfilesSlice.ts` | 100–110 |
+| 3 | **GAP-1**: Missing `selectExpiresAt` selector — `expiresAt` in state is inaccessible through the selector API, forcing direct state access in `apiClient.ts` | `authSlice.ts` | 144–155 |
+| 4 | **TEST**: Add test for `clearTransactions` asserting `searchFilters` is reset (companion to BUG-1 fix) | `transactionsSlice.test.ts` | 447–494 |
+| 5 | **TEST**: Fix incomplete sessionStorage rehydration test using `jest.isolateModules` (current test does not actually verify the reducer initial state) | `authSlice.test.ts` | 79–93 |
+| 6 | **TEST**: Add test for `upsertProfile` verifying sibling `isActive` flags are cleared (companion to BUG-2 fix) | `credentialProfilesSlice.test.ts` | 185–205 |
+| 7 | **TEST**: Remove unused `profileId` parameter from `makeSuccessResult` helper (will error under `noUnusedParameters` in strict mode) | `credentialProfilesSlice.test.ts` | 50 |
+
+### 🟡 NICE TO HAVE
+
+| # | Item | File | Lines |
+|---|---|---|---|
+| 8 | Replace curried selector `selectTestConnectionStatus` with a memoized `createSelector` factory to prevent unnecessary re-renders | `credentialProfilesSlice.ts` | 214–218 |
+| 9 | Move `UserRole` type from slice to `api.types.ts` — it is a domain type, not a Redux-local type | `authSlice.ts` | 22 |
+| 10 | Add runtime guard in `setCredentials` to reject empty string tokens before writing to storage | `authSlice.ts` | 108–122 |
+| 11 | Add comment or dedicated `rollbackPreferences` action to make the optimistic-patch failure path explicit | `preferencesSlice.ts` | 81–92 |
+| 12 | Use `{ ...defaultTestState }` spread in `selectTestConnectionStatus` to avoid returning a shared mutable sentinel | `credentialProfilesSlice.ts` | 218 |
+| 13 | Narrow `PayloadAction<string>` in `setError`/`setSuccess` to disallow empty string, or add a JSDoc warning about blank toasts | `uiSlice.ts` | 74–85 |
+| 14 | Add tests for `setCurrentPage(0)`, `setAuditCurrentPage(-1)` to explicitly document whether non-positive pages are rejected | `transactionsSlice.test.ts`, `auditSlice.test.ts` | — |
+| 15 | Add comment on `authSlice` initial state explicitly documenting why `expiresAt` is intentionally not persisted to `sessionStorage` | `authSlice.ts` | 88–100 |
+| 16 | Add a note on `AuditLogEntryDto.parameters` in the `auditSlice` JSDoc header warning consumers to sanitise before rendering | `auditSlice.ts` | 1–16 |
+| 17 | Evaluate `createEntityAdapter` for `credentialProfiles` if the profile list can grow beyond ~50 entries in multi-tenant deployments | `credentialProfilesSlice.ts` | — |
+
+
+================================================================================
+
