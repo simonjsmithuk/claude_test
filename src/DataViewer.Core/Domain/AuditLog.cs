@@ -1,33 +1,21 @@
-namespace DataViewer.Core.Domain;
-
-/// <summary>
-/// Immutable audit log entry. Never updated or deleted via application APIs (FR-26).
-/// Covers search operations (FR-23), record views (FR-24), and credential changes (FR-25).
-/// </summary>
-public class AuditLog
-{
-    public long Id { get; set; }
-    public int UserId { get; set; }
-    public string Action { get; set; } = string.Empty;
-    public string? Parameters { get; set; }  // JSON-serialised filter params or S3 key
-    public string? IpAddress { get; set; }
-    public int? ResultCount { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    // Navigation
-    public User User { get; set; } = null!;
-}
-
-/// <summary>Well-known audit action constants.</summary>
-public static class AuditActions
-{
-    public const string Search           = "SEARCH";
-    public const string RecordView       = "RECORD_VIEW";
-    public const string CredentialCreate = "CREDENTIAL_CREATE";
-    public const string CredentialUpdate = "CREDENTIAL_UPDATE";
-    public const string CredentialDelete = "CREDENTIAL_DELETE";
-    public const string CredentialTest   = "CREDENTIAL_TEST";
-    public const string Login            = "LOGIN";
-    public const string Logout           = "LOGOUT";
-    public const string LoginFailed      = "LOGIN_FAILED";
-}
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  RETIRED — DataViewer.Core.Domain.AuditLog                              ║
+// ║                                                                          ║
+// ║  This file is intentionally empty. The canonical audit log entity now   ║
+// ║  lives in DataViewer.Domain.Entities.AuditLogEntry.                     ║
+// ║                                                                          ║
+// ║  Migration notes (GAP-1 fix — TASK-002 code review):                    ║
+// ║  • Old PK type:  long   → New: Guid                                      ║
+// ║  • Old FK type:  int    → New: Guid (UserId)                             ║
+// ║  • Old field:    Action (string) → New: ActionType (AuditActionType enum)║
+// ║  • Old field:    CreatedAt       → New: TimestampUtc                     ║
+// ║  • Old field:    IpAddress (string?) preserved as string? in new entity  ║
+// ║  • Added:        ResultCount, S3ObjectKey, ProfileName                   ║
+// ║  • Removed:      User navigation property (by design — ADR-004)          ║
+// ║                                                                          ║
+// ║  The AuditActions static string constants are superseded by the          ║
+// ║  DataViewer.Domain.Enums.AuditActionType enum.                           ║
+// ║                                                                          ║
+// ║  All code referencing DataViewer.Core.Domain.AuditLog must be updated   ║
+// ║  to reference DataViewer.Domain.Entities.AuditLogEntry.                 ║
+// ╚══════════════════════════════════════════════════════════════════════════╝

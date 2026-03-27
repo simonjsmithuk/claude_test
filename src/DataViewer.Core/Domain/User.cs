@@ -1,31 +1,23 @@
-namespace DataViewer.Core.Domain;
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  RETIRED — DataViewer.Core.Domain.User                                  ║
+// ║                                                                          ║
+// ║  This file is intentionally empty. The canonical User entity now lives  ║
+// ║  in DataViewer.Domain.Entities.User (Guid PK, UserRole enum).           ║
+// ║                                                                          ║
+// ║  Migration notes (GAP-1 fix — TASK-002 code review):                    ║
+// ║  • Old PK type:  int          → New: Guid                               ║
+// ║  • Old field:    Username     → New: UserName                            ║
+// ║  • Old field:    FailedLoginAttempts → New: FailedLoginCount             ║
+// ║  • Old field:    LockedAt     → New: LockoutUntil                        ║
+// ║  • Old field:    Role (string)→ New: Role (UserRole enum)                ║
+// ║  • Removed:      UpdatedAt (Users are not updated; fields are)           ║
+// ║  • Removed:      IsActive (replaced by IsLocked + LockoutUntil)         ║
+// ║  • Removed:      AuditLogs navigation (log entry has no User nav)        ║
+// ║                                                                          ║
+// ║  All code referencing DataViewer.Core.Domain.User must be updated to    ║
+// ║  reference DataViewer.Domain.Entities.User.                             ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
 
-/// <summary>Application user account.</summary>
-public class User
-{
-    public int Id { get; set; }
-    public string Username { get; set; } = string.Empty;
-
-    /// <summary>bcrypt hash — never stored or logged in plaintext (NFR-10).</summary>
-    public string PasswordHash { get; set; } = string.Empty;
-
-    public string Role { get; set; } = Roles.Viewer;
-    public bool IsActive { get; set; } = true;
-    public bool IsLocked { get; set; } = false;
-    public int FailedLoginAttempts { get; set; } = 0;
-    public DateTime? LockedAt { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
-    // Navigation
-    public UserPreference? Preference { get; set; }
-    public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
-    public ICollection<AuditLog> AuditLogs { get; set; } = [];
-}
-
-/// <summary>Application role constants (NFR-06).</summary>
-public static class Roles
-{
-    public const string Admin = "Admin";
-    public const string Viewer = "Viewer";
-}
+// The Roles static class is superseded by DataViewer.Domain.Enums.UserRole.
+// Delete usages of Roles.Admin / Roles.Viewer and replace with UserRole.Admin
+// / UserRole.Viewer respectively.

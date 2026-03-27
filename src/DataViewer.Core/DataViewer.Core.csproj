@@ -9,7 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- MIT License -->
+    <!--
+      Core depends on Domain for the canonical entity definitions.
+      Domain is the innermost layer and carries no external NuGet dependencies.
+    -->
+    <ProjectReference Include="..\DataViewer.Domain\DataViewer.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- BCrypt.Net-Next — MIT License — used for password hashing (work factor ≥ 12) -->
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 

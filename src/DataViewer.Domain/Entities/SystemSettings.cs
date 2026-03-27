@@ -23,6 +23,13 @@ namespace DataViewer.Domain.Entities;
 ///       normal application code paths.
 ///     </description>
 ///   </item>
+///   <item>
+///     <description>
+///       <see cref="Id"/> has a private setter, preventing any caller from
+///       constructing a <see cref="SystemSettings"/> with a different key value.
+///       EF Core can still set private properties via reflection during materialisation.
+///     </description>
+///   </item>
 /// </list>
 ///
 /// <para>
@@ -44,8 +51,10 @@ public class SystemSettings
     /// The <see langword="int"/> type (rather than <see langword="Guid"/>) is deliberate:
     /// it prevents accidental multi-row inserts through standard repository patterns
     /// that rely on <c>Guid.NewGuid()</c> assignment.
+    /// The private setter enforces the singleton invariant at the type level while
+    /// remaining settable by EF Core via reflection during entity materialisation.
     /// </summary>
-    public int Id { get; set; } = 1;
+    public int Id { get; private set; } = 1;
 
     /// <summary>
     /// Lifetime of a JWT access token expressed in whole minutes.
@@ -83,7 +92,10 @@ public class SystemSettings
 
     /// <summary>
     /// UTC timestamp of the most recent administrative update to this singleton row.
-    /// Updated by the application layer on every successful settings save operation.
+    /// Initialised to <see langword="default"/> here; the Infrastructure layer
+    /// (EF Core <c>SaveChanges</c> interceptor) is the authoritative writer so the
+    /// persisted value reflects the actual database write time rather than the
+    /// in-memory object construction time.
     /// </summary>
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = default;
 }

@@ -28,6 +28,7 @@ using DataViewer.Domain.Enums;
 /// <see cref="UserId"/> is stored as a plain value rather than a navigation property
 /// so that log entries remain fully intact even if the referenced user account is
 /// subsequently deactivated or removed from the system.
+/// By design — no navigation property. See ADR-004.
 /// </para>
 /// </remarks>
 public class AuditLogEntry
@@ -41,6 +42,7 @@ public class AuditLogEntry
     /// The <see cref="User.Id"/> of the user who triggered the action.
     /// Stored as a value (not a navigation property) to ensure log entries survive
     /// user account deletion or deactivation without orphaned foreign keys.
+    /// By design — no navigation property. See ADR-004.
     /// </summary>
     public Guid UserId { get; set; }
 
@@ -53,19 +55,31 @@ public class AuditLogEntry
 
     /// <summary>
     /// UTC timestamp at which the action occurred, captured server-side before the
-    /// response is dispatched to the client. Capturing server-side eliminates skew
-    /// from client clocks and guarantees that every operation is recorded regardless
-    /// of client connectivity issues.
+    /// response is dispatched to the client.
+    /// Initialised to <see langword="default"/> here; the application layer MUST
+    /// assign this value explicitly (e.g. <c>entry.TimestampUtc = DateTime.UtcNow</c>)
+    /// before persisting the entry so that it reflects the actual action time rather
+    /// than the object construction time. Capturing server-side eliminates skew from
+    /// client clocks and guarantees every operation is recorded regardless of client
+    /// connectivity issues.
     /// </summary>
-    public DateTime TimestampUtc { get; set; } = DateTime.UtcNow;
+    public DateTime TimestampUtc { get; set; } = default;
 
     /// <summary>
     /// Originating IP address (IPv4 or IPv6) of the HTTP request.
-    /// Extracted from the <c>X-Forwarded-For</c> header when the API is behind a
-    /// reverse proxy (the first non-private address in the chain), or from the
-    /// direct TCP connection remote endpoint otherwise.
+    /// <see langword="null"/> for system-initiated actions that have no HTTP context
+    /// (e.g. background jobs that write <see cref="AuditActionType.AccountLocked"/>
+    /// entries). An empty string must not be used as a sentinel — use <see langword="null"/>
+    /// when no IP address is available.
     /// </summary>
-    public string IpAddress { get; set; } = string.Empty;
+    /// <remarks>
+    /// When extracted from the <c>X-Forwarded-For</c> header, the Infrastructure
+    /// layer MUST validate that the header originates from a known trusted proxy CIDR
+    /// before using its value. Blindly trusting <c>X-Forwarded-For</c> is an IP-spoofing
+    /// vector. Only the first non-private address in the forwarded chain should be used
+    /// after the proxy whitelist check passes.
+    /// </remarks>
+    public string? IpAddress { get; set; }
 
     /// <summary>
     /// JSON-serialised snapshot of the query parameters or request body associated

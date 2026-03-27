@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "ab7PKz5Jpqh2S0xA3qUSjn3E53XRrsRnuV9cEjOPKaJRmmql8H0p17+cxKry73h0SS/WqiMD5tA60fVK6TLZ7A==",
+  "success": true,
+  "projectFilePath": "/home/simon/code_wsl/claude_test/src/DataViewer.Core/DataViewer.Core.csproj",
+  "expectedPackageFiles": [
+    "/home/simon/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

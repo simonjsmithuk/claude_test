@@ -1,25 +1,18 @@
-namespace DataViewer.Core.Domain;
-
-/// <summary>
-/// Per-user UI preferences persisted to the database (FR-27, FR-28, US-18).
-/// </summary>
-public class UserPreference
-{
-    public int Id { get; set; }
-    public int UserId { get; set; }
-
-    /// <summary>Default number of results per page (FR-15).</summary>
-    public int DefaultPageSize { get; set; } = 50;
-
-    /// <summary>Default look-back window in hours for the date-range filter.</summary>
-    public int DefaultDateRangeHours { get; set; } = 24;
-
-    /// <summary>Preferred S3 credential profile ID (nullable — no preference set).</summary>
-    public int? PreferredProfileId { get; set; }
-
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
-    // Navigation
-    public User User { get; set; } = null!;
-    public S3CredentialProfile? PreferredProfile { get; set; }
-}
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  RETIRED — DataViewer.Core.Domain.UserPreference                        ║
+// ║                                                                          ║
+// ║  This file is intentionally empty. The canonical UserPreference entity  ║
+// ║  now lives in DataViewer.Domain.Entities.UserPreference.                ║
+// ║                                                                          ║
+// ║  Migration notes (GAP-1 fix — TASK-002 code review):                    ║
+// ║  • Old PK:   separate int Id + int UserId (two columns)                  ║
+// ║              → New: UserId (Guid) is both PK and FK (shared PK pattern) ║
+// ║  • Old field: DefaultPageSize default was 50 → New: 25 (spec-mandated)  ║
+// ║  • Old field: DefaultDateRangeHours → New: DefaultDateRangeDays          ║
+// ║  • Old field: PreferredProfileId (int?) → New: PreferredProfileId (Guid?)║
+// ║  • Removed:  UpdatedAt (preferences updated at application layer)        ║
+// ║  • Removed:  PreferredProfile navigation (use CredentialProfile directly)║
+// ║                                                                          ║
+// ║  All code referencing DataViewer.Core.Domain.UserPreference must be     ║
+// ║  updated to reference DataViewer.Domain.Entities.UserPreference.        ║
+// ╚══════════════════════════════════════════════════════════════════════════╝

@@ -2,6 +2,8 @@
 
 namespace DataViewer.Domain.Entities;
 
+using System.Text.Json.Serialization;
+
 /// <summary>
 /// Represents a named AWS S3 credential profile used to browse and retrieve
 /// HTTP transaction records stored in an S3 bucket.
@@ -49,9 +51,12 @@ public class CredentialProfile
     /// <summary>
     /// AES-256-CBC encrypted AWS Secret Access Key.
     /// Stored as a raw byte array with layout <c>[16-byte IV] + [ciphertext]</c>.
-    /// This value is never included in any API response payload; the Infrastructure
+    /// This value is NEVER included in any API response payload; the Infrastructure
     /// layer decrypts it in-memory only when constructing an <c>AmazonS3Client</c>.
+    /// <see cref="JsonIgnoreAttribute"/> is applied to prevent accidental serialisation
+    /// if a controller ever maps this entity directly rather than through a DTO.
     /// </summary>
+    [JsonIgnore]
     public byte[] EncryptedSecretKey { get; set; } = Array.Empty<byte>();
 
     /// <summary>
@@ -90,20 +95,29 @@ public class CredentialProfile
     /// </summary>
     public bool IsDeleted { get; set; }
 
-    /// <summary>UTC timestamp when this profile was first created.</summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    /// <summary>
+    /// UTC timestamp when this profile was first created.
+    /// Initialised to <see langword="default"/> here; the Infrastructure layer
+    /// (EF Core <c>SaveChanges</c> interceptor or database <c>DEFAULT CURRENT_TIMESTAMP</c>)
+    /// is the authoritative writer so the persisted value reflects the actual
+    /// database write time rather than the in-memory object construction time.
+    /// </summary>
+    public DateTime CreatedAt { get; set; } = default;
 
     /// <summary>
     /// UTC timestamp of the most recent update to any field on this profile.
-    /// Must be refreshed by the application layer on every <c>UPDATE</c> operation.
+    /// Initialised to <see langword="default"/> here; the Infrastructure layer
+    /// must refresh this value on every <c>UPDATE</c> operation (e.g. via a
+    /// <c>SaveChanges</c> interceptor) to avoid stale construction-time timestamps.
     /// </summary>
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = default;
 
     /// <summary>
     /// The <see cref="User.Id"/> of the Admin who created this profile.
-    /// Stored as a plain value (no navigation property) to avoid circular
-    /// serialisation issues and because the creating user's full entity is
-    /// rarely needed when loading profile data.
+    /// Stored as a plain foreign-key value with no navigation property because
+    /// the creating user's full entity is not needed by any current application
+    /// query against credential profiles.
+    /// By design — no navigation property. See ADR-004.
     /// </summary>
     public Guid CreatedByUserId { get; set; }
 }

@@ -14,6 +14,19 @@ using DataViewer.Domain.Enums;
 /// <see cref="FailedLoginCount"/> reaches the system-configured threshold; it may
 /// also be cleared manually by an Admin by resetting <see cref="IsLocked"/> and
 /// <see cref="LockoutUntil"/> through the administration API.
+///
+/// <para>
+/// Valid lockout state combinations:
+/// <list type="table">
+///   <listheader><term>IsLocked</term><term>LockoutUntil</term><term>Meaning</term></listheader>
+///   <item><term>false</term><term>null</term><term>Active account (normal state)</term></item>
+///   <item><term>true</term><term>non-null</term><term>Time-limited automatic lockout</term></item>
+///   <item><term>true</term><term>null</term><term>Permanent administrative lock (no expiry)</term></item>
+///   <item><term>false</term><term>non-null</term><term>INVALID — stale data; treat as unlocked</term></item>
+/// </list>
+/// Use <see cref="IsEffectivelyLocked"/> to evaluate the combined state correctly
+/// rather than reading <see cref="IsLocked"/> in isolation.
+/// </para>
 /// </remarks>
 public class User
 {
@@ -54,8 +67,9 @@ public class User
     /// <summary>
     /// <see langword="true"/> when the account is locked due to repeated failed logins
     /// or a manual administrative lock.
-    /// The application layer resolves automatic lockout expiry by comparing
-    /// <see cref="LockoutUntil"/> with the current UTC time at login time.
+    /// Always evaluate combined lock state via <see cref="IsEffectivelyLocked"/> rather
+    /// than reading this property in isolation; see the class remarks for the full
+    /// state-machine invariant table.
     /// </summary>
     public bool IsLocked { get; set; }
 
@@ -74,8 +88,14 @@ public class User
     /// </summary>
     public int FailedLoginCount { get; set; }
 
-    /// <summary>UTC timestamp when the user account was first created.</summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    /// <summary>
+    /// UTC timestamp when the user account was first created.
+    /// Initialised to <see langword="default"/> here; the Infrastructure layer
+    /// (EF Core <c>SaveChanges</c> interceptor or database <c>DEFAULT CURRENT_TIMESTAMP</c>)
+    /// is the authoritative writer so the persisted value reflects the actual
+    /// database write time rather than the in-memory object construction time.
+    /// </summary>
+    public DateTime CreatedAt { get; set; } = default;
 
     /// <summary>
     /// UTC timestamp of the most recent successful login.
@@ -89,13 +109,39 @@ public class User
     /// All refresh tokens ever issued to this user — both active and revoked.
     /// Tokens are retained after revocation to preserve the audit trail.
     /// </summary>
-    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    /// <remarks>
+    /// This collection is unbounded and includes revoked tokens. Infrastructure
+    /// queries MUST NOT eagerly load this collection via <c>Include()</c>; always
+    /// query <see cref="RefreshToken"/> directly with an active/non-expired predicate.
+    /// See ADR-003 for the token retention policy.
+    /// </remarks>
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
 
     /// <summary>
     /// Persisted UI preferences for this user.
     /// One-to-one relationship; <see langword="null"/> until the user explicitly
-    /// saves preferences. The application falls back to system defaults when
-    /// this property is <see langword="null"/>.
+    /// saves preferences. The application falls back to application-layer constants
+    /// for page-size and date-range defaults when this property is <see langword="null"/>.
     /// </summary>
     public UserPreference? Preference { get; set; }
+
+    // ── Domain methods ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Evaluates the combined two-flag lockout state correctly, accounting for
+    /// expired time-limited lockouts.
+    /// </summary>
+    /// <param name="utcNow">
+    /// The current UTC instant, supplied by the caller so that this method remains
+    /// pure and testable without a hidden dependency on <see cref="DateTime.UtcNow"/>.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when <see cref="IsLocked"/> is set AND either the
+    /// lockout has no expiry (<see cref="LockoutUntil"/> is <see langword="null"/>)
+    /// or the lockout has not yet expired at <paramref name="utcNow"/>.
+    /// <see langword="false"/> in all other cases, including the invalid
+    /// <c>IsLocked=false, LockoutUntil=non-null</c> stale-data state.
+    /// </returns>
+    public bool IsEffectivelyLocked(DateTime utcNow) =>
+        IsLocked && (LockoutUntil is null || LockoutUntil > utcNow);
 }

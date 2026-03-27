@@ -15,9 +15,8 @@ namespace DataViewer.Domain.Entities;
 /// <para>
 /// A row is created the first time a user explicitly saves their preferences through
 /// the API. Until then, <see cref="User.Preference"/> is <see langword="null"/> and the
-/// application falls back to system-wide defaults
-/// (<see cref="SystemSettings.JwtAccessTokenMinutes"/> et al. for token settings;
-/// page-size and date-range defaults are defined in application-layer constants).
+/// application falls back to application-layer constants for page-size and date-range
+/// defaults (see <c>UserPreferenceDefaults</c> in the Application project).
 /// </para>
 /// </remarks>
 public class UserPreference

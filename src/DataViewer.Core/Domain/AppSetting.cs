@@ -1,23 +1,21 @@
-namespace DataViewer.Core.Domain;
-
-/// <summary>
-/// Dynamic application settings stored in the database (FR-29).
-/// Key/value pairs editable by Admins only.
-/// </summary>
-public class AppSetting
-{
-    public int Id { get; set; }
-    public string Key { get; set; } = string.Empty;
-    public string Value { get; set; } = string.Empty;
-    public string? Description { get; set; }
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-}
-
-/// <summary>Well-known setting keys (FR-29).</summary>
-public static class SettingKeys
-{
-    public const string JwtAccessTokenLifetimeMinutes  = "Jwt:AccessTokenLifetimeMinutes";
-    public const string JwtRefreshTokenLifetimeHours   = "Jwt:RefreshTokenLifetimeHours";
-    public const string BodyMaxSizeBytes               = "S3:BodyMaxSizeBytes";
-    public const string AccountLockoutThreshold        = "Auth:LockoutThreshold";
-}
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  RETIRED — DataViewer.Core.Domain.AppSetting                            ║
+// ║                                                                          ║
+// ║  This file is intentionally empty. The generic key/value AppSetting     ║
+// ║  model has been replaced by the strongly-typed singleton entity          ║
+// ║  DataViewer.Domain.Entities.SystemSettings (int Id = 1).                ║
+// ║                                                                          ║
+// ║  Migration notes (GAP-1 fix — TASK-002 code review):                    ║
+// ║  • SettingKeys.JwtAccessTokenLifetimeMinutes                             ║
+// ║    → SystemSettings.JwtAccessTokenMinutes (int)                          ║
+// ║  • SettingKeys.JwtRefreshTokenLifetimeHours                              ║
+// ║    → SystemSettings.JwtRefreshTokenHours (int)                           ║
+// ║  • SettingKeys.BodyMaxSizeBytes                                          ║
+// ║    → SystemSettings.BodySizeCapMb (int, unit changed to MB)              ║
+// ║  • SettingKeys.AccountLockoutThreshold                                   ║
+// ║    → SystemSettings.LockoutThreshold (int)                               ║
+// ║                                                                          ║
+// ║  All code referencing DataViewer.Core.Domain.AppSetting or              ║
+// ║  DataViewer.Core.Domain.SettingKeys must be updated to read settings     ║
+// ║  from DataViewer.Domain.Entities.SystemSettings via the repository.     ║
+// ╚══════════════════════════════════════════════════════════════════════════╝

@@ -11,6 +11,12 @@ namespace DataViewer.Domain.Entities;
 /// database breach does not expose reusable credentials.
 ///
 /// <para>
+/// The raw token MUST be produced by <c>RandomNumberGenerator.GetBytes(32)</c> (256 bits
+/// of CSPRNG output) before hashing. Lower-entropy raw tokens make an unsalted SHA-256
+/// hash brute-forceable; the 256-bit CSPRNG value itself acts as the effective salt.
+/// </para>
+///
+/// <para>
 /// A single user may hold multiple active refresh tokens simultaneously, allowing
 /// concurrent sessions from different browsers or devices.
 /// </para>
@@ -39,6 +45,8 @@ public class RefreshToken
     /// SHA-256 hash of the raw opaque token string.
     /// Computed with <c>SHA256.HashData(Encoding.UTF8.GetBytes(rawToken))</c>
     /// and stored as a lower-case hex string.
+    /// The raw token MUST originate from <c>RandomNumberGenerator.GetBytes(32)</c>
+    /// (256 bits of CSPRNG output) to ensure sufficient entropy for unsalted SHA-256.
     /// The raw token is held only in memory and returned to the client at issuance.
     /// </summary>
     public string TokenHash { get; set; } = string.Empty;
@@ -57,8 +65,14 @@ public class RefreshToken
     /// </summary>
     public bool IsRevoked { get; set; }
 
-    /// <summary>UTC timestamp when this token was first issued.</summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    /// <summary>
+    /// UTC timestamp when this token was first issued.
+    /// Initialised to <see langword="default"/> here; the Infrastructure layer
+    /// (EF Core <c>SaveChanges</c> interceptor or database <c>DEFAULT CURRENT_TIMESTAMP</c>)
+    /// is the authoritative writer so the persisted value reflects the actual
+    /// database write time rather than the in-memory object construction time.
+    /// </summary>
+    public DateTime CreatedAt { get; set; } = default;
 
     /// <summary>
     /// UTC timestamp when the token was revoked.

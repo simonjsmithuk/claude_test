@@ -1,0 +1,82 @@
+{
+  "version": 2,
+  "dgSpecHash": "buGMVcYzp9nh7JB1oszdBFkuUli7AIlihclqoTjBO+VXDW6L1uXFXi0ziDjiP2NQr3fkvXYIsZMaSv7oEvTsxQ==",
+  "success": false,
+  "projectFilePath": "/home/simon/code_wsl/claude_test/src/DataViewer.API/DataViewer.API.csproj",
+  "expectedPackageFiles": [
+    "/home/simon/.nuget/packages/microsoft.aspnetcore.http.abstractions/2.2.0/microsoft.aspnetcore.http.abstractions.2.2.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.aspnetcore.http.features/2.2.0/microsoft.aspnetcore.http.features.2.2.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.configuration.abstractions/8.0.0/microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.configuration.binder/8.0.0/microsoft.extensions.configuration.binder.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.dependencyinjection/8.0.0/microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.dependencymodel/8.0.2/microsoft.extensions.dependencymodel.8.0.2.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.diagnostics.abstractions/8.0.1/microsoft.extensions.diagnostics.abstractions.8.0.1.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.fileproviders.abstractions/8.0.0/microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.hosting.abstractions/8.0.1/microsoft.extensions.hosting.abstractions.8.0.1.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.logging/8.0.0/microsoft.extensions.logging.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.options/8.0.2/microsoft.extensions.options.8.0.2.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog/3.1.1/serilog.3.1.1.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.aspnetcore/8.0.3/serilog.aspnetcore.8.0.3.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.enrichers.environment/3.0.0/serilog.enrichers.environment.3.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.enrichers.process/3.0.0/serilog.enrichers.process.3.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.enrichers.thread/4.0.0/serilog.enrichers.thread.4.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.extensions.hosting/8.0.0/serilog.extensions.hosting.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.extensions.logging/8.0.0/serilog.extensions.logging.8.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.formatting.compact/2.0.0/serilog.formatting.compact.2.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.settings.configuration/8.0.4/serilog.settings.configuration.8.0.4.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.sinks.console/6.0.0/serilog.sinks.console.6.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.sinks.debug/2.0.0/serilog.sinks.debug.2.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog.sinks.file/6.0.0/serilog.sinks.file.6.0.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/system.text.encodings.web/4.5.0/system.text.encodings.web.4.5.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1605",
+      "level": "Error",
+      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.API -> DataViewer.Infrastructure -> Serilog.Sinks.Console 6.0.0 -> Serilog (>= 4.0.0) \n DataViewer.API -> DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
+      "libraryId": "Serilog",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1605",
+      "level": "Error",
+      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.API -> DataViewer.Infrastructure -> Serilog.Sinks.File 6.0.0 -> Serilog (>= 4.0.0) \n DataViewer.API -> DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
+      "libraryId": "Serilog",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1605",
+      "level": "Error",
+      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.API -> DataViewer.Infrastructure -> Serilog.Enrichers.Environment 3.0.0 -> Serilog (>= 4.0.0) \n DataViewer.API -> DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
+      "libraryId": "Serilog",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1605",
+      "level": "Error",
+      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.API -> DataViewer.Infrastructure -> Serilog.Enrichers.Thread 4.0.0 -> Serilog (>= 4.0.0) \n DataViewer.API -> DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
+      "libraryId": "Serilog",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1605",
+      "level": "Error",
+      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.API -> DataViewer.Infrastructure -> Serilog.Enrichers.Process 3.0.0 -> Serilog (>= 4.0.0) \n DataViewer.API -> DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
+      "libraryId": "Serilog",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}
