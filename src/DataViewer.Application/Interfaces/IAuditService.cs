@@ -192,4 +192,39 @@ public interface IAuditService
         string? ipAddress,
         AuditActionType actionType,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Writes an audit log entry for an administrative action (system settings, user management).
+    /// </summary>
+    /// <param name="userId">
+    /// The <see cref="DataViewer.Domain.Entities.User.Id"/> of the admin user
+    /// performing the operation. Must not be <see cref="Guid.Empty"/>.
+    /// </param>
+    /// <param name="ipAddress">
+    /// Pre-validated originating IP address of the HTTP request, or
+    /// <see langword="null"/> when the address is unavailable.
+    /// </param>
+    /// <param name="actionType">
+    /// The administrative action being audited. Must be one of:
+    /// <see cref="AuditActionType.UpdateSystemSettings"/>,
+    /// <see cref="AuditActionType.UpdateUserRole"/>, or
+    /// <see cref="AuditActionType.UnlockAccount"/>.
+    /// </param>
+    /// <param name="details">
+    /// Human-readable details string describing the specific changes made.
+    /// Stored in the <c>Parameters</c> column of the audit log entry.
+    /// Example: "AccessTokenMinutes=15, RefreshTokenHours=24, BodySizeCapMb=10, LockoutThreshold=5"
+    /// </param>
+    /// <param name="cancellationToken">Token to observe for cooperative cancellation.</param>
+    /// <returns>A <see cref="Task"/> that completes when the entry has been committed.</returns>
+    /// <exception cref="DataViewer.Domain.Exceptions.AuditFailureException">
+    /// Thrown when the audit entry cannot be persisted. Callers must not complete
+    /// the administrative operation if this exception is thrown.
+    /// </exception>
+    Task LogAdminActionAsync(
+        Guid userId,
+        string? ipAddress,
+        AuditActionType actionType,
+        string details,
+        CancellationToken cancellationToken);
 }

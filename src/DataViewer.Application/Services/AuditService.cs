@@ -267,6 +267,38 @@ public sealed class AuditService : IAuditService
             .ConfigureAwait(false);
     }
 
+    /// <inheritdoc />
+    public async Task LogAdminActionAsync(
+        Guid userId,
+        string? ipAddress,
+        AuditActionType actionType,
+        string details,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(details);
+
+        var timestamp = DateTime.UtcNow;
+
+        _logger.LogDebug(
+            "Writing {ActionType} audit entry for user {UserId} — details={Details}",
+            actionType,
+            userId,
+            details);
+
+        var entry = AuditLogEntry.CreateForUser(
+            userId: userId,
+            actionType: actionType,
+            timestampUtc: timestamp,
+            ipAddress: ipAddress,
+            parameters: details);
+
+        await BuildAndInsertAsync(
+            entry,
+            actionType.ToString(),
+            cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     // ════════════════════════════════════════════════════════════════════════
     // Private helpers
     // ════════════════════════════════════════════════════════════════════════
