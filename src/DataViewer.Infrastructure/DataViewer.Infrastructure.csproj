@@ -22,6 +22,43 @@
 
   <ItemGroup>
     <!--
+      Microsoft.EntityFrameworkCore — MIT license
+      Core EF abstractions: DbContext, DbSet<T>, IEntityTypeConfiguration<T>, ModelBuilder.
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+
+    <!--
+      Microsoft.EntityFrameworkCore.Relational — MIT license
+      Adds relational-database extensions: ToTable(), HasIndex(), HasFilter(),
+      IsDescending(), HasColumnType(), HasData() etc.
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7" />
+
+    <!--
+      Npgsql.EntityFrameworkCore.PostgreSQL — PostgreSQL License (permissive, BSD-like)
+      PostgreSQL provider for EF Core. Adds UseNpgsql() and maps byte[] → bytea,
+      DateTime → timestamptz, and supports jsonb column type annotation.
+    -->
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+
+    <!--
+      Pomelo.EntityFrameworkCore.MySql — MIT license
+      MySQL / MariaDB provider for EF Core. Adds UseMySql() and maps byte[] → varbinary,
+      DateTime → datetime(6), and supports JSON column type annotation.
+    -->
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+
+    <!--
+      Microsoft.EntityFrameworkCore.Design — MIT license
+      Required for EF Core migrations tooling (dotnet-ef add-migration, update-database).
+      PrivateAssets="All" so it does not flow to consuming projects at runtime.
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+
+    <!--
       Microsoft.Extensions.DependencyInjection.Abstractions — MIT license (part of .NET 8 SDK)
       Provides IServiceCollection used in InfrastructureServiceExtensions.
     -->

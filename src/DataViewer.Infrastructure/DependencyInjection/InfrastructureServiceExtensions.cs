@@ -1,5 +1,8 @@
 using DataViewer.Application.Interfaces;
 using DataViewer.Infrastructure.Encryption;
+using DataViewer.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DataViewer.Infrastructure.DependencyInjection;
@@ -13,7 +16,7 @@ namespace DataViewer.Infrastructure.DependencyInjection;
 /// Call this method from the API project's composition root (<c>Program.cs</c>)
 /// after <c>WebApplication.CreateBuilder(args)</c>:
 /// <code>
-/// builder.Services.AddInfrastructure();
+/// builder.Services.AddInfrastructure(builder.Configuration);
 /// </code>
 /// </para>
 /// <para>
@@ -28,6 +31,10 @@ public static class InfrastructureServiceExtensions
     /// Registers all Infrastructure-layer services into <paramref name="services"/>.
     /// </summary>
     /// <param name="services">The application's service collection.</param>
+    /// <param name="configuration">
+    /// The application configuration used to resolve the connection string and
+    /// database provider name.
+    /// </param>
     /// <returns>
     /// The same <paramref name="services"/> instance to support method chaining.
     /// </returns>
@@ -51,8 +58,14 @@ public static class InfrastructureServiceExtensions
     ///     </description>
     ///   </item>
     /// </list>
+    ///
+    /// <strong>AppDbContext lifetime — Scoped (EF Core default):</strong>
+    /// DbContext is inherently not thread-safe and is designed for a single unit-of-work
+    /// per HTTP request. Scoped lifetime matches this design exactly.
     /// </remarks>
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         // ── Encryption ────────────────────────────────────────────────────────
         // AesEncryptionService reads DATAVIEWER_ENCRYPTION_KEY at construction time
@@ -62,6 +75,111 @@ public static class InfrastructureServiceExtensions
         // encountering a missing key mid-request.
         services.AddSingleton<IEncryptionService, AesEncryptionService>();
 
+        // ── Database ──────────────────────────────────────────────────────────
+        ConfigureDbContext(services, configuration);
+
         return services;
+    }
+
+    // ── Private helpers ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Resolves the database provider and connection string from configuration and
+    /// registers <see cref="AppDbContext"/> with the appropriate EF Core provider.
+    /// </summary>
+    /// <remarks>
+    /// Provider selection is driven by the <c>"DatabaseProvider"</c> appsettings key:
+    /// <list type="table">
+    ///   <listheader><term>Value</term><term>Provider</term></listheader>
+    ///   <item><term>postgresql</term><term>Npgsql (PostgreSQL ≥ 14)</term></item>
+    ///   <item><term>mysql</term><term>Pomelo (MySQL ≥ 8.0)</term></item>
+    /// </list>
+    /// No code change is required to switch databases — only the appsettings value
+    /// and connection string need to change (Product Spec G-05).
+    ///
+    /// <para>
+    /// <see cref="AppDbContext"/> requires the provider string as a constructor
+    /// argument so that entity configurations can emit the correct provider-specific
+    /// column type annotations at model-build time (e.g. <c>jsonb</c> vs <c>JSON</c>
+    /// for the <c>AuditLogEntry.Parameters</c> column).
+    /// We therefore use the <c>IServiceCollection.AddDbContext</c> overload that
+    /// accepts a factory delegate rather than the simpler options-only overload —
+    /// the factory closure captures the resolved provider string and threads it into
+    /// the <see cref="AppDbContext"/> constructor.
+    /// </para>
+    /// </remarks>
+    private static void ConfigureDbContext(
+        IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var provider = (configuration["DatabaseProvider"] ?? "postgresql")
+            .Trim()
+            .ToLowerInvariant();
+
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException(
+                "ConnectionStrings:DefaultConnection is required but was not found in configuration. "
+                + "Set the DATAVIEWER_DB_CONNECTION environment variable or provide it in appsettings.");
+
+        // Build the DbContextOptions<AppDbContext> once and cache in the options-lifetime
+        // (Singleton) so the model is only compiled once across all Scoped context instances.
+        services.AddDbContext<AppDbContext>(
+            optionsAction: dbContextOptions => ConfigureProviderOptions(dbContextOptions, provider, connectionString),
+            contextLifetime: ServiceLifetime.Scoped,
+            optionsLifetime: ServiceLifetime.Singleton);
+
+        // Override the registration with a factory delegate so the extra constructor
+        // argument (provider string) is threaded in.  The DbContextOptions<AppDbContext>
+        // built above is resolved from the container and passed into the constructor.
+        //
+        // ASSUMPTION: Replacing the Scoped registration is safe here because
+        // AddDbContext registers AppDbContext as Scoped and this AddScoped call
+        // replaces that binding (last-writer-wins in the Microsoft DI container).
+        // DbContextOptions<AppDbContext> (Singleton) registered by AddDbContext remains.
+        services.AddScoped<AppDbContext>(serviceProvider =>
+        {
+            var options = serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>();
+            return new AppDbContext(options, provider);
+        });
+    }
+
+    /// <summary>
+    /// Configures the provider-specific EF Core options on <paramref name="dbContextOptions"/>
+    /// based on the supplied <paramref name="provider"/> name.
+    /// </summary>
+    private static void ConfigureProviderOptions(
+        DbContextOptionsBuilder dbContextOptions,
+        string provider,
+        string connectionString)
+    {
+        if (provider == "mysql")
+        {
+            // Pomelo.EntityFrameworkCore.MySql — MIT license
+            // ServerVersion.AutoDetect requires a live connection at startup; use a
+            // pinned version when writing migration scripts offline.
+            dbContextOptions.UseMySql(
+                connectionString,
+                ServerVersion.AutoDetect(connectionString),
+                mysqlOptions =>
+                {
+                    mysqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorNumbersToAdd: null);
+                });
+        }
+        else
+        {
+            // Default: Npgsql / PostgreSQL — PostgreSQL License (permissive, BSD-like)
+            dbContextOptions.UseNpgsql(
+                connectionString,
+                npgsqlOptions =>
+                {
+                    npgsqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorCodesToAdd: null);
+                });
+        }
     }
 }
