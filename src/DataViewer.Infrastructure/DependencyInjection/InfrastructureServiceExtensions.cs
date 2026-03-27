@@ -65,9 +65,32 @@ public static class InfrastructureServiceExtensions
     /// is Scoped (one per HTTP request). Repositories must therefore also be Scoped to
     /// avoid consuming a shorter-lived dependency from a longer-lived container.
     ///
+    /// <strong>AuditRepository — Scoped with IDbContextFactory dependency:</strong>
+    /// <see cref="AuditRepository"/> is Scoped (matching the lifetime of the injected
+    /// request-scoped <see cref="AppDbContext"/> used for reads).  For writes it
+    /// consumes <see cref="IDbContextFactory{TContext}"/>, which is Singleton by default
+    /// when registered via <c>AddDbContextFactory</c>.  Resolving a Singleton factory
+    /// from a Scoped service is safe because the factory itself is stateless.
+    ///
     /// <strong>AppDbContext lifetime — Scoped (EF Core default):</strong>
     /// DbContext is inherently not thread-safe and is designed for a single unit-of-work
     /// per HTTP request. Scoped lifetime matches this design exactly.
+    ///
+    /// <strong>IDbContextFactory lifetime — Singleton (EF Core default):</strong>
+    /// The factory registered by <c>AddDbContextFactory</c> is Singleton by default,
+    /// but each <c>CreateDbContextAsync()</c> call returns a new, independent
+    /// <see cref="AppDbContext"/> instance. This is the recommended pattern for services
+    /// that need to open their own independent database connections (e.g. background
+    /// services, audit repositories that must not share the request transaction).
+    ///
+    /// <strong>IMemoryCache lifetime — Singleton:</strong>
+    /// <c>AddMemoryCache()</c> registers <see cref="Microsoft.Extensions.Caching.Memory.IMemoryCache"/>
+    /// as a Singleton. This is the correct lifetime for an in-process cache — the cache
+    /// must outlive individual HTTP requests so that entries populated in one request are
+    /// available to subsequent requests.  <see cref="SystemSettingsRepository"/> and
+    /// <see cref="UserPreferencesRepository"/> consume the Singleton
+    /// <see cref="Microsoft.Extensions.Caching.Memory.IMemoryCache"/> from their
+    /// Scoped constructors — consuming a Singleton from a Scoped service is safe.
     /// </remarks>
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
@@ -80,6 +103,13 @@ public static class InfrastructureServiceExtensions
         // ensuring the application fails fast with a clear error rather than
         // encountering a missing key mid-request.
         services.AddSingleton<IEncryptionService, AesEncryptionService>();
+
+        // ── In-process memory cache ───────────────────────────────────────────
+        // AddMemoryCache() is idempotent — safe to call multiple times.
+        // The Singleton IMemoryCache is consumed by SystemSettingsRepository and
+        // UserPreferencesRepository (both Scoped) for 5-minute TTL caching of
+        // their respective entities (Acceptance Criteria — TASK-013).
+        services.AddMemoryCache();
 
         // ── Database ──────────────────────────────────────────────────────────
         ConfigureDbContext(services, configuration);
@@ -103,18 +133,78 @@ public static class InfrastructureServiceExtensions
     /// dependency on <see cref="AppDbContext"/>, which is itself Scoped.
     /// Registering as Singleton would capture a short-lived DbContext inside a
     /// long-lived container, causing stale data and thread-safety issues.
+    ///
+    /// <para>
+    /// <see cref="AuditRepository"/> is also Scoped.  Although its write path uses
+    /// the Singleton <see cref="IDbContextFactory{TContext}"/> (which creates independent
+    /// contexts on demand), its read path consumes the request-scoped
+    /// <see cref="AppDbContext"/>, so Scoped is the correct lifetime.
+    /// </para>
+    ///
+    /// <para>
+    /// <see cref="SystemSettingsRepository"/> and <see cref="UserPreferencesRepository"/>
+    /// are Scoped and consume the Singleton <see cref="Microsoft.Extensions.Caching.Memory.IMemoryCache"/>
+    /// for 5-minute TTL caching.  Consuming a Singleton from a Scoped service is safe.
+    /// </para>
     /// </remarks>
     private static void RegisterRepositories(IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICredentialProfileRepository, CredentialProfileRepository>();
+
+        // AuditRepository is Scoped:
+        //  • Write path: uses IDbContextFactory<AppDbContext> (Singleton) to create
+        //    short-lived, independent contexts so audit INSERTs are committed
+        //    independently of the request's ambient transaction (Acceptance Criteria).
+        //  • Read path: uses the request-scoped AppDbContext injected via constructor.
+        // Registering as Scoped (not Singleton) is required because the constructor
+        // also takes the request-scoped AppDbContext for the read path.
+        services.AddScoped<IAuditRepository, AuditRepository>();
+
+        // SystemSettingsRepository — Scoped.
+        // Queries/caches the singleton SystemSettings row (Id = 1).
+        // Cache entries have a 5-minute absolute TTL; UpdateAsync explicitly evicts
+        // and repopulates the cache on every successful write (Acceptance Criteria).
+        services.AddScoped<ISystemSettingsRepository, SystemSettingsRepository>();
+
+        // UserPreferencesRepository — Scoped.
+        // Upserts per-user UserPreference rows (shared-PK pattern with User).
+        // Cache entries are keyed per-user with a 5-minute absolute TTL;
+        // UpsertAsync explicitly evicts and repopulates the cache on every write
+        // (Acceptance Criteria).
+        services.AddScoped<IUserPreferencesRepository, UserPreferencesRepository>();
     }
 
     /// <summary>
     /// Resolves the database provider and connection string from configuration and
-    /// registers <see cref="AppDbContext"/> using a custom scoped factory.
+    /// registers both <see cref="AppDbContext"/> (Scoped) and
+    /// <see cref="IDbContextFactory{TContext}"/> (Singleton) using custom factories
+    /// that forward the captured <c>databaseProvider</c> string to
+    /// <see cref="AppDbContext"/>'s two-argument constructor.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// <strong>Why both AddDbContext and AddDbContextFactory are registered:</strong>
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>
+    ///       <c>AddDbContext</c> registers a Scoped <see cref="AppDbContext"/> for the
+    ///       standard request-scoped unit-of-work pattern used by all repositories that
+    ///       participate in the request transaction.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       <c>AddDbContextFactory</c> registers a Singleton
+    ///       <see cref="IDbContextFactory{TContext}"/> that <see cref="AuditRepository"/>
+    ///       uses to create short-lived, independent <see cref="AppDbContext"/> instances
+    ///       for each audit INSERT. These contexts are committed and disposed immediately,
+    ///       independently of the request's ambient transaction.
+    ///     </description>
+    ///   </item>
+    /// </list>
+    /// </para>
+    ///
     /// <para>
     /// Provider selection is driven by the <c>"DatabaseProvider"</c> appsettings key
     /// and is delegated entirely to <see cref="DatabaseProviderFactory.Configure"/>,
@@ -130,43 +220,8 @@ public static class InfrastructureServiceExtensions
     /// as its second constructor parameter. This is a configuration value, not a
     /// registered service, so the standard <c>AddDbContext&lt;T&gt;()</c> auto-wiring
     /// cannot resolve it from the DI container without additional ceremony.
-    ///
-    /// The chosen pattern:
-    /// <list type="number">
-    ///   <item>
-    ///     <description>
-    ///       <c>AddDbContext</c> with a <c>(IServiceProvider, DbContextOptionsBuilder)</c>
-    ///       factory delegate configures the <c>DbContextOptions&lt;AppDbContext&gt;</c>
-    ///       Singleton (via <see cref="DatabaseProviderFactory.Configure"/>) and registers
-    ///       <see cref="AppDbContext"/> as a Scoped service backed by those options.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       The two-argument <c>AddDbContext</c> overload with the
-    ///       <c>(IServiceProvider, DbContextOptionsBuilder)</c> factory is the standard
-    ///       EF Core hook for this scenario and does NOT produce a duplicate service descriptor.
-    ///       The <c>provider</c> string is captured in the closure and forwarded to
-    ///       <see cref="AppDbContext"/>'s constructor via a custom
-    ///       <c>IDbContextOptionsExtension</c>-compatible path — specifically by building
-    ///       <c>DbContextOptions</c> with the provider annotation stored on the options object,
-    ///       and then using the options-builder overload of <see cref="AppDbContext"/> that
-    ///       accepts both the options and the provider name.
-    ///     </description>
-    ///   </item>
-    /// </list>
-    ///
-    /// In practice, EF Core's <c>AddDbContext</c> registers the context factory as
-    /// a Scoped delegate. We override that with a single explicit Scoped registration
-    /// that passes the captured <c>provider</c> string directly to the constructor —
-    /// this is the cleanest approach that avoids the orphaned-descriptor problem of
-    /// calling both <c>AddDbContext</c> and <c>AddScoped</c> for the same type.
-    /// </para>
-    ///
-    /// <para>
-    /// EF Core's internal model cache ensures the compiled model is built only once,
-    /// even with a per-scope factory. The expensive model compilation is cached by the
-    /// provider's <c>IModelCacheKeyFactory</c>.
+    /// Both the Scoped context and the factory descriptor are patched with a custom
+    /// lambda that passes the captured <c>provider</c> string to the constructor.
     /// </para>
     /// </remarks>
     private static void ConfigureDbContext(
@@ -188,13 +243,11 @@ public static class InfrastructureServiceExtensions
         // the real per-scope options are built inside the AddDbContext factory below.
         ValidateProvider(provider, connectionString);
 
+        // ── Scoped DbContext (request unit-of-work) ───────────────────────────
         // Register AppDbContext using the factory-delegate overload of AddDbContext.
         // The factory captures both `provider` and `connectionString` from the outer
         // scope (both are read-only configuration values; capturing them in a closure
         // is safe because they never change after host startup).
-        //
-        // DatabaseProviderFactory.Configure is called once per scope (per HTTP request)
-        // to build DbContextOptions; EF Core's model cache amortises the compilation cost.
         services.AddDbContext<AppDbContext>((serviceProvider, dbContextOptions) =>
             DatabaseProviderFactory.Configure(dbContextOptions, provider, connectionString));
 
@@ -216,6 +269,52 @@ public static class InfrastructureServiceExtensions
         {
             var options = sp.GetRequiredService<DbContextOptions<AppDbContext>>();
             return new AppDbContext(options, provider);
+        });
+
+        // ── Singleton IDbContextFactory (independent scope per CreateDbContextAsync) ──
+        // AddDbContextFactory registers:
+        //   • DbContextOptions<AppDbContext> as Singleton (built once; EF model cache reuse)
+        //   • IDbContextFactory<AppDbContext> as Singleton
+        // Each call to IDbContextFactory<AppDbContext>.CreateDbContextAsync() returns a NEW,
+        // independently-owned AppDbContext instance — the factory itself is Singleton but
+        // each produced context is transient and must be disposed by the caller (await using).
+        //
+        // This is the recommended EF Core pattern for services that need their own
+        // independent database connection/transaction (e.g. AuditRepository.InsertAsync).
+        // See: https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/#using-a-dbcontext-factory
+        services.AddDbContextFactory<AppDbContext>((dbContextOptions) =>
+            DatabaseProviderFactory.Configure(dbContextOptions, provider, connectionString),
+            lifetime: ServiceLifetime.Singleton);
+
+        // Patch the factory's internal descriptor so that each created context
+        // receives the `provider` string — same pattern as the Scoped context patch above.
+        // AddDbContextFactory registers an IDbContextFactory<AppDbContext> backed by
+        // a DbContextOptions<AppDbContext> Singleton. We replace the factory descriptor
+        // with one that uses our two-arg AppDbContext constructor.
+        //
+        // ASSUMPTION: AddDbContextFactory registers exactly one Singleton descriptor for
+        // IDbContextFactory<AppDbContext>. Removing the last matching descriptor and
+        // replacing it is safe for the same reason as the Scoped context patch.
+        var factoryDescriptor = services.LastOrDefault(d =>
+            d.ServiceType == typeof(IDbContextFactory<AppDbContext>) &&
+            d.Lifetime == ServiceLifetime.Singleton);
+
+        if (factoryDescriptor is not null)
+        {
+            services.Remove(factoryDescriptor);
+        }
+
+        // Register a custom Singleton factory implementation that creates AppDbContext
+        // instances with both DbContextOptions<AppDbContext> and the provider string.
+        // The PooledDbContextFactory alternative is not used here because audit writes
+        // are relatively infrequent and context pooling would complicate the two-arg
+        // constructor pattern without meaningful throughput benefit for this use case.
+        services.AddSingleton<IDbContextFactory<AppDbContext>>(sp =>
+        {
+            var options = sp.GetRequiredService<DbContextOptions<AppDbContext>>();
+            // Capture `provider` from the outer closure — safe because it is a
+            // read-only configuration value that does not change after host startup.
+            return new AuditDbContextFactory(options, provider);
         });
     }
 

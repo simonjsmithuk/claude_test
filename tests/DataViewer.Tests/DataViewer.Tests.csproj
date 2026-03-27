@@ -37,6 +37,12 @@
 
     <!-- DI container — used in integration-style DI registration tests -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+
+    <!-- In-Memory EF Core provider for repository integration tests -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.7" />
+
+    <!-- SQLite EF Core provider for ExecuteUpdateAsync support -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
