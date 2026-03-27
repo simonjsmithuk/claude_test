@@ -1,0 +1,6 @@
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.csproj.AssemblyReference.cache
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.AssemblyInfoInputs.cache
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.AssemblyInfo.cs
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.csproj.CoreCompileInputs.cache
+/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/obj/Debug/net8.0/DataViewer.Infrastructure.sourcelink.json

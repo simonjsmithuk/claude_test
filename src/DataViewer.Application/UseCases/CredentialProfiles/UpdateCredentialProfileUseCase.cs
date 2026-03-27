@@ -94,7 +94,8 @@ public sealed class UpdateCredentialProfileUseCase
         if (profile is null || profile.IsDeleted)
         {
             throw new NotFoundException(
-                $"Credential profile with ID '{profileId}' not found.");
+                "CredentialProfile",
+                profileId.ToString());
         }
 
         // Check for duplicate name if Name is being updated
@@ -110,7 +111,8 @@ public sealed class UpdateCredentialProfileUseCase
                 p.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new DuplicateNameException(
-                    $"A credential profile with the name '{request.Name}' already exists.");
+                    request.Name,
+                    "CredentialProfile");
             }
         }
 

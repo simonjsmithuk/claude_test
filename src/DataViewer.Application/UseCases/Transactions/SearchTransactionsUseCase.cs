@@ -120,10 +120,9 @@ public sealed class SearchTransactionsUseCase
 
         if (profile is null || profile.IsDeleted)
         {
-            var errorMsg = request.ProfileId.HasValue
-                ? $"Credential profile with ID '{request.ProfileId.Value}' not found."
-                : "No active credential profile is configured. Please activate a profile first.";
-            throw new NotFoundException(errorMsg);
+            throw new NotFoundException(
+                "CredentialProfile",
+                request.ProfileId.HasValue ? request.ProfileId.Value.ToString() : "Active");
         }
 
         // Map request DTO to SearchFilter value object

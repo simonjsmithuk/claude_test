@@ -84,7 +84,8 @@ public sealed class TestConnectionUseCase
         if (profile is null || profile.IsDeleted)
         {
             throw new NotFoundException(
-                $"Credential profile with ID '{profileId}' not found.");
+                "CredentialProfile",
+                profileId.ToString());
         }
 
         // Security invariant: Decrypt the secret key in-memory ONLY for the test duration

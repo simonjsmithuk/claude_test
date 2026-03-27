@@ -103,7 +103,8 @@ public sealed class CreateCredentialProfileUseCase
         if (existingProfiles.Any(p => p.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase)))
         {
             throw new DuplicateNameException(
-                $"A credential profile with the name '{request.Name}' already exists.");
+                request.Name,
+                "CredentialProfile");
         }
 
         // Security invariant #1: Encrypt the secret access key BEFORE persistence

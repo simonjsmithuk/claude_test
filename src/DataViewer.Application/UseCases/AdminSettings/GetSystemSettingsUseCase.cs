@@ -65,9 +65,8 @@ public sealed class GetSystemSettingsUseCase
         if (settings is null)
         {
             throw new NotFoundException(
-                "System settings not found. This is a fatal configuration error — " +
-                "the database migration did not seed the singleton SystemSettings row. " +
-                "Please run 'dotnet ef database update' to apply migrations.");
+                "SystemSettings",
+                "1");
         }
 
         // Map to response DTO (includes UpdatedAt timestamp)

@@ -135,10 +135,9 @@ public sealed class GetTransactionDetailUseCase
 
         if (profile is null || profile.IsDeleted)
         {
-            var errorMsg = profileId.HasValue
-                ? $"Credential profile with ID '{profileId.Value}' not found."
-                : "No active credential profile is configured. Please activate a profile first.";
-            throw new NotFoundException(errorMsg);
+            throw new NotFoundException(
+                "CredentialProfile",
+                profileId.HasValue ? profileId.Value.ToString() : "Active");
         }
 
         // Step 1: Audit-first - Write View audit entry BEFORE retrieving S3 object
@@ -158,7 +157,8 @@ public sealed class GetTransactionDetailUseCase
         {
             // S3 object not found or other S3 error
             throw new NotFoundException(
-                $"Transaction with S3 key '{s3Key}' not found.", ex);
+                "Transaction",
+                s3Key);
         }
 
         // Step 3: Parse the transaction file (this handles gzip decompression of the file itself)

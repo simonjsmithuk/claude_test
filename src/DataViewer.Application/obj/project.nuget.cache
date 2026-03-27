@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "B5LzGjIUV9l1xAJUQxr7uxDqA2ePjZcEGQtx5T8gKL7TEBGD2GvYfVuWEp7OJCSpQ5asU6YcGHxY3/BDm/x4JQ==",
+  "dgSpecHash": "YSMcUfTRotrr61ZecQS8KnTpqrBJUCIj2mjS+hAbFRQCh3/Z3ExdMoeTIfiR4rUvnrEtEKX9PzevMvu/mpO6SQ==",
   "success": true,
   "projectFilePath": "/home/simon/code_wsl/claude_test/src/DataViewer.Application/DataViewer.Application.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/home/simon/.nuget/packages/bcrypt.net-next/4.1.0/bcrypt.net-next.4.1.0.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "/home/simon/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512"
+  ],
   "logs": []
 }

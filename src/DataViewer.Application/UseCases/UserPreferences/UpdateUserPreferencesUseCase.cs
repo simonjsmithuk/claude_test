@@ -82,7 +82,8 @@ public sealed class UpdateUserPreferencesUseCase
             if (profile is null || profile.IsDeleted)
             {
                 throw new NotFoundException(
-                    $"Credential profile with ID '{request.PreferredProfileId.Value}' not found.");
+                    "CredentialProfile",
+                    request.PreferredProfileId.Value.ToString());
             }
         }
 

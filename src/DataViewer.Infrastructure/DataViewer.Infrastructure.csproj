@@ -25,6 +25,7 @@
       Microsoft.EntityFrameworkCore — MIT license
       Core EF abstractions: DbContext, DbSet<T>, IEntityTypeConfiguration<T>, ModelBuilder.
     -->
+    <PackageReference Include="AWSSDK.S3" Version="3.7.400" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
 
     <!--
@@ -84,7 +85,7 @@
       Serilog — Apache 2.0 license
       Core structured logging library used throughout DataViewer (section 2, ADR-001).
     -->
-    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog" Version="4.0.0" />
 
     <!--
       Serilog.AspNetCore — Apache 2.0 license

@@ -1,0 +1,12 @@
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/bin/Debug/net8.0/DataViewer.Domain.deps.json
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/bin/Debug/net8.0/DataViewer.Domain.dll
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/bin/Debug/net8.0/DataViewer.Domain.pdb
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/DataViewer.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/DataViewer.Domain.AssemblyInfoInputs.cache
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/DataViewer.Domain.AssemblyInfo.cs
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/DataViewer.Domain.csproj.CoreCompileInputs.cache
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/DataViewer.Domain.sourcelink.json
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/DataViewer.Domain.dll
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/refint/DataViewer.Domain.dll
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/DataViewer.Domain.pdb
+/home/simon/code_wsl/claude_test/src/DataViewer.Domain/obj/Debug/net8.0/ref/DataViewer.Domain.dll

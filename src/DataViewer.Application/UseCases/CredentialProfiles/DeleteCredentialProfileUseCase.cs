@@ -85,7 +85,8 @@ public sealed class DeleteCredentialProfileUseCase
         if (profile is null || profile.IsDeleted)
         {
             throw new NotFoundException(
-                $"Credential profile with ID '{profileId}' not found.");
+                "CredentialProfile",
+                profileId.ToString());
         }
 
         // Audit-first: Write DeleteCredentialProfile audit entry BEFORE soft-deleting

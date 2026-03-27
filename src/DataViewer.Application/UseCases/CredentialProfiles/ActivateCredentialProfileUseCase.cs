@@ -76,7 +76,8 @@ public sealed class ActivateCredentialProfileUseCase
         if (profile is null || profile.IsDeleted)
         {
             throw new NotFoundException(
-                $"Credential profile with ID '{profileId}' not found.");
+                "CredentialProfile",
+                profileId.ToString());
         }
 
         // Activate the profile (atomic: sets this profile active, clears all others)

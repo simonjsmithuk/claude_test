@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "67SWAprHpeCrX1rhisxNZXSBJTtp3LuDjOabEqOeeFZqm/h/BqZMAO5U3N3pkZWlROhg6niTLYwyhErRnZ7udA==",
-  "success": false,
+  "dgSpecHash": "YmY7b8JmFPdmOxy6W8Swg/oSYjeG5m9IE1+a+GsZAVV4p6/W+FnS/peDZGolJTFdIjn56gwxz4KKFZn1GMhu2A==",
+  "success": true,
   "projectFilePath": "/home/simon/code_wsl/claude_test/src/DataViewer.Infrastructure/DataViewer.Infrastructure.csproj",
   "expectedPackageFiles": [
+    "/home/simon/.nuget/packages/awssdk.core/3.7.400/awssdk.core.3.7.400.nupkg.sha512",
+    "/home/simon/.nuget/packages/awssdk.s3/3.7.400/awssdk.s3.3.7.400.nupkg.sha512",
+    "/home/simon/.nuget/packages/bcrypt.net-next/4.1.0/bcrypt.net-next.4.1.0.nupkg.sha512",
     "/home/simon/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/simon/.nuget/packages/microsoft.aspnetcore.http.abstractions/2.2.0/microsoft.aspnetcore.http.abstractions.2.2.0.nupkg.sha512",
     "/home/simon/.nuget/packages/microsoft.aspnetcore.http.features/2.2.0/microsoft.aspnetcore.http.features.2.2.0.nupkg.sha512",
@@ -41,7 +44,7 @@
     "/home/simon/.nuget/packages/npgsql/8.0.3/npgsql.8.0.3.nupkg.sha512",
     "/home/simon/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.4/npgsql.entityframeworkcore.postgresql.8.0.4.nupkg.sha512",
     "/home/simon/.nuget/packages/pomelo.entityframeworkcore.mysql/8.0.2/pomelo.entityframeworkcore.mysql.8.0.2.nupkg.sha512",
-    "/home/simon/.nuget/packages/serilog/3.1.1/serilog.3.1.1.nupkg.sha512",
+    "/home/simon/.nuget/packages/serilog/4.0.0/serilog.4.0.0.nupkg.sha512",
     "/home/simon/.nuget/packages/serilog.aspnetcore/8.0.3/serilog.aspnetcore.8.0.3.nupkg.sha512",
     "/home/simon/.nuget/packages/serilog.enrichers.environment/3.0.0/serilog.enrichers.environment.3.0.0.nupkg.sha512",
     "/home/simon/.nuget/packages/serilog.enrichers.process/3.0.0/serilog.enrichers.process.3.0.0.nupkg.sha512",
@@ -69,51 +72,5 @@
     "/home/simon/.nuget/packages/system.text.encodings.web/4.5.0/system.text.encodings.web.4.5.0.nupkg.sha512",
     "/home/simon/.nuget/packages/system.threading.channels/6.0.0/system.threading.channels.6.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.Infrastructure -> Serilog.Sinks.Console 6.0.0 -> Serilog (>= 4.0.0) \n DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
-      "libraryId": "Serilog",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    },
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.Infrastructure -> Serilog.Sinks.File 6.0.0 -> Serilog (>= 4.0.0) \n DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
-      "libraryId": "Serilog",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    },
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.Infrastructure -> Serilog.Enrichers.Environment 3.0.0 -> Serilog (>= 4.0.0) \n DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
-      "libraryId": "Serilog",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    },
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.Infrastructure -> Serilog.Enrichers.Thread 4.0.0 -> Serilog (>= 4.0.0) \n DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
-      "libraryId": "Serilog",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    },
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "Warning As Error: Detected package downgrade: Serilog from 4.0.0 to 3.1.1. Reference the package directly from the project to select a different version. \n DataViewer.Infrastructure -> Serilog.Enrichers.Process 3.0.0 -> Serilog (>= 4.0.0) \n DataViewer.Infrastructure -> Serilog (>= 3.1.1)",
-      "libraryId": "Serilog",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    }
-  ]
+  "logs": []
 }
