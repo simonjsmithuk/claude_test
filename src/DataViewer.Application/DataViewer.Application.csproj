@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <RootNamespace>DataViewer.Application</RootNamespace>
+    <AssemblyName>DataViewer.Application</AssemblyName>
+    <!--
+      Application layer: contains use-case interfaces and orchestration logic only.
+      All references are to the innermost Domain layer — no Infrastructure types leak in.
+    -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Application depends on Domain for canonical entities, value objects, and enums.
+      Domain is the innermost layer and carries no external NuGet dependencies.
+    -->
+    <ProjectReference Include="..\DataViewer.Domain\DataViewer.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

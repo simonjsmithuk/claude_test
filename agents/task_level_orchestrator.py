@@ -330,17 +330,26 @@ class TaskLevelOrchestrator:
 REVIEW FEEDBACK:
 {review_feedback}
 
+CRITICAL INSTRUCTION - SPEC COMPLIANCE PRIORITY:
+When the review identifies a difference between your implementation and the acceptance criteria:
+- If the acceptance criteria says "DateTime", use DateTime (NOT DateTimeOffset)
+- If it says "string", use string (NOT a custom type)
+- If it says "int", use int (NOT long)
+- MATCH THE ACCEPTANCE CRITERIA EXACTLY, even if your approach is technically superior
+
+The spec takes absolute priority. Modern best practices can be applied in a later refactoring task.
+
 Please address all the issues mentioned in the review feedback above.
-Focus on:
-1. Fixing any bugs or gaps identified
-2. Addressing naming inconsistencies
-3. Improving type safety where suggested
-4. Adding missing functionality
+Focus on (IN THIS ORDER):
+1. **FIRST PRIORITY:** Match acceptance criteria EXACTLY (types, names, structure)
+2. **SECOND PRIORITY:** Fix any actual bugs or gaps identified
+3. **THIRD PRIORITY:** Address naming inconsistencies
+4. **FOURTH PRIORITY:** Code quality and best practices
 
 The files to fix are:
 {chr(10).join('- ' + f for f in task.get('files', []))}
 
-Please read the current implementation, understand the issues, and make the necessary fixes."""
+Please read the current implementation, understand the issues, and make the necessary fixes to MATCH THE SPEC EXACTLY."""
 
             result = agent.run(
                 fix_prompt,
