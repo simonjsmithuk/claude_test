@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dataviewer-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=winhost;Database=dataviewer;Username=dview;Password=dview01
+      - DatabaseProvider=postgresql
+      - DATAVIEWER_ENCRYPTION_KEY=${DATAVIEWER_ENCRYPTION_KEY}
+      - JWT__SECRET=${JWT__SECRET}
+      - Jwt__Issuer=DataViewer
+      - Jwt__Audience=DataViewerClients
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - dataviewer-network
+
+networks:
+  dataviewer-network:
+    driver: bridge
