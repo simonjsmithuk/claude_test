@@ -124,9 +124,9 @@ public class CredentialProfile
     /// </summary>
     /// <remarks>
     /// ⚠️ Risk: if the Infrastructure interceptor is missed, this field persists as
-    /// <c>DateTimeOffset.MinValue</c> (0001-01-01). Monitor this via integration tests.
+    /// <c>DateTime.MinValue</c> (0001-01-01). Monitor this via integration tests.
     /// </remarks>
-    public DateTimeOffset CreatedAt { get; set; } = default;
+    public DateTime CreatedAt { get; set; } = default;
 
     /// <summary>
     /// UTC timestamp of the most recent update to any field on this profile.
@@ -136,9 +136,9 @@ public class CredentialProfile
     /// </summary>
     /// <remarks>
     /// ⚠️ Risk: if the Infrastructure interceptor is missed, this field persists as
-    /// <c>DateTimeOffset.MinValue</c> (0001-01-01). Monitor this via integration tests.
+    /// <c>DateTime.MinValue</c> (0001-01-01). Monitor this via integration tests.
     /// </remarks>
-    public DateTimeOffset UpdatedAt { get; set; } = default;
+    public DateTime UpdatedAt { get; set; } = default;
 
     /// <summary>
     /// The <see cref="User.Id"/> of the Admin who created this profile.

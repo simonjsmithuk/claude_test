@@ -72,7 +72,7 @@ public class AuditLogEntry
     /// UTC timestamp at which the action occurred, captured server-side before the
     /// response is dispatched to the client.
     /// </summary>
-    public DateTimeOffset TimestampUtc { get; private set; }
+    public DateTime TimestampUtc { get; private set; }
 
     /// <summary>
     /// Originating IP address (IPv4 or IPv6) of the HTTP request.
@@ -154,7 +154,7 @@ public class AuditLogEntry
     public static AuditLogEntry CreateForUser(
         Guid userId,
         AuditActionType actionType,
-        DateTimeOffset timestampUtc,
+        DateTime timestampUtc,
         string? ipAddress = null,
         string? parameters = null,
         int? resultCount = null,
@@ -195,7 +195,7 @@ public class AuditLogEntry
     /// </returns>
     public static AuditLogEntry CreateForSystem(
         AuditActionType actionType,
-        DateTimeOffset timestampUtc,
+        DateTime timestampUtc,
         string? parameters = null)
     {
         // ASSUMPTION: Guid.Empty is the agreed sentinel for system-initiated actions.

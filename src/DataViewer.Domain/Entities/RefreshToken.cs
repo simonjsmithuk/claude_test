@@ -53,10 +53,10 @@ public class RefreshToken
 
     /// <summary>
     /// UTC timestamp after which this token is no longer valid for exchange.
-    /// The exchange endpoint must reject tokens where <c>ExpiresAt &lt; DateTimeOffset.UtcNow</c>
+    /// The exchange endpoint must reject tokens where <c>ExpiresAt &lt; DateTime.UtcNow</c>
     /// even if <see cref="IsRevoked"/> is <see langword="false"/>.
     /// </summary>
-    public DateTimeOffset ExpiresAt { get; set; }
+    public DateTime ExpiresAt { get; set; }
 
     /// <summary>
     /// <see langword="true"/> when the token has been explicitly invalidated through
@@ -75,9 +75,9 @@ public class RefreshToken
     /// </summary>
     /// <remarks>
     /// ⚠️ Risk: if the Infrastructure interceptor is missed, this field persists as
-    /// <c>DateTimeOffset.MinValue</c> (0001-01-01). Monitor this via integration tests.
+    /// <c>DateTime.MinValue</c> (0001-01-01). Monitor this via integration tests.
     /// </remarks>
-    public DateTimeOffset CreatedAt { get; set; } = default;
+    public DateTime CreatedAt { get; set; } = default;
 
     /// <summary>
     /// UTC timestamp when the token was revoked.
@@ -85,7 +85,7 @@ public class RefreshToken
     /// Always set in concert with <see cref="IsRevoked"/> via <see cref="Revoke"/> —
     /// never set independently.
     /// </summary>
-    public DateTimeOffset? RevokedAt { get; set; }
+    public DateTime? RevokedAt { get; set; }
 
     // ── Navigation properties ────────────────────────────────────────────────
 
@@ -105,14 +105,14 @@ public class RefreshToken
     /// </summary>
     /// <param name="revokedAt">
     /// The UTC timestamp of revocation. Supplied by the caller to keep this method
-    /// pure and testable without a hidden dependency on <see cref="DateTimeOffset.UtcNow"/>.
+    /// pure and testable without a hidden dependency on <see cref="DateTime.UtcNow"/>.
     /// </param>
     /// <remarks>
     /// Always use this method instead of setting <see cref="IsRevoked"/> or
     /// <see cref="RevokedAt"/> directly — this ensures the two flags are never left
     /// in an inconsistent state (e.g. <c>IsRevoked=true</c> with a null <c>RevokedAt</c>).
     /// </remarks>
-    public void Revoke(DateTimeOffset revokedAt)
+    public void Revoke(DateTime revokedAt)
     {
         IsRevoked = true;
         RevokedAt = revokedAt;

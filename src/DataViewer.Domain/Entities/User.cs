@@ -84,7 +84,7 @@ public class User
     /// permanent (administratively imposed with no expiry).
     /// Always mutate via <see cref="Lock"/> or <see cref="Unlock"/>; never set directly.
     /// </summary>
-    public DateTimeOffset? LockoutUntil { get; set; }
+    public DateTime? LockoutUntil { get; set; }
 
     /// <summary>
     /// Number of consecutive failed login attempts since the last successful
@@ -104,16 +104,16 @@ public class User
     /// </summary>
     /// <remarks>
     /// ⚠️ Risk: if the Infrastructure interceptor is missed, this field persists as
-    /// <c>DateTimeOffset.MinValue</c> (0001-01-01). Monitor this via integration tests.
+    /// <c>DateTime.MinValue</c> (0001-01-01). Monitor this via integration tests.
     /// </remarks>
-    public DateTimeOffset CreatedAt { get; set; } = default;
+    public DateTime CreatedAt { get; set; } = default;
 
     /// <summary>
     /// UTC timestamp of the most recent successful login.
     /// <see langword="null"/> before the user has authenticated for the first time.
     /// Mutate via <see cref="RecordSuccessfulLogin"/>.
     /// </summary>
-    public DateTimeOffset? LastLoginAt { get; set; }
+    public DateTime? LastLoginAt { get; set; }
 
     // ── Navigation properties ────────────────────────────────────────────────
 
@@ -150,7 +150,7 @@ public class User
     /// </summary>
     /// <param name="utcNow">
     /// The current UTC instant, supplied by the caller so that this method remains
-    /// pure and testable without a hidden dependency on <see cref="DateTimeOffset.UtcNow"/>.
+    /// pure and testable without a hidden dependency on <see cref="DateTime.UtcNow"/>.
     /// </param>
     /// <returns>
     /// <see langword="true"/> when <see cref="IsLocked"/> is set AND either the
@@ -159,7 +159,7 @@ public class User
     /// <see langword="false"/> in all other cases, including the invalid
     /// <c>IsLocked=false, LockoutUntil=non-null</c> stale-data state.
     /// </returns>
-    public bool IsEffectivelyLocked(DateTimeOffset utcNow) =>
+    public bool IsEffectivelyLocked(DateTime utcNow) =>
         IsLocked && (LockoutUntil is null || LockoutUntil > utcNow);
 
     /// <summary>
@@ -174,7 +174,7 @@ public class User
     /// Always use this method instead of setting <see cref="IsLocked"/> directly —
     /// this ensures the two flags are never left in an inconsistent state.
     /// </remarks>
-    public void Lock(DateTimeOffset? lockoutUntil)
+    public void Lock(DateTime? lockoutUntil)
     {
         IsLocked = true;
         LockoutUntil = lockoutUntil;
@@ -217,7 +217,7 @@ public class User
     /// The current UTC instant to record as the last login time.
     /// Supplied by the caller to keep this method pure and testable.
     /// </param>
-    public void RecordSuccessfulLogin(DateTimeOffset utcNow)
+    public void RecordSuccessfulLogin(DateTime utcNow)
     {
         FailedLoginCount = 0;
         LastLoginAt = utcNow;
