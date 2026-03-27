@@ -2,6 +2,7 @@ using DataViewer.Application.Interfaces;
 using DataViewer.Infrastructure.Encryption;
 using DataViewer.Infrastructure.Persistence;
 using DataViewer.Infrastructure.Persistence.Repositories;
+using DataViewer.Infrastructure.S3.MetadataExtractors;
 using DataViewer.Infrastructure.S3.Parsers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,7 +37,7 @@ public static class InfrastructureServiceExtensions
     /// <param name="services">The application's service collection.</param>
     /// <param name="configuration">
     /// The application configuration used to resolve the connection string,
-    /// database provider name, and parser format selection.
+    /// database provider name, parser format selection, and metadata extractor strategy.
     /// </param>
     /// <returns>
     /// The same <paramref name="services"/> instance to support method chaining.
@@ -100,6 +101,12 @@ public static class InfrastructureServiceExtensions
     /// factory delegate that reads <see cref="TransactionParserOptions.TransactionFormat"/>
     /// at first resolution (Singleton) and returns the appropriate named implementation.
     /// This is safe for concurrent use because both parsers hold no mutable state.
+    ///
+    /// <strong>IMetadataExtractor lifetime — Singleton:</strong>
+    /// Both <see cref="PathEncodedMetadataExtractor"/> and <see cref="SidecarMetadataExtractor"/>
+    /// are stateless beyond their injected loggers. The active extractor is resolved by a
+    /// factory delegate that reads <see cref="MetadataExtractorOptions.MetadataExtractorStrategy"/>
+    /// at first resolution and returns the appropriate named implementation.
     /// </remarks>
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
@@ -133,6 +140,11 @@ public static class InfrastructureServiceExtensions
         // Both concrete parsers are registered as Singletons (named registrations)
         // and the active ITransactionParser is resolved by configuration at startup.
         RegisterTransactionParsers(services, configuration);
+
+        // ── Metadata extractors ───────────────────────────────────────────────
+        // Both concrete extractors are registered as Singletons (named registrations)
+        // and the active IMetadataExtractor is resolved by configuration at startup.
+        RegisterMetadataExtractors(services, configuration);
 
         return services;
     }
@@ -188,16 +200,9 @@ public static class InfrastructureServiceExtensions
         IServiceCollection services,
         IConfiguration configuration)
     {
-        // ── BUG-3 FIX: Replace services.Configure<T>() with the full validation
-        // pipeline so that [AllowedValues] and [Range] attributes on
-        // TransactionParserOptions are actually evaluated at startup.
-        //
-        // Previously: services.Configure<TransactionParserOptions>(...)
-        //   → no validation; invalid values were silently ignored until parser resolution.
-        //
-        // Now: AddOptions<T>().Bind(...).ValidateDataAnnotations().ValidateOnStart()
-        //   → all DataAnnotation constraints are checked during host startup,
-        //     producing a clear OptionsValidationException before any request is served.
+        // Replace services.Configure<T>() with the full validation pipeline so that
+        // [AllowedValues] and [Range] attributes on TransactionParserOptions are
+        // actually evaluated at startup.
         services.AddOptions<TransactionParserOptions>()
             .Bind(configuration.GetSection(TransactionParserOptions.SectionName))
             .ValidateDataAnnotations()
@@ -215,7 +220,7 @@ public static class InfrastructureServiceExtensions
 
         // ── Active (unkeyed) Singleton resolution ─────────────────────────────
         // The factory reads the TransactionFormat option at first resolution and
-        // returns the corresponding keyed implementation.  The factory itself is
+        // returns the corresponding keyed implementation. The factory itself is
         // Singleton — it executes at most once per application lifetime.
         services.AddSingleton<ITransactionParser>(sp =>
         {
@@ -233,6 +238,81 @@ public static class InfrastructureServiceExtensions
                     + "Valid values are: 'delimiter', 'sidecar'. "
                     + "Update the S3:TransactionFormat key in appsettings.json or via the "
                     + "DATAVIEWER__S3__TRANSACTIONFORMAT environment variable.")
+            };
+        });
+    }
+
+    /// <summary>
+    /// Registers both <see cref="IMetadataExtractor"/> implementations and binds
+    /// the primary <see cref="IMetadataExtractor"/> to the implementation selected
+    /// by <c>S3:MetadataExtractorStrategy</c> in configuration.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <strong>Options validation:</strong>
+    /// <see cref="MetadataExtractorOptions"/> is registered with
+    /// <c>.ValidateDataAnnotations().ValidateOnStart()</c> so that an invalid
+    /// <c>S3:MetadataExtractorStrategy</c> value surfaces as an
+    /// <see cref="Microsoft.Extensions.Options.OptionsValidationException"/> at
+    /// host startup rather than at the first extractor resolution.
+    /// </para>
+    ///
+    /// <para>
+    /// <strong>Keyed registrations:</strong>
+    /// Both <see cref="PathEncodedMetadataExtractor"/> and
+    /// <see cref="SidecarMetadataExtractor"/> are registered as keyed Singletons
+    /// using the strategy string as the key (<c>"path"</c> / <c>"sidecar"</c>),
+    /// enabling test code to resolve a specific extractor by key.
+    /// </para>
+    ///
+    /// <para>
+    /// <strong>Active extractor:</strong>
+    /// The unkeyed <see cref="IMetadataExtractor"/> registration uses a factory
+    /// delegate that reads <see cref="MetadataExtractorOptions.MetadataExtractorStrategy"/>
+    /// at first resolution and delegates to the corresponding keyed registration.
+    /// Because the registration is Singleton, the factory executes at most once.
+    /// </para>
+    /// </remarks>
+    private static void RegisterMetadataExtractors(
+        IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Bind and validate MetadataExtractorOptions from the S3 config section.
+        // MetadataExtractorStrategy is validated by [AllowedValues("path","sidecar")]
+        // on the options class — invalid values produce a startup error.
+        services.AddOptions<MetadataExtractorOptions>()
+            .Bind(configuration.GetSection(MetadataExtractorOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        // ── Named (keyed) Singleton registrations ─────────────────────────────
+        // Both extractors are always registered so they can be resolved by key
+        // in integration tests without changing appsettings.
+        services.AddKeyedSingleton<IMetadataExtractor, PathEncodedMetadataExtractor>(
+            serviceKey: "path");
+
+        services.AddKeyedSingleton<IMetadataExtractor, SidecarMetadataExtractor>(
+            serviceKey: "sidecar");
+
+        // ── Active (unkeyed) Singleton resolution ─────────────────────────────
+        // Reads MetadataExtractorStrategy at first DI resolution and delegates to
+        // the appropriate keyed implementation. Executes at most once (Singleton).
+        services.AddSingleton<IMetadataExtractor>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<MetadataExtractorOptions>>().Value;
+            var strategy = (options.MetadataExtractorStrategy ?? "path")
+                .Trim()
+                .ToLowerInvariant();
+
+            return strategy switch
+            {
+                "path"    => sp.GetRequiredKeyedService<IMetadataExtractor>("path"),
+                "sidecar" => sp.GetRequiredKeyedService<IMetadataExtractor>("sidecar"),
+                _ => throw new InvalidOperationException(
+                    $"Unrecognised S3:MetadataExtractorStrategy value '{options.MetadataExtractorStrategy}'. "
+                    + "Valid values are: 'path', 'sidecar'. "
+                    + "Update the S3:MetadataExtractorStrategy key in appsettings.json or via the "
+                    + "DATAVIEWER__S3__METADATAEXTRACTORSTRATEGY environment variable.")
             };
         });
     }
