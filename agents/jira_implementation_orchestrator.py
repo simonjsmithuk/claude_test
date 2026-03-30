@@ -338,12 +338,38 @@ class JiraImplementationOrchestrator:
             logger.info("Pulling latest changes from origin")
             self._run_git_command(["git", "pull", "origin", result.base_branch])
 
-            # Generate branch name: <base_branch>_<ticket>_<short_description>
-            # Use first 3 words of summary as short description
-            summary_words = result.jira_summary.lower().replace(" ", "_").split("_")[:3]
-            short_desc = "_".join(summary_words)
+            # Generate branch name: <base_branch>_<TICKET>_<short_description>
+            # Format: master_AIDAT-1_fix_logout (for bugs)
+            #         master_AIDAT-2_implement_auth (for tasks/stories)
+            #
+            # Keep ticket key uppercase, convert description to lowercase with underscores
 
-            branch_name = f"{result.base_branch}_{result.jira_key.lower()}_{short_desc}"
+            # Get issue type from ticket if available (Bug, Task, Story, etc.)
+            issue_type = getattr(ticket, "issue_type", "Task").lower()
+
+            # Add prefix based on issue type
+            type_prefix = ""
+            if issue_type == "bug":
+                type_prefix = "fix_"
+            elif issue_type in ("task", "story", "feature"):
+                type_prefix = "implement_"
+
+            # Remove common stop words and extract key words
+            stop_words = {"the", "a", "an", "is", "are", "was", "were", "be", "been", "to", "of", "for", "in", "on", "at", "by", "with", "from", "as", "and", "or", "but", "not", "does", "do", "did", "doesn't", "don't"}
+            summary_words = [
+                word for word in result.jira_summary.lower().replace("-", "_").replace("/", "_").split()
+                if word not in stop_words and word.replace("_", "").isalnum()
+            ]
+
+            # Take first 2-3 meaningful words (fewer if we have a prefix), limit to 50 chars total
+            max_words = 2 if type_prefix else 3
+            short_desc = f"{type_prefix}{'_'.join(summary_words[:max_words])}"[:50]
+
+            # If no meaningful words found, use generic description
+            if not short_desc:
+                short_desc = "implementation"
+
+            branch_name = f"{result.base_branch}_{result.jira_key}_{short_desc}"
             result.feature_branch = branch_name
 
             logger.info("Creating feature branch: %s", branch_name)
