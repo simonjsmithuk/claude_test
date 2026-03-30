@@ -62,3 +62,23 @@ agent_models: {}
 
 context_store:
   base_dir: .sdlc_runs
+
+# Jira Integration Configuration
+jira:
+  # Cloud ID or site URL (e.g., "yoursite.atlassian.net")
+  # Leave empty to prompt in interactive mode
+  cloud_id: "gdslink.atlassian.net"
+
+  # Default transition IDs (customize for your workflow)
+  # Planning phase (plan.sh)
+  transitions:
+    awaiting_estimate_to_open: "Estimated"  # After planning, mark as estimated
+
+    # Implementation phase (implement.sh)
+    open_to_in_progress: "Development Started"  # Start coding (your workflow name)
+    in_progress_to_done: "Development done"     # After merge (your workflow name)
+
+  # Field mappings for custom fields (if needed)
+  custom_fields:
+    story_points: "customfield_10016"
+    epic_link: "customfield_10014"
