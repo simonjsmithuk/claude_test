@@ -20,7 +20,7 @@ COPY src/ ./src/
 
 # Build and publish
 WORKDIR /source/src/DataViewer.API
-RUN dotnet publish -c Release -o /app/publish --no-restore
+RUN dotnet publish -c Release -o /app/publish
 
 # =============================================================================
 # Stage 2: Runtime

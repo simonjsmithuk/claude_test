@@ -11,14 +11,35 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Host=winhost;Database=dataviewer;Username=dview;Password=dview01
+      - ConnectionStrings__DefaultConnection=Host=winhost;Database=dataviewer;Username=dview;Password=dview01;SSL Mode=Prefer
       - DatabaseProvider=postgresql
       - DATAVIEWER_ENCRYPTION_KEY=${DATAVIEWER_ENCRYPTION_KEY}
       - JWT__SECRET=${JWT__SECRET}
       - Jwt__Issuer=DataViewer
       - Jwt__Audience=DataViewerClients
+    extra_hosts:
+      - "winhost:172.23.0.1"
     volumes:
       - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - dataviewer-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dataviewer-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
     restart: unless-stopped
     networks:
       - dataviewer-network

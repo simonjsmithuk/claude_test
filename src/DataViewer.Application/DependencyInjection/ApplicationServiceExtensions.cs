@@ -111,6 +111,35 @@ public static class ApplicationServiceExtensions
         // connection-lifetime violations, and potential data corruption (Review §3c).
         services.AddScoped<IAuditService, AuditService>();
 
+        // ── Use Cases — Scoped ────────────────────────────────────────────────
+        // All use cases are registered as Scoped because they depend on Scoped
+        // repositories (which hold references to the request-scoped DbContext).
+
+        // Auth use cases
+        services.AddScoped<UseCases.Auth.LoginUseCase>();
+        services.AddScoped<UseCases.Auth.LogoutUseCase>();
+        services.AddScoped<UseCases.Auth.RefreshTokenUseCase>();
+
+        // Credential Profile use cases
+        services.AddScoped<UseCases.CredentialProfiles.GetCredentialProfilesUseCase>();
+        services.AddScoped<UseCases.CredentialProfiles.CreateCredentialProfileUseCase>();
+        services.AddScoped<UseCases.CredentialProfiles.UpdateCredentialProfileUseCase>();
+        services.AddScoped<UseCases.CredentialProfiles.DeleteCredentialProfileUseCase>();
+        services.AddScoped<UseCases.CredentialProfiles.TestConnectionUseCase>();
+        services.AddScoped<UseCases.CredentialProfiles.ActivateCredentialProfileUseCase>();
+
+        // Transaction use cases
+        services.AddScoped<UseCases.Transactions.SearchTransactionsUseCase>();
+        services.AddScoped<UseCases.Transactions.GetTransactionDetailUseCase>();
+
+        // Admin Settings use cases
+        services.AddScoped<UseCases.AdminSettings.GetSystemSettingsUseCase>();
+        services.AddScoped<UseCases.AdminSettings.UpdateSystemSettingsUseCase>();
+
+        // User Preferences use cases
+        services.AddScoped<UseCases.UserPreferences.GetUserPreferencesUseCase>();
+        services.AddScoped<UseCases.UserPreferences.UpdateUserPreferencesUseCase>();
+
         return services;
     }
 }

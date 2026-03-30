@@ -350,16 +350,16 @@ export const dataViewerApi = createApi({
     // -----------------------------------------------------------------------
 
     /**
-     * GET /users/me/preferences
+     * GET /admin/preferences
      * Returns the authenticated user's stored preferences.
      */
     getUserPreferences: builder.query<UserPreferenceDto, void>({
-      query: () => ({ url: '/users/me/preferences' }),
+      query: () => ({ url: '/admin/preferences' }),
       providesTags: [{ type: 'UserPreferences' as const, id: 'ME' }],
     }),
 
     /**
-     * PUT /users/me/preferences
+     * PUT /admin/preferences
      * Partial update — send only the fields you want to change.
      */
     updateUserPreferences: builder.mutation<
@@ -367,7 +367,7 @@ export const dataViewerApi = createApi({
       UpdateUserPreferencesRequest
     >({
       query: (body) => ({
-        url: '/users/me/preferences',
+        url: '/admin/preferences',
         method: 'PUT',
         data: body,
       }),

@@ -120,6 +120,12 @@ public static class InfrastructureServiceExtensions
         // encountering a missing key mid-request.
         services.AddSingleton<IEncryptionService, AesEncryptionService>();
 
+        // ── JWT Token Service ─────────────────────────────────────────────────
+        // TokenService generates and validates JWT tokens. Singleton lifetime is
+        // appropriate because it only depends on IConfiguration and ILogger (both Singleton).
+        // The service is stateless except for the cached signing key and JWT options.
+        services.AddSingleton<ITokenService, Auth.TokenService>();
+
         // ── In-process memory cache ───────────────────────────────────────────
         // AddMemoryCache() is idempotent — safe to call multiple times.
         // The Singleton IMemoryCache is consumed by SystemSettingsRepository and
@@ -145,6 +151,12 @@ public static class InfrastructureServiceExtensions
         // Both concrete extractors are registered as Singletons (named registrations)
         // and the active IMetadataExtractor is resolved by configuration at startup.
         RegisterMetadataExtractors(services, configuration);
+
+        // ── S3 Service ────────────────────────────────────────────────────────
+        // S3Service is Scoped because it depends on ICredentialProfileRepository (Scoped).
+        // It creates AmazonS3Client instances on-demand per operation and disposes them
+        // immediately, so no long-lived AWS client references are held.
+        services.AddScoped<IS3Service, S3.S3Service>();
 
         return services;
     }
@@ -343,6 +355,7 @@ public static class InfrastructureServiceExtensions
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICredentialProfileRepository, CredentialProfileRepository>();
+        services.AddScoped<IRefreshTokenRepository, Auth.RefreshTokenRepository>();
 
         // AuditRepository is Scoped:
         //  • Write path: uses IDbContextFactory<AppDbContext> (Singleton) to create
@@ -501,12 +514,18 @@ public static class InfrastructureServiceExtensions
         // The PooledDbContextFactory alternative is not used here because audit writes
         // are relatively infrequent and context pooling would complicate the two-arg
         // constructor pattern without meaningful throughput benefit for this use case.
+        //
+        // Build DbContextOptions directly rather than resolving from DI to avoid
+        // attempting to resolve Scoped options from Singleton lifetime.
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        DatabaseProviderFactory.Configure(optionsBuilder, provider, connectionString);
+        var factoryOptions = optionsBuilder.Options;
+
         services.AddSingleton<IDbContextFactory<AppDbContext>>(sp =>
         {
-            var options = sp.GetRequiredService<DbContextOptions<AppDbContext>>();
-            // Capture `provider` from the outer closure — safe because it is a
-            // read-only configuration value that does not change after host startup.
-            return new AuditDbContextFactory(options, provider);
+            // Capture both `provider` and `factoryOptions` from the outer closure.
+            // Both are read-only configuration values that don't change after host startup.
+            return new AuditDbContextFactory(factoryOptions, provider);
         });
     }
 
